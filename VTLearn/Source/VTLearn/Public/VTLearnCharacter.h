@@ -17,11 +17,12 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-	void MoveUp(float Value);
-	void MoveRight(float Value);
-
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	UFUNCTION(BlueprintImplementableEvent)
+	void ItemGrabbed(AActor* Item);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ItemDropped(AActor* Item);
 };

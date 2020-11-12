@@ -14,23 +14,34 @@ class VTLEARN_API AVibeyItemReceiver : public AActor
 	GENERATED_BODY()
 
 public:
-	// Sets default values for this actor's properties
 	AVibeyItemReceiver();
 
 	virtual void OnConstruction(const FTransform& Transform) override;
 
-	UPROPERTY(BlueprintReadWrite)
+	UPROPERTY(BlueprintReadOnly)
 	FString HelpText;
 
 	UPROPERTY(BlueprintReadWrite)
 	UPhoneSequenceMatcher* Matcher;
 
 protected:
-	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 public:
-	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintCallable)
+	void SetMatchPhrase(UPhoneticPhrase* Phrase);
+
+	UFUNCTION(BlueprintCallable)
+	void ReceiveItem(AVibeyItem* Item);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void ItemReceived(AVibeyItem* Item);
+
+	UFUNCTION(BlueprintCallable)
+	void SetHelpText(FString Text);
+
+	UFUNCTION(BlueprintImplementableEvent)
+	void HelpTextChanged(const FString &Text);
 };

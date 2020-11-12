@@ -55,9 +55,7 @@ void AVibeyLevelController::BeginPlay()
 			}
 
 			SelectedPhrases.Emplace(AllPhrases[Idx]);
-			ItemReceiver->Matcher->SearchString = AllPhrases[Idx]->PhoneticText;
-
-			ItemReceiver->HelpText = AllPhrases[Idx]->WrittenText;
+			ItemReceiver->SetMatchPhrase(AllPhrases[Idx]);
 
 			UE_LOG(LogTemp, Log, TEXT("Added phrase %s"), *(AllPhrases[Idx]->WrittenText));
 			AllPhrases.RemoveAt(Idx);

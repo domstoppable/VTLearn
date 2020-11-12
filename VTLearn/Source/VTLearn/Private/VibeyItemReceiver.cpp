@@ -2,6 +2,7 @@
 
 
 #include "VibeyItemReceiver.h"
+#include "VibeyItem.h"
 
 
 // Sets default values
@@ -28,4 +29,21 @@ void AVibeyItemReceiver::OnConstruction(const FTransform& Transform)
 {
 	Super::OnConstruction(Transform);
 	Matcher = NewObject<UPhoneSequenceMatcher>();
+}
+
+void AVibeyItemReceiver::ReceiveItem(AVibeyItem* Item)
+{
+	ItemReceived(Item);
+}
+
+void AVibeyItemReceiver::SetHelpText(FString Text)
+{
+	HelpText = Text;
+	HelpTextChanged(Text);
+}
+
+void AVibeyItemReceiver::SetMatchPhrase(UPhoneticPhrase* Phrase)
+{
+	Matcher->SearchString = Phrase->PhoneticText;
+	SetHelpText(Phrase->WrittenText);
 }
