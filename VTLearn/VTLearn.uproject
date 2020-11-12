@@ -1,0 +1,16 @@
+{
+	"FileVersion": 3,
+	"EngineAssociation": "{00046139-08D7-B4D1-0DFF-FB9A3FF285B2}",
+	"Category": "",
+	"Description": "",
+	"Modules": [
+		{
+			"Name": "VTLearn",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"AdditionalDependencies": [
+				"Engine"
+			]
+		}
+	]
+}

@@ -1,0 +1,3 @@
+[submodule "VTLearn/Plugins/UE4TcpSocketPlugin"]
+	path = VTLearn/Plugins/UE4TcpSocketPlugin
+	url = https://github.com/CodeSpartan/UE4TcpSocketPlugin
