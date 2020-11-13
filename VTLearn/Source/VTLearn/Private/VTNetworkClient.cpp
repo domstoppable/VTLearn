@@ -25,7 +25,14 @@ void UVTNetworkClient::Connect(
 	const FVTNetworkClientStatusChangedDelegate& OnConnect,
 	const FVTNetworkClientStatusChangedDelegate& OnDisconnect
 ){
-	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Connected to server."));
+	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Connecting to %s:%d..."), *Host, Port);
+	ConnectionState = EDeviceConnectionState::Connecting;
+
+	if(Host == "")
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTNetworkClient: Bad or unspecified host"));
+		return;
+	}
 
 	TcpClient = NewObject<ATcpSocketConnection>();
 
@@ -45,47 +52,34 @@ void UVTNetworkClient::Connect(
 
 void UVTNetworkClient::Disconnect()
 {
+	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Disconnecting..."));
 	TcpClient->Disconnect(ConnectionID);
 }
 
 void UVTNetworkClient::OnConnected(int32 ConnId) {
-	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Connected to server."));
+	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Connected."));
+	ConnectionState = EDeviceConnectionState::Connected;
 	ConnectedDelegate.ExecuteIfBound();
 }
 
 void UVTNetworkClient::OnDisconnected(int32 ConnId) {
-	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: OnDisconnected."));
+	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Disconnected."));
+
+	ConnectionState = EDeviceConnectionState::Disconnected;
 	DisconnectedDelegate.ExecuteIfBound();
 }
 
 void UVTNetworkClient::OnMessageReceived(int32 ConnID, TArray<uint8>& Message) {
-	/*
-	UE_LOG(LogTemp, Log, TEXT("Log: Received message."));
-  	// In this example, we always encode messages a certain way:
-  	// The first 4 bytes contain the length of the rest of the message.
-  	while (Message.Num() != 0) {
-		// read expected length
-		int32 msgLength = Message_ReadInt(Message);
-		if (msgLength == -1) // when we can't read 4 bytes, the method returns -1
-			return;
-		TArray<uint8> yourMessage;
-		// read the message itself
-		if (!Message_ReadBytes(msgLength, Message, yourMessage)) {
-			// If it couldn't read expected number of bytes, something went wrong.
-			// Print a UE_LOG here, while your project is in development.
-			continue;
-		}
-		// If the message was read, then treat "yourMessage" here!
-		// ...
-		// And then we go back to the "while", because we may have received multiple messages in a frame,
-		// so they all have to be read.
-  	}
-	  */
 }
 
 void UVTNetworkClient::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 {
 	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Setting sound bites of %d phrases"), Phrases.Num());
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTNetworkClient: Not connected"));
+		return;
+	}
 	UploadedPhrases.Reset();
 
 	for(int32 Idx=0; Idx<Phrases.Num(); Idx++)
@@ -100,6 +94,12 @@ void UVTNetworkClient::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 
 void UVTNetworkClient::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
 {
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTNetworkClient: Not connected"));
+		return;
+	}
+
 	if(!IsValid(Phrase))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't send bad phrase"));
@@ -136,6 +136,12 @@ void UVTNetworkClient::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
 
 void UVTNetworkClient::PlayPhrase(UPhoneticPhrase* Phrase)
 {
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTNetworkClient: Not connected"));
+		return;
+	}
+
 	if(!IsValid(Phrase))
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Can't play invalid phrase"));

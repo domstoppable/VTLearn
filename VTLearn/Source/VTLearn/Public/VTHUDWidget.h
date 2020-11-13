@@ -6,11 +6,17 @@
 #include "Blueprint/UserWidget.h"
 #include "VTHUDWidget.generated.h"
 
-/**
- *
- */
 UCLASS()
 class VTLEARN_API UVTHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
+};
+
+UCLASS()
+class VTLEARN_API UVTPauseMenuWidget : public UUserWidget
+{
+	GENERATED_BODY()
+
+public:
+
 };

@@ -10,9 +10,15 @@
 #include "VTNetworkClient.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE(FVTNetworkClientStatusChangedDelegate);
-/**
- *
- */
+
+UENUM(BlueprintType)
+enum class EDeviceConnectionState : uint8
+{
+	Disconnected,
+	Connecting,
+	Connected
+};
+
 UCLASS(BlueprintType)
 class VTLEARN_API UVTNetworkClient : public UObject
 {
@@ -55,6 +61,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void PlayPhrase(UPhoneticPhrase* Phrase);
+
+	UPROPERTY(BlueprintReadOnly)
+	EDeviceConnectionState ConnectionState;
 
 	UPROPERTY()
 	int32 ConnectionID;

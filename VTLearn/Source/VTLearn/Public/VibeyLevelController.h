@@ -32,6 +32,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UPhoneticPhrase*> SelectedPhrases;
 
+	UFUNCTION()
+	void OnDeviceConnected();
+
 protected:
 	virtual void BeginPlay() override;
 

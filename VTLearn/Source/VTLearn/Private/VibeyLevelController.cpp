@@ -2,12 +2,13 @@
 
 
 #include "VibeyLevelController.h"
+
 #include "PhoneticPhrase.h"
-
-
-#include "EngineUtils.h"
 #include "VibeyItemGenerator.h"
 #include "VibeyItemReceiver.h"
+#include "VTPlayerController.h"
+
+#include "EngineUtils.h"
 #include "Math/UnrealMathUtility.h"
 
 
@@ -67,6 +68,19 @@ void AVibeyLevelController::BeginPlay()
 		ItemGenerator->Phrases = SelectedPhrases;
 	}
 
+	if(AVTPlayerController* Controller = Cast<AVTPlayerController>(GetWorld()->GetFirstPlayerController()))
+	{
+		Controller->DeviceConnected.AddDynamic(this, &AVibeyLevelController::OnDeviceConnected);
+	}
+}
+
+void AVibeyLevelController::OnDeviceConnected()
+{
+	if(AVTPlayerController* Controller = Cast<AVTPlayerController>(GetWorld()->GetFirstPlayerController()))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Uploading phrases"));
+		Controller->VTDevice->UploadPhrases(SelectedPhrases);
+	}
 }
 
 void AVibeyLevelController::Tick(float DeltaTime)

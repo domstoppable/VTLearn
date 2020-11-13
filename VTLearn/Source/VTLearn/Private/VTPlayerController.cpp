@@ -6,9 +6,85 @@
 #include "VibeyItem.h"
 #include "VTLearnCharacter.h"
 #include "VibeyItemReceiver.h"
+#include "VTNetworkClient.h"
+#include "VTHUD.h"
 
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
+
+AVTPlayerController::AVTPlayerController()
+{
+	VTDevice = NewObject<UVTNetworkClient>();
+}
+
+void AVTPlayerController::BeginPlay()
+{
+	FTimerHandle handle;
+	GetWorld()->GetTimerManager().SetTimer(handle, [this]() {
+		TogglePause();
+	}, 0.1f, false);
+}
+
+void AVTPlayerController::TogglePause()
+{
+	if(Paused)
+	{
+		Unpause();
+	}else{
+		Pause();
+	}
+}
+
+void AVTPlayerController::Pause()
+{
+	if(AVTHUD* HUD = Cast<AVTHUD>(MyHUD))
+	{
+		HUD->ShowPause();
+
+		SetInputMode(FInputModeGameAndUI());
+		bShowMouseCursor = true;
+	}
+}
+
+void AVTPlayerController::Unpause()
+{
+	if(AVTHUD* HUD = Cast<AVTHUD>(MyHUD))
+	{
+		HUD->HidePause();
+	}
+}
+
+void AVTPlayerController::ConnectToDevice(FString IP, int32 Port)
+{
+	FVTNetworkClientStatusChangedDelegate ConnectDelegate;
+	ConnectDelegate.BindDynamic(this, &AVTPlayerController::OnDeviceConnected);
+
+	FVTNetworkClientStatusChangedDelegate DisconnectDelegate;
+	DisconnectDelegate.BindDynamic(this, &AVTPlayerController::OnDeviceDisconnected);
+
+	if(VTDevice->ConnectionState != EDeviceConnectionState::Connected)
+	{
+		VTDevice->Connect(IP, Port, ConnectDelegate, DisconnectDelegate);
+	}
+}
+
+void AVTPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
+{
+	if(VTDevice->ConnectionState != EDeviceConnectionState::Disconnected)
+	{
+		VTDevice->Disconnect();
+	}
+}
+
+void AVTPlayerController::OnDeviceConnected()
+{
+	DeviceConnected.Broadcast();
+}
+
+void AVTPlayerController::OnDeviceDisconnected()
+{
+	DeviceDisconnected.Broadcast();
+}
 
 void AVTPlayerController::SetupInputComponent()
 {
@@ -77,6 +153,11 @@ bool AVTPlayerController::HoldItem(AActor* Item)
 	if(!CanHold(Item))
 	{
 		return false;
+	}
+
+	if(AVibeyItem* VibeyItem = Cast<AVibeyItem>(Item))
+	{
+		VTDevice->PlayPhrase(VibeyItem->Phrase);
 	}
 
 	HeldItem = Item;

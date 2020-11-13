@@ -19,12 +19,25 @@ class VTLEARN_API AVTHUD : public AHUD
 	GENERATED_BODY()
 
 public:
+	AVTHUD();
 
 	virtual void BeginPlay() override;
 
 	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UVTHUDWidget> WidgetClass;
+	TSubclassOf<UVTHUDWidget> StatsWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite)
-	UVTHUDWidget* Widget;
+	UVTHUDWidget* StatsWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UVTPauseMenuWidget> PauseWidgetClass;
+
+	UPROPERTY(BlueprintReadWrite)
+	UVTPauseMenuWidget* PauseWidget;
+
+	UFUNCTION(BlueprintCallable)
+	void ShowPause();
+
+	UFUNCTION(BlueprintCallable)
+	void HidePause();
 };
