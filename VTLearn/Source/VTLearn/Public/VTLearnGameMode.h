@@ -4,16 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
-#include "VTLearnGameModeBase.generated.h"
+#include "VTLearnGameMode.generated.h"
 
 /**
  *
  */
 UCLASS()
-class VTLEARN_API AVTLearnGameModeBase : public AGameModeBase
+class VTLEARN_API AVTLearnGameMode : public AGameModeBase
 {
 	GENERATED_BODY()
 
 public:
-	AVTLearnGameModeBase();
+	AVTLearnGameMode();
 };

@@ -16,7 +16,6 @@ AVibeyItemReceiver::AVibeyItemReceiver()
 void AVibeyItemReceiver::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame

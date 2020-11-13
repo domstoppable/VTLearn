@@ -10,18 +10,24 @@
 #include "GameFramework/PlayerController.h"
 #include "VTPlayerController.generated.h"
 
-/**
- *
- */
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTControllerLivesChanged, int32, Lives);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTControllerScoreChanged, int32, Score);
+
 UCLASS()
 class VTLEARN_API AVTPlayerController : public APlayerController
 {
 	GENERATED_BODY()
 
-
 public:
 	UPROPERTY(BlueprintReadOnly)
 	AActor* HeldItem;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 Score;
+
+	UPROPERTY(BlueprintReadWrite)
+	int32 Lives = 5;
 
 	virtual void SetupInputComponent() override;
 
@@ -39,4 +45,16 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DropItem();
+
+	UFUNCTION(BlueprintCallable)
+	int32 IncreaseScore();
+
+	UFUNCTION(BlueprintCallable)
+	int32 DecreaseLives();
+
+	UPROPERTY(BlueprintAssignable)
+	FVTControllerScoreChanged ScoreChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVTControllerLivesChanged LivesChanged;
 };

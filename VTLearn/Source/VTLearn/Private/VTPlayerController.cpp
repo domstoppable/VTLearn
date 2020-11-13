@@ -108,3 +108,18 @@ void AVTPlayerController::DropItem()
 	}
 
 }
+
+int32 AVTPlayerController::IncreaseScore()
+{
+	Score += 10;
+	ScoreChanged.Broadcast(Score);
+	return Score;
+}
+
+int32 AVTPlayerController::DecreaseLives()
+{
+	Lives--;
+	LivesChanged.Broadcast(Lives);
+
+	return Lives;
+}
