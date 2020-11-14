@@ -21,6 +21,8 @@ class VTLEARN_API AVTPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
+	typedef APlayerController super;
+
 	AVTPlayerController();
 
 	virtual void BeginPlay() override;
@@ -52,11 +54,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void TogglePause();
 
-//	UFUNCTION(BlueprintCallable)
 	virtual void Pause() override;
-
-	UFUNCTION(BlueprintCallable)
-	void Unpause();
 
 	UFUNCTION(BlueprintCallable)
 	void ConnectToDevice(FString IP, int32 Port);

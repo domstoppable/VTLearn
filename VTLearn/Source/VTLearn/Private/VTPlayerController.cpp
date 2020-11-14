@@ -15,6 +15,7 @@
 AVTPlayerController::AVTPlayerController()
 {
 	VTDevice = NewObject<UVTNetworkClient>();
+	bShouldPerformFullTickWhenPaused = 1;
 }
 
 void AVTPlayerController::BeginPlay()
@@ -27,30 +28,24 @@ void AVTPlayerController::BeginPlay()
 
 void AVTPlayerController::TogglePause()
 {
-	if(Paused)
-	{
-		Unpause();
-	}else{
-		Pause();
-	}
+	Pause();
 }
 
 void AVTPlayerController::Pause()
 {
+	super::Pause();
 	if(AVTHUD* HUD = Cast<AVTHUD>(MyHUD))
 	{
-		HUD->ShowPause();
-
-		SetInputMode(FInputModeGameAndUI());
-		bShowMouseCursor = true;
-	}
-}
-
-void AVTPlayerController::Unpause()
-{
-	if(AVTHUD* HUD = Cast<AVTHUD>(MyHUD))
-	{
-		HUD->HidePause();
+		if(IsPaused())
+		{
+			HUD->ShowPause();
+			SetInputMode(FInputModeGameAndUI());
+			bShowMouseCursor = true;
+		}else{
+			HUD->HidePause();
+			SetInputMode(FInputModeGameOnly());
+			bShowMouseCursor = false;
+		}
 	}
 }
 
@@ -95,6 +90,7 @@ void AVTPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AVTPlayerController::OnJump);
 	InputComponent->BindAction("Grab", IE_Pressed, this, &AVTPlayerController::OnGrab);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &AVTPlayerController::OnInteract);
+	InputComponent->BindAction("TogglePause", IE_Pressed, this, &AVTPlayerController::TogglePause);
 
 	InputComponent->BindAxis("MoveUp", this, &AVTPlayerController::OnMoveUp);
 	InputComponent->BindAxis("MoveRight", this, &AVTPlayerController::OnMoveRight);
