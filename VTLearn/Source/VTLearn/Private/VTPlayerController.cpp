@@ -8,22 +8,22 @@
 #include "VibeyItemReceiver.h"
 #include "VTNetworkClient.h"
 #include "VTHUD.h"
+#include "VTGameInstance.h"
 
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 
+#include "Engine/Engine.h"
+
+
 AVTPlayerController::AVTPlayerController()
 {
-	VTDevice = NewObject<UVTNetworkClient>();
 	bShouldPerformFullTickWhenPaused = 1;
 }
 
 void AVTPlayerController::BeginPlay()
 {
-	FTimerHandle handle;
-	GetWorld()->GetTimerManager().SetTimer(handle, [this]() {
-		TogglePause();
-	}, 0.1f, false);
+	UE_LOG(LogTemp, Log, TEXT("Controller Begin Play"));
 }
 
 void AVTPlayerController::TogglePause()
@@ -39,46 +39,20 @@ void AVTPlayerController::Pause()
 		if(IsPaused())
 		{
 			HUD->ShowPause();
-			SetInputMode(FInputModeGameAndUI());
+			FInputModeGameAndUI InputMode;
+			InputMode.SetWidgetToFocus(HUD->PauseWidget->TakeWidget());
+			SetInputMode(InputMode);
 			bShowMouseCursor = true;
 		}else{
 			HUD->HidePause();
-			SetInputMode(FInputModeGameOnly());
+			SetInputMode(FInputModeGameAndUI());
 			bShowMouseCursor = false;
 		}
 	}
 }
 
-void AVTPlayerController::ConnectToDevice(FString IP, int32 Port)
-{
-	FVTNetworkClientStatusChangedDelegate ConnectDelegate;
-	ConnectDelegate.BindDynamic(this, &AVTPlayerController::OnDeviceConnected);
-
-	FVTNetworkClientStatusChangedDelegate DisconnectDelegate;
-	DisconnectDelegate.BindDynamic(this, &AVTPlayerController::OnDeviceDisconnected);
-
-	if(VTDevice->ConnectionState != EDeviceConnectionState::Connected)
-	{
-		VTDevice->Connect(IP, Port, ConnectDelegate, DisconnectDelegate);
-	}
-}
-
 void AVTPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if(VTDevice->ConnectionState != EDeviceConnectionState::Disconnected)
-	{
-		VTDevice->Disconnect();
-	}
-}
-
-void AVTPlayerController::OnDeviceConnected()
-{
-	DeviceConnected.Broadcast();
-}
-
-void AVTPlayerController::OnDeviceDisconnected()
-{
-	DeviceDisconnected.Broadcast();
 }
 
 void AVTPlayerController::SetupInputComponent()
@@ -98,14 +72,26 @@ void AVTPlayerController::SetupInputComponent()
 
 void AVTPlayerController::OnMoveUp(float Value)
 {
+	APawn* Pawn = GetPawn();
+	if(!IsValid(Pawn))
+	{
+		return;
+	}
+
 	const FVector Direction = FVector(1.0f, 0.0f, 0.0f);
-	GetPawn()->AddMovementInput(Direction, Value);
+	Pawn->AddMovementInput(Direction, Value);
 }
 
 void AVTPlayerController::OnMoveRight(float Value)
 {
+	APawn* Pawn = GetPawn();
+	if(!IsValid(Pawn))
+	{
+		return;
+	}
+
 	const FVector Direction = FVector(0.0f, 1.0f, 0.0f);
-	GetPawn()->AddMovementInput(Direction, Value);
+	Pawn->AddMovementInput(Direction, Value);
 }
 
 void AVTPlayerController::OnJump()
@@ -118,13 +104,18 @@ void AVTPlayerController::OnJump()
 
 void AVTPlayerController::OnGrab()
 {
+	APawn* Pawn = GetPawn();
+	if(!IsValid(Pawn))
+	{
+		return;
+	}
 
 	if(IsValid(HeldItem))
 	{
 		DropItem();
 	}else{
 		TArray<AActor*> ActorsInReach;
-		GetPawn()->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItem>());
+		Pawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItem>());
 		for(auto Actor : ActorsInReach)
 		{
 			if(HoldItem(Actor)){
@@ -146,6 +137,12 @@ bool AVTPlayerController::CanHold(AActor* Item)
 
 bool AVTPlayerController::HoldItem(AActor* Item)
 {
+	APawn* Pawn = GetPawn();
+	if(!IsValid(Pawn))
+	{
+		return false;
+	}
+
 	if(!CanHold(Item))
 	{
 		return false;
@@ -153,11 +150,14 @@ bool AVTPlayerController::HoldItem(AActor* Item)
 
 	if(AVibeyItem* VibeyItem = Cast<AVibeyItem>(Item))
 	{
-		VTDevice->PlayPhrase(VibeyItem->Phrase);
+		if(UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance()))
+		{
+			GameInstance->VTDevice->PlayPhrase(VibeyItem->Phrase);
+		}
 	}
 
 	HeldItem = Item;
-	if(AVTLearnCharacter* Character = Cast<AVTLearnCharacter>(GetPawn()))
+	if(AVTLearnCharacter* Character = Cast<AVTLearnCharacter>(Pawn))
 	{
 		Character->ItemGrabbed(HeldItem);
 	}
@@ -167,7 +167,13 @@ bool AVTPlayerController::HoldItem(AActor* Item)
 
 void AVTPlayerController::DropItem()
 {
-	if(AVTLearnCharacter* Character = Cast<AVTLearnCharacter>(GetPawn()))
+	APawn* Pawn = GetPawn();
+	if(!IsValid(Pawn))
+	{
+		return;
+	}
+
+	if(AVTLearnCharacter* Character = Cast<AVTLearnCharacter>(Pawn))
 	{
 		Character->ItemDropped(HeldItem);
 	}
@@ -175,7 +181,7 @@ void AVTPlayerController::DropItem()
 	HeldItem = nullptr;
 
 	TArray<AActor*> ActorsInReach;
-	GetPawn()->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItemReceiver>());
+	Pawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItemReceiver>());
 	if(IsValid(Item) && ActorsInReach.Num() > 0)
 	{
 		if(AVibeyItemReceiver* Receiver = Cast<AVibeyItemReceiver>(ActorsInReach[0]))

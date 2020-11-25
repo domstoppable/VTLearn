@@ -44,4 +44,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent)
 	void HelpTextChanged(const FString &Text);
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool AllowAutoAssign = true;
 };

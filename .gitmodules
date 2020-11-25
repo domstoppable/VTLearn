@@ -1,3 +1,6 @@
 [submodule "VTLearn/Plugins/UE4TcpSocketPlugin"]
 	path = VTLearn/Plugins/UE4TcpSocketPlugin
 	url = https://github.com/CodeSpartan/UE4TcpSocketPlugin
+[submodule "VTLearn/Plugins/Psydekick"]
+	path = VTLearn/Plugins/Psydekick
+	url = https://github.com/Psydekick-Science-Kit/Psydekick

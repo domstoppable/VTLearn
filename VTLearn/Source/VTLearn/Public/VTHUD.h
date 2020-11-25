@@ -7,6 +7,8 @@
 #include "Components/WidgetComponent.h"
 
 #include "VTHUDWidget.h"
+#include "2D/MenuTree.h"
+#include "2D/MenuTreeWidget.h"
 
 #include "VTHUD.generated.h"
 
@@ -29,11 +31,11 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UVTHUDWidget* StatsWidget;
 
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UVTPauseMenuWidget> PauseWidgetClass;
-
 	UPROPERTY(BlueprintReadWrite)
-	UVTPauseMenuWidget* PauseWidget;
+	UMenuTreeWidget* PauseWidget;
+
+	UPROPERTY(EditDefaultsOnly)
+	UMenuTree* PauseMenuTree;
 
 	UFUNCTION(BlueprintCallable)
 	void ShowPause();
