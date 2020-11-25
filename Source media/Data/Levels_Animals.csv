@@ -1,0 +1,3 @@
+---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map
+NewRow,"1 Cats and dogs","Cats and dogs living together","","(""cat"",""dog"")","","",""
+NewRow_0,"2 Animals again","More animals","","","","",""

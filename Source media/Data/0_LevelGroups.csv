@@ -1,0 +1,3 @@
+---,Name,Description,LevelConfigs,Map
+NewRow,"Animals","b","DataTable'/Game/Data/Levels_Animals.Levels_Animals'","DemoMap"
+NewRow_0,"Food","","DataTable'/Game/Data/Levels_Food.Levels_Food'","DemoMap"

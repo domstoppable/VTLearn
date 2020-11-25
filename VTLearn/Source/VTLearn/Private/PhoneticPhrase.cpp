@@ -144,3 +144,27 @@ TArray<EPhoneme> UPhoneticPhrase::StringToSequence(FString PhoneText)
 
 	return Sequence;
 }
+
+TArray<UPhoneticPhrase*> UPhoneticPhrase::LoadPhrases(FString PhraseName)
+{
+	UE_LOG(LogTemp, Log, TEXT("%s - Loading phrase"), ANSI_TO_TCHAR(__FUNCTION__), *PhraseName);
+	TArray<UPhoneticPhrase*> Phrases;
+	TArray<FString> Files;
+	IFileManager& FileManager = IFileManager::Get();
+
+	FString Path = "/home/dom/Documents/Dissertation Stimuli/vtt/";
+
+	FileManager.FindFiles(Files, *(Path + ("*-" + PhraseName + ".vtt")), true, false);
+	FileManager.FindFiles(Files, *(Path + (PhraseName + ".vtt")), true, false);
+
+	for(FString File : Files)
+	{
+		UPhoneticPhrase* Phrase = LoadPhoneticPhrase(Path + "/" + File);
+		if(IsValid(Phrase))
+		{
+			Phrases.Emplace(Phrase);
+		}
+	}
+
+	return Phrases;
+}

@@ -1,0 +1,3 @@
+---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map
+NewRow,1 Apples and bananas,They're both fruit,,"(""Apple"",""Banana"")",,,
+NewRow_0,2 Desserts,Always room for jello,,,,,

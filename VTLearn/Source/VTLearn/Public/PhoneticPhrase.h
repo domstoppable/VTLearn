@@ -116,6 +116,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "VTT")
 	static TArray<UPhoneticPhrase*> LoadPhrasesFromDirectory(FString Path);
 
+	UFUNCTION(BlueprintCallable, Category = "VTT")
+	static TArray<UPhoneticPhrase*> LoadPhrases(FString PhraseName);
+
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
 	static TArray<EPhoneme> StringToSequence(FString PhoneText);
 

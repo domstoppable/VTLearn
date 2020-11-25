@@ -8,7 +8,7 @@ public class VTLearn : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "TcpSocketPlugin" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "UMG", "TcpSocketPlugin", "Psydekick" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

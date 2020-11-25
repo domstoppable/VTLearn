@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "VTNetworkClient.h"
-
 #include "GameFramework/Actor.h"
 
 #include "CoreMinimal.h"
@@ -11,7 +9,6 @@
 #include "VTPlayerController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVTDeviceConnectionChanged);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTControllerLivesChanged, int32, Lives);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTControllerScoreChanged, int32, Score);
 
@@ -27,9 +24,6 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
-
-	UPROPERTY(BlueprintReadOnly)
-	UVTNetworkClient* VTDevice;
 
 	UPROPERTY(BlueprintReadOnly)
 	AActor* HeldItem;
@@ -57,9 +51,6 @@ public:
 	virtual void Pause() override;
 
 	UFUNCTION(BlueprintCallable)
-	void ConnectToDevice(FString IP, int32 Port);
-
-	UFUNCTION(BlueprintCallable)
 	bool CanHold(AActor* Item);
 
 	UFUNCTION(BlueprintCallable)
@@ -73,18 +64,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	int32 DecreaseLives();
-
-	UFUNCTION()
-	void OnDeviceConnected();
-
-	UFUNCTION()
-	void OnDeviceDisconnected();
-
-	UPROPERTY(BlueprintAssignable)
-	FVTDeviceConnectionChanged DeviceConnected;
-
-	UPROPERTY(BlueprintAssignable)
-	FVTDeviceConnectionChanged DeviceDisconnected;
 
 	UPROPERTY(BlueprintAssignable)
 	FVTControllerScoreChanged ScoreChanged;

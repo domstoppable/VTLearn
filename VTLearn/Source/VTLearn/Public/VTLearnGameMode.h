@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "PhoneticPhrase.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
 #include "VTLearnGameMode.generated.h"
@@ -16,4 +18,12 @@ class VTLEARN_API AVTLearnGameMode : public AGameModeBase
 
 public:
 	AVTLearnGameMode();
+
+	virtual void BeginPlay() override;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UPhoneticPhrase*> PhraseBank;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UPhoneticPhrase*> TrainingPhrases;
 };

@@ -53,7 +53,10 @@ void UVTNetworkClient::Connect(
 void UVTNetworkClient::Disconnect()
 {
 	UE_LOG(LogTemp, Log, TEXT("UVTNetworkClient: Disconnecting..."));
-	TcpClient->Disconnect(ConnectionID);
+	if(ConnectionState == EDeviceConnectionState::Connected)
+	{
+		TcpClient->Disconnect(ConnectionID);
+	}
 }
 
 void UVTNetworkClient::OnConnected(int32 ConnId) {
@@ -152,8 +155,8 @@ void UVTNetworkClient::PlayPhrase(UPhoneticPhrase* Phrase)
 
 	if(Idx == INDEX_NONE)
 	{
-		UploadPhrase(9, Phrase);
-		Idx = 9;
+		Idx = UploadedPhrases.Num();
+		UploadPhrase(Idx, Phrase);
 	}
 
 	TArray<uint8> Data;
