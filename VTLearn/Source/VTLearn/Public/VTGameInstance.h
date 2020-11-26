@@ -85,11 +85,14 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 HighScore;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	int32 Ordinal;
+
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int32 StarCount();
 
 	UFUNCTION(BlueprintCallable)
-	static ULevelStatus* MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore);
+	static ULevelStatus* MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore, int32 InOrdinal);
 };
 
 UCLASS()
