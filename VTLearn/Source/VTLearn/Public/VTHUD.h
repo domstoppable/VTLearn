@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UVTHUDWidget> StatsWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> InstructionsWidgetClass;
+
 	UPROPERTY(BlueprintReadWrite)
 	UVTHUDWidget* StatsWidget;
 

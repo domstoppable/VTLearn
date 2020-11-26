@@ -108,6 +108,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatus* LevelStatus);
 
+	UPROPERTY(BlueprintReadOnly)
 	FLevelConfig CurrentLevelConfig;
 
 	#pragma region Device client
@@ -131,7 +132,4 @@ public:
 	void OnDeviceDisconnected();
 
 	#pragma endregion
-
-
-
 };

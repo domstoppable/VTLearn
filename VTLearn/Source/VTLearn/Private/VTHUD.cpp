@@ -8,6 +8,8 @@
 
 AVTHUD::AVTHUD()
 {
+	SetTickableWhenPaused(true);
+
 	StatsWidgetClass = UVTHUDWidget::StaticClass();
 
 	FString ClassRefName = "WidgetBlueprint'/Psydekick/Visuals/2D/Menu/Runtime/MenuTreeWidgetBP.MenuTreeWidgetBP_C'";
@@ -34,6 +36,12 @@ void AVTHUD::BeginPlay()
 	if(IsValid(PauseWidget))
 	{
 		PauseWidget->LoadMenuTree(PauseMenuTree);
+	}
+
+	if(IsValid(InstructionsWidgetClass))
+	{
+		UUserWidget* InstructionsWidget = CreateWidget<UUserWidget>(GetWorld(), InstructionsWidgetClass);
+		InstructionsWidget->AddToViewport();
 	}
 }
 
