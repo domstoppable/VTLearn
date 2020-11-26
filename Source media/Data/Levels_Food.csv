@@ -1,4 +1,5 @@
 ---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map
+<<<<<<< HEAD
 1,Apples and bananas,Excepturi repellat id itaque animi perferendis suscipit sunt. Deleniti ducimus earum quia aut. Nostrum laudantium fugit voluptatem. Reiciendis cupiditate quo est velit itaque. Dicta praesentium mollitia voluptatem maxime adipisci dignissimos natus et.,"Vero voluptates provident et enim non quod. Neque id ea ut quia eos dolorem deleniti. Consequatur nobis neque et iste autem distinctio repudiandae. Non ut quia aperiam. Eaque cupiditate et numquam sit accusantium sint molestias sequi. Sapiente ut saepe provident.
 
 Consequatur quia esse atque et alias. Minima corporis omnis ipsam modi molestiae fuga. Consequatur a aut rerum sit autem fuga.
@@ -54,3 +55,7 @@ Repellendus qui nostrum provident. Id qui nesciunt maiores aut rerum dolor. Qui 
 49,Level 49,Something fun and witty goes here,,"(""beans"", ""chili"")",,,
 50,Level 50,Something fun and witty goes here,,"(""beans"", ""chili"")",,,
 51,Level 51,Something fun and witty goes here,,"(""beans"", ""chili"")",,,
+=======
+NewRow,1 Apples and bananas,They're both fruit,,"(""Apple"",""Banana"")",,,
+NewRow_0,2 Desserts,Always room for jello,,,,,
+>>>>>>> 866ef9e8745d5f6b868e6f02f6219937ead6889f
