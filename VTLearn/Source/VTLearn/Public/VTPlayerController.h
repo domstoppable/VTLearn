@@ -34,15 +34,13 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	int32 Lives = 5;
 
-	UPROPERTY(BlueprintReadOnly)
-	bool Paused = false;
-
 	virtual void SetupInputComponent() override;
 
 	void OnMoveUp(float Value);
 	void OnMoveRight(float Value);
 	void OnJump();
 	void OnGrab();
+	void OnRevibe();
 	void OnInteract();
 
 	UFUNCTION(BlueprintCallable)
@@ -50,7 +48,13 @@ public:
 
 	virtual void Pause() override;
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool CanInteract();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	bool CanRevibe();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanHold(AActor* Item);
 
 	UFUNCTION(BlueprintCallable)

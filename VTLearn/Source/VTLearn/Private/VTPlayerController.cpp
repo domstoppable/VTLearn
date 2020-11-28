@@ -64,6 +64,7 @@ void AVTPlayerController::SetupInputComponent()
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AVTPlayerController::OnJump);
 	InputComponent->BindAction("Grab", IE_Pressed, this, &AVTPlayerController::OnGrab);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &AVTPlayerController::OnInteract);
+	InputComponent->BindAction("Revibe", IE_Pressed, this, &AVTPlayerController::OnRevibe);
 	InputComponent->BindAction("TogglePause", IE_Pressed, this, &AVTPlayerController::TogglePause);
 
 	InputComponent->BindAxis("MoveUp", this, &AVTPlayerController::OnMoveUp);
@@ -125,9 +126,25 @@ void AVTPlayerController::OnGrab()
 	}
 }
 
+bool AVTPlayerController::CanInteract()
+{
+	// @TODO: Implement
+	return true;
+}
+
 void AVTPlayerController::OnInteract()
 {
+	// @TODO: Implement
+}
 
+bool AVTPlayerController::CanRevibe()
+{
+	return IsValid(HeldItem);
+}
+
+void AVTPlayerController::OnRevibe()
+{
+	// @TODO: Implement
 }
 
 bool AVTPlayerController::CanHold(AActor* Item)
