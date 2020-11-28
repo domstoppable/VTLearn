@@ -83,6 +83,9 @@ public:
 	FLevelConfig LevelConfig;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	bool Unlocked;
+
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 HighScore;
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
@@ -92,7 +95,7 @@ public:
 	int32 StarCount();
 
 	UFUNCTION(BlueprintCallable)
-	static ULevelStatus* MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore, int32 InOrdinal);
+	static ULevelStatus* MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore, int32 InOrdinal, bool InUnlocked);
 };
 
 UCLASS()

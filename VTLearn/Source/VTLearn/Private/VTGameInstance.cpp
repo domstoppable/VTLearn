@@ -59,12 +59,13 @@ int32 ULevelStatus::StarCount()
 	return Stars;
 }
 
-ULevelStatus* ULevelStatus::MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore, int32 InOrdinal)
+ULevelStatus* ULevelStatus::MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore, int32 InOrdinal, bool InUnlocked)
 {
 	ULevelStatus* LevelStatus = NewObject<ULevelStatus>();
 	LevelStatus->LevelConfig = InLevelConfig;
 	LevelStatus->HighScore = InHighScore;
 	LevelStatus->Ordinal = InOrdinal;
+	LevelStatus->Unlocked = InUnlocked;
 
 	return LevelStatus;
 }
