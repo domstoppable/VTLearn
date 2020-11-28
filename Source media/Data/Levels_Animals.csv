@@ -1,8 +1,3 @@
 ---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map
-<<<<<<< HEAD
 1,Cats and dogs,Dogs and cats living together - MASS HYSTERIA!,,"(""cat"",""dog"")",,,
 2,Put a bird on it,"It’s like cats and dogs, but now with more bird!",,"(""cat"",""dog"", ""bird"")",,,
-=======
-NewRow,"1 Cats and dogs","Cats and dogs living together","","(""cat"",""dog"")","","",""
-NewRow_0,"2 Animals again","More animals","","","","",""
->>>>>>> 866ef9e8745d5f6b868e6f02f6219937ead6889f
