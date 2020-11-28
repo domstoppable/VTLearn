@@ -20,10 +20,14 @@ public:
 	AVTLearnGameMode();
 
 	virtual void BeginPlay() override;
+	virtual void Tick(float Delta) override;
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UPhoneticPhrase*> PhraseBank;
 
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UPhoneticPhrase*> TrainingPhrases;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float RemainingTime = 180.0;
 };

@@ -37,6 +37,9 @@ struct FLevelConfig : public FTableRowBase
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
 	FString Map;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
+	float TimeLimit = 180.0f;
 };
 
 USTRUCT(BlueprintType)

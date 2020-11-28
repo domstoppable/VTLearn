@@ -9,8 +9,8 @@
 #include "VTPlayerController.generated.h"
 
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTControllerLivesChanged, int32, Lives);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTControllerScoreChanged, int32, Score);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVTControllerScoreChanged, int32, Delta, int32, Total);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTPauseChanged, bool, Paused);
 
 UCLASS()
 class VTLEARN_API AVTPlayerController : public APlayerController
@@ -30,9 +30,6 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	int32 Score;
-
-	UPROPERTY(BlueprintReadWrite)
-	int32 Lives = 5;
 
 	virtual void SetupInputComponent() override;
 
@@ -64,14 +61,11 @@ public:
 	void DropItem();
 
 	UFUNCTION(BlueprintCallable)
-	int32 IncreaseScore();
-
-	UFUNCTION(BlueprintCallable)
-	int32 DecreaseLives();
+	int32 AdjustScore(int32 Amount);
 
 	UPROPERTY(BlueprintAssignable)
 	FVTControllerScoreChanged ScoreChanged;
 
 	UPROPERTY(BlueprintAssignable)
-	FVTControllerLivesChanged LivesChanged;
+	FVTPauseChanged PauseChanged;
 };

@@ -1,29 +1,29 @@
----,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map
+---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map,TimeLimit
 1,Apples and bananas,Excepturi repellat id itaque animi perferendis suscipit sunt. Deleniti ducimus earum quia aut. Nostrum laudantium fugit voluptatem. Reiciendis cupiditate quo est velit itaque. Dicta praesentium mollitia voluptatem maxime adipisci dignissimos natus et.,"Vero voluptates provident et enim non quod. Neque id ea ut quia eos dolorem deleniti. Consequatur nobis neque et iste autem distinctio repudiandae. Non ut quia aperiam. Eaque cupiditate et numquam sit accusantium sint molestias sequi. Sapiente ut saepe provident.
 
 Consequatur quia esse atque et alias. Minima corporis omnis ipsam modi molestiae fuga. Consequatur a aut rerum sit autem fuga.
 
-Repellendus qui nostrum provident. Id qui nesciunt maiores aut rerum dolor. Qui magnam rem explicabo mollitia molestiae.","(""apple"",""banana"")",,"(100,200,300)",
-2,Desserts,Always room for jello,,"(""jello"", ""pie"")",,"(100,200,300)",
-3,Chili,They say you don’t know beans about chili if you put beans in your chili…,,"(""beans"", ""chili"")",,"(100,200,300)",
-4,Level 4,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-5,Level 5,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-6,Level 6,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-7,Level 7,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-8,Level 8,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-9,Level 9,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-10,Level 10,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-11,Level 11,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-12,Level 12,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-13,Level 13,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-14,Level 14,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-15,Level 15,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-16,Level 16,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-17,Level 17,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-18,Level 18,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-19,Level 19,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-20,Level 20,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-21,Level 21,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-22,Level 22,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-23,Level 23,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
-24,Level 24,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",
+Repellendus qui nostrum provident. Id qui nesciunt maiores aut rerum dolor. Qui magnam rem explicabo mollitia molestiae.","(""apple"",""banana"")",,"(100,200,300)",,180
+2,Desserts,Always room for jello,,"(""jello"", ""pie"")",,"(100,200,300)",,180
+3,Chili,They say you don’t know beans about chili if you put beans in your chili…,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+4,Level 4,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+5,Level 5,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+6,Level 6,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+7,Level 7,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+8,Level 8,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+9,Level 9,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+10,Level 10,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+11,Level 11,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+12,Level 12,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+13,Level 13,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+14,Level 14,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+15,Level 15,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+16,Level 16,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+17,Level 17,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+18,Level 18,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+19,Level 19,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+20,Level 20,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+21,Level 21,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+22,Level 22,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+23,Level 23,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+24,Level 24,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180

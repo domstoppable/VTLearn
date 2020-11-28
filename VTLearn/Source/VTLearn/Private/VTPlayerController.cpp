@@ -49,6 +49,7 @@ void AVTPlayerController::Pause()
 			bShowMouseCursor = false;
 		}
 	}
+	PauseChanged.Broadcast(IsPaused());
 }
 
 void AVTPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -209,17 +210,13 @@ void AVTPlayerController::DropItem()
 
 }
 
-int32 AVTPlayerController::IncreaseScore()
+int32 AVTPlayerController::AdjustScore(int32 Amount)
 {
-	Score += 10;
-	ScoreChanged.Broadcast(Score);
+	Score += Amount;
+	if(Score < 0)
+	{
+		Score = 0;
+	}
+	ScoreChanged.Broadcast(Amount, Score);
 	return Score;
-}
-
-int32 AVTPlayerController::DecreaseLives()
-{
-	Lives--;
-	LivesChanged.Broadcast(Lives);
-
-	return Lives;
 }

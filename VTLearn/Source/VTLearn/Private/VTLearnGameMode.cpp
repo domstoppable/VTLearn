@@ -12,6 +12,8 @@
 
 AVTLearnGameMode::AVTLearnGameMode()
 {
+	PrimaryActorTick.bCanEverTick = true;
+
 	PlayerControllerClass = AVTPlayerController::StaticClass();
 	DefaultPawnClass = AVTLearnCharacter::StaticClass();
 	HUDClass = AVTHUD::StaticClass();
@@ -35,6 +37,11 @@ AVTLearnGameMode::AVTLearnGameMode()
 	}
 }
 
+void AVTLearnGameMode::Tick(float Delta)
+{
+	RemainingTime -= Delta;
+}
+
 void AVTLearnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
@@ -49,6 +56,7 @@ void AVTLearnGameMode::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("%s - Setting up level %s"), ANSI_TO_TCHAR(__FUNCTION__), *(GameInstance->CurrentLevelConfig.Name));
 	UE_LOG(LogTemp, Log, TEXT("%s - %d to train, %d to distract"), ANSI_TO_TCHAR(__FUNCTION__), GameInstance->CurrentLevelConfig.TrainingPhrases.Num(), GameInstance->CurrentLevelConfig.DistractorPhrases.Num());
 
+	RemainingTime = GameInstance->CurrentLevelConfig.TimeLimit;
 	// Load distractors
 	PhraseBank.Empty();
 	for(FString PhraseName : GameInstance->CurrentLevelConfig.DistractorPhrases)
