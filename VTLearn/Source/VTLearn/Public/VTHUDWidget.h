@@ -10,6 +10,10 @@ UCLASS()
 class VTLEARN_API UVTHUDWidget : public UUserWidget
 {
 	GENERATED_BODY()
+
+public:
+	UFUNCTION(BlueprintImplementableEvent)
+	void ScoreChanged(int32 Delta, int32 Total);
 };
 
 UCLASS()

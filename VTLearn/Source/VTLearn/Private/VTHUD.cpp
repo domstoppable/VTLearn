@@ -43,6 +43,11 @@ void AVTHUD::BeginPlay()
 		UUserWidget* InstructionsWidget = CreateWidget<UUserWidget>(GetWorld(), InstructionsWidgetClass);
 		InstructionsWidget->AddToViewport();
 	}
+
+	if(AVTPlayerController* PlayerController = Cast<AVTPlayerController>(PlayerOwner))
+	{
+		PlayerController->ScoreChanged.AddDynamic(this, &AVTHUD::ScoreChanged);
+	}
 }
 
 void AVTHUD::ShowPause()
@@ -60,5 +65,13 @@ void AVTHUD::HidePause()
 	if(IsValid(PauseWidget))
 	{
 		PauseWidget->RemoveFromParent();
+	}
+}
+
+void AVTHUD::ScoreChanged(int32 Delta, int32 Total)
+{
+	if(IsValid(StatsWidget))
+	{
+		StatsWidget->ScoreChanged(Delta, Total);
 	}
 }

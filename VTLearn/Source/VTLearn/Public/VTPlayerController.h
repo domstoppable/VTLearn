@@ -2,12 +2,13 @@
 
 #pragma once
 
+#include "VTPlayerState.h"
+
 #include "GameFramework/Actor.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "VTPlayerController.generated.h"
-
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVTControllerScoreChanged, int32, Delta, int32, Total);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTPauseChanged, bool, Paused);
@@ -18,18 +19,20 @@ class VTLEARN_API AVTPlayerController : public APlayerController
 	GENERATED_BODY()
 
 public:
-	typedef APlayerController super;
-
 	AVTPlayerController();
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
 
+	// @TODO: move this to character class
 	UPROPERTY(BlueprintReadOnly)
 	AActor* HeldItem;
 
-	UPROPERTY(BlueprintReadWrite)
-	int32 Score;
+	UPROPERTY(BlueprintAssignable)
+	FVTControllerScoreChanged ScoreChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVTPauseChanged PauseChanged;
 
 	virtual void SetupInputComponent() override;
 
@@ -60,12 +63,15 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DropItem();
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION()
 	int32 AdjustScore(int32 Amount);
 
-	UPROPERTY(BlueprintAssignable)
-	FVTControllerScoreChanged ScoreChanged;
+	UFUNCTION(BlueprintCallable)
+	int32 AwardPlayer();
 
-	UPROPERTY(BlueprintAssignable)
-	FVTPauseChanged PauseChanged;
+	UFUNCTION(BlueprintCallable)
+	int32 PunishPlayer();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	AVTPlayerState* GetVTPlayerState();
 };

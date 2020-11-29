@@ -45,4 +45,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void HidePause();
+
+	UFUNCTION(BlueprintCallable)
+	void ScoreChanged(int32 Delta, int32 Total);
 };

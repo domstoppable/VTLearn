@@ -3,6 +3,7 @@
 #include "VTGameInstance.h"
 #include "VTPlayerController.h"
 #include "VTLearnCharacter.h"
+#include "VTPlayerState.h"
 #include "VTHUD.h"
 #include "VibeyItemReceiver.h"
 #include "VibeyItemGenerator.h"
@@ -14,6 +15,7 @@ AVTLearnGameMode::AVTLearnGameMode()
 {
 	PrimaryActorTick.bCanEverTick = true;
 
+	PlayerStateClass = AVTPlayerState::StaticClass();
 	PlayerControllerClass = AVTPlayerController::StaticClass();
 	DefaultPawnClass = AVTLearnCharacter::StaticClass();
 	HUDClass = AVTHUD::StaticClass();

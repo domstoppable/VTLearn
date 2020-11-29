@@ -3,6 +3,7 @@
 #pragma once
 
 #include "PhoneticPhrase.h"
+#include "VTPlayerState.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameModeBase.h"
@@ -30,4 +31,10 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RemainingTime = 180.0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PointsForCorrect = 10;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 PointsForIncorrect = -5;
 };

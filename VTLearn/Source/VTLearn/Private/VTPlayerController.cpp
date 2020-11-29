@@ -4,10 +4,12 @@
 #include "VTPlayerController.h"
 
 #include "VibeyItem.h"
-#include "VTLearnCharacter.h"
 #include "VibeyItemReceiver.h"
-#include "VTHUD.h"
+#include "VTLearnCharacter.h"
+#include "VTLearnGameMode.h"
+#include "VTPlayerState.h"
 #include "VTGameInstance.h"
+#include "VTHUD.h"
 
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
@@ -32,7 +34,7 @@ void AVTPlayerController::TogglePause()
 
 void AVTPlayerController::Pause()
 {
-	super::Pause();
+	Super::Pause();
 	if(AVTHUD* HUD = Cast<AVTHUD>(MyHUD))
 	{
 		if(IsPaused())
@@ -169,7 +171,10 @@ bool AVTPlayerController::HoldItem(AActor* Item)
 	{
 		if(UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance()))
 		{
-			GameInstance->VTDevice->PlayPhrase(VibeyItem->Phrase);
+			if(IsValid(GameInstance->VTDevice))
+			{
+				GameInstance->VTDevice->PlayPhrase(VibeyItem->Phrase);
+			}
 		}
 	}
 
@@ -211,11 +216,29 @@ void AVTPlayerController::DropItem()
 
 int32 AVTPlayerController::AdjustScore(int32 Amount)
 {
-	Score += Amount;
-	if(Score < 0)
-	{
-		Score = 0;
+	int32 NewScore = GetVTPlayerState()->GetScore() + Amount;
+	if(NewScore < 0){
+		NewScore = 0;
 	}
-	ScoreChanged.Broadcast(Amount, Score);
-	return Score;
+	GetVTPlayerState()->SetScore(NewScore);
+	ScoreChanged.Broadcast(Amount, NewScore);
+
+	return NewScore;
+}
+
+int32 AVTPlayerController::AwardPlayer()
+{
+	GetVTPlayerState()->CorrectCount++;
+	return AdjustScore(GetWorld()->GetAuthGameMode<AVTLearnGameMode>()->PointsForCorrect);
+}
+
+int32 AVTPlayerController::PunishPlayer()
+{
+	GetVTPlayerState()->IncorrectCount++;
+	return AdjustScore(GetWorld()->GetAuthGameMode<AVTLearnGameMode>()->PointsForIncorrect);
+}
+
+AVTPlayerState* AVTPlayerController::GetVTPlayerState()
+{
+	return GetPlayerState<AVTPlayerState>();
 }
