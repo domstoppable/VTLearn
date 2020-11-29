@@ -74,4 +74,7 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	AVTPlayerState* GetVTPlayerState();
+
+	UFUNCTION()
+	void OnLevelTimedOut();
 };

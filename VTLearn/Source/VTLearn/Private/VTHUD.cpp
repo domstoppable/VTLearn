@@ -75,3 +75,20 @@ void AVTHUD::ScoreChanged(int32 Delta, int32 Total)
 		StatsWidget->ScoreChanged(Delta, Total);
 	}
 }
+
+void AVTHUD::ShowLevelComplete()
+{
+	if(!IsValid(LevelCompleteWidgetClass))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Invalid LevelComplete widget class in HUD"));
+		return;
+	}
+
+	if(IsValid(StatsWidget))
+	{
+		StatsWidget->RemoveFromParent();
+	}
+
+	UUserWidget* LevelCompleteWidget = CreateWidget<UUserWidget>(GetWorld(), LevelCompleteWidgetClass);
+	LevelCompleteWidget->AddToViewport();
+}

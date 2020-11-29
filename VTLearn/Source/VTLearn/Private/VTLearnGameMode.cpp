@@ -42,6 +42,10 @@ AVTLearnGameMode::AVTLearnGameMode()
 void AVTLearnGameMode::Tick(float Delta)
 {
 	RemainingTime -= Delta;
+	if(RemainingTime <= 0.0f)
+	{
+		LevelTimedOut.Broadcast();
+	}
 }
 
 void AVTLearnGameMode::BeginPlay()

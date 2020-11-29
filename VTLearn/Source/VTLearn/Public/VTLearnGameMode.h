@@ -9,9 +9,8 @@
 #include "GameFramework/GameModeBase.h"
 #include "VTLearnGameMode.generated.h"
 
-/**
- *
- */
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVTLevelTimedOut);
+
 UCLASS()
 class VTLEARN_API AVTLearnGameMode : public AGameModeBase
 {
@@ -37,4 +36,7 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 PointsForIncorrect = -5;
+
+	UPROPERTY(BlueprintReadOnly)
+	FVTLevelTimedOut LevelTimedOut;
 };

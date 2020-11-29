@@ -31,6 +31,9 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> InstructionsWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	TSubclassOf<UUserWidget> LevelCompleteWidgetClass;
+
 	UPROPERTY(BlueprintReadWrite)
 	UVTHUDWidget* StatsWidget;
 
@@ -48,4 +51,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void ScoreChanged(int32 Delta, int32 Total);
+
+	UFUNCTION(BlueprintCallable)
+	void ShowLevelComplete();
+
 };

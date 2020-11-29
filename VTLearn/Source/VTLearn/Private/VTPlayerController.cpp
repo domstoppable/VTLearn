@@ -25,11 +25,28 @@ AVTPlayerController::AVTPlayerController()
 void AVTPlayerController::BeginPlay()
 {
 	UE_LOG(LogTemp, Log, TEXT("Controller Begin Play"));
+	AVTLearnGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTLearnGameMode>();
+	if(GameMode)
+	{
+		GameMode->LevelTimedOut.AddDynamic(this, &AVTPlayerController::OnLevelTimedOut);
+	}
+}
+
+void AVTPlayerController::OnLevelTimedOut()
+{
+	Super::Pause();
+	if(AVTHUD* HUD = Cast<AVTHUD>(MyHUD))
+	{
+		HUD->ShowLevelComplete();
+	}
 }
 
 void AVTPlayerController::TogglePause()
 {
-	Pause();
+	if(GetWorld()->GetAuthGameMode<AVTLearnGameMode>()->RemainingTime > 0.0f)
+	{
+		Pause();
+	}
 }
 
 void AVTPlayerController::Pause()
