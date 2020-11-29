@@ -4,3 +4,6 @@
 [submodule "VTLearn/Plugins/Psydekick"]
 	path = VTLearn/Plugins/Psydekick
 	url = https://github.com/Psydekick-Science-Kit/Psydekick
+[submodule "VTLearn/Source/Boost"]
+	path = VTLearn/Source/Boost
+	url = https://github.com/robcog-iai/Boost

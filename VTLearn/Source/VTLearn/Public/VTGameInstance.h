@@ -131,6 +131,9 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void ConnectToTCPDevice(FString IP, int32 Port);
 
+	UFUNCTION(BlueprintCallable)
+	void ConnectToSerialDevice(FString Port, int32 Baud);
+
 	UFUNCTION()
 	void OnDeviceConnected();
 

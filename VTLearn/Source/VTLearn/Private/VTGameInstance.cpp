@@ -4,6 +4,7 @@
 #include "VTGameInstance.h"
 #include "VTDevice.h"
 #include "VTTCPDevice.h"
+#include "VTSerialDevice.h"
 #include "Engine/Engine.h"
 
 
@@ -20,6 +21,17 @@ void UVTGameInstance::ConnectToTCPDevice(FString IP, int32 Port)
 	DisconnectDelegate.BindDynamic(this, &UVTGameInstance::OnDeviceDisconnected);
 
 	VTDevice = UVTTCPDevice::ConnectToTCPDevice(IP, Port, ConnectDelegate, DisconnectDelegate);
+}
+
+void UVTGameInstance::ConnectToSerialDevice(FString Port, int32 Baud)
+{
+	FVTDeviceConnectionChangedDelegate ConnectDelegate;
+	ConnectDelegate.BindDynamic(this, &UVTGameInstance::OnDeviceConnected);
+
+	FVTDeviceConnectionChangedDelegate DisconnectDelegate;
+	DisconnectDelegate.BindDynamic(this, &UVTGameInstance::OnDeviceDisconnected);
+
+	VTDevice = UVTSerialDevice::ConnectToSerialDevice(Port, Baud, ConnectDelegate, DisconnectDelegate);
 }
 
 void UVTGameInstance::OnDeviceConnected()
