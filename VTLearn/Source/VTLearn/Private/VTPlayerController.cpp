@@ -6,7 +6,6 @@
 #include "VibeyItem.h"
 #include "VTLearnCharacter.h"
 #include "VibeyItemReceiver.h"
-#include "VTNetworkClient.h"
 #include "VTHUD.h"
 #include "VTGameInstance.h"
 

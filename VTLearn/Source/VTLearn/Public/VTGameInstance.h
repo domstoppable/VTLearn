@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "VTNetworkClient.h"
+#include "VTDevice.h"
 #include "Engine/DataTable.h"
 
 
@@ -120,7 +120,7 @@ public:
 	#pragma region Device client
 
 	UPROPERTY(BlueprintReadOnly)
-	UVTNetworkClient* VTDevice;
+	UVTDevice* VTDevice;
 
 	UPROPERTY(BlueprintAssignable)
 	FVTDeviceConnectionChanged DeviceConnected;
@@ -129,7 +129,7 @@ public:
 	FVTDeviceConnectionChanged DeviceDisconnected;
 
 	UFUNCTION(BlueprintCallable)
-	void ConnectToDevice(FString IP, int32 Port);
+	void ConnectToTCPDevice(FString IP, int32 Port);
 
 	UFUNCTION()
 	void OnDeviceConnected();

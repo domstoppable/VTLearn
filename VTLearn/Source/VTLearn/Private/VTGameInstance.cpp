@@ -2,28 +2,24 @@
 
 
 #include "VTGameInstance.h"
-
+#include "VTDevice.h"
+#include "VTTCPDevice.h"
 #include "Engine/Engine.h"
 
 
 UVTGameInstance::UVTGameInstance()
 {
-	VTDevice = NewObject<UVTNetworkClient>();
-	UE_LOG(LogTemp, Log, TEXT("GameInstance created"));
 }
 
-void UVTGameInstance::ConnectToDevice(FString IP, int32 Port)
+void UVTGameInstance::ConnectToTCPDevice(FString IP, int32 Port)
 {
-	FVTNetworkClientStatusChangedDelegate ConnectDelegate;
+	FVTDeviceConnectionChangedDelegate ConnectDelegate;
 	ConnectDelegate.BindDynamic(this, &UVTGameInstance::OnDeviceConnected);
 
-	FVTNetworkClientStatusChangedDelegate DisconnectDelegate;
+	FVTDeviceConnectionChangedDelegate DisconnectDelegate;
 	DisconnectDelegate.BindDynamic(this, &UVTGameInstance::OnDeviceDisconnected);
 
-	if(VTDevice->ConnectionState != EDeviceConnectionState::Connected)
-	{
-		VTDevice->Connect(IP, Port, ConnectDelegate, DisconnectDelegate);
-	}
+	VTDevice = UVTTCPDevice::ConnectToTCPDevice(IP, Port, ConnectDelegate, DisconnectDelegate);
 }
 
 void UVTGameInstance::OnDeviceConnected()
