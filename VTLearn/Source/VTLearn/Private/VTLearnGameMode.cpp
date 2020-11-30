@@ -9,6 +9,7 @@
 #include "VibeyItemGenerator.h"
 #include "PhoneticPhrase.h"
 
+#include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
 
 AVTLearnGameMode::AVTLearnGameMode()
@@ -45,6 +46,7 @@ void AVTLearnGameMode::Tick(float Delta)
 	if(RemainingTime <= 0.0f)
 	{
 		LevelTimedOut.Broadcast();
+		Cast<UVTGameInstance>(GetGameInstance())->SaveProgress();
 	}
 }
 
@@ -59,13 +61,18 @@ void AVTLearnGameMode::BeginPlay()
 		return;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("%s - Setting up level %s"), ANSI_TO_TCHAR(__FUNCTION__), *(GameInstance->CurrentLevelConfig.Name));
-	UE_LOG(LogTemp, Log, TEXT("%s - %d to train, %d to distract"), ANSI_TO_TCHAR(__FUNCTION__), GameInstance->CurrentLevelConfig.TrainingPhrases.Num(), GameInstance->CurrentLevelConfig.DistractorPhrases.Num());
+	if(!IsValid(GameInstance->CurrentLevelStatus))
+	{
+		UE_LOG(LogTemp, Log, TEXT("%s : No level data loaded!"), ANSI_TO_TCHAR(__FUNCTION__));
+		return;
+	}
+	UE_LOG(LogTemp, Log, TEXT("%s - Setting up level %s"), ANSI_TO_TCHAR(__FUNCTION__), *(GameInstance->CurrentLevelStatus->LevelConfig.Name));
+	UE_LOG(LogTemp, Log, TEXT("%s - %d to train, %d to distract"), ANSI_TO_TCHAR(__FUNCTION__), GameInstance->CurrentLevelStatus->LevelConfig.TrainingPhrases.Num(), GameInstance->CurrentLevelStatus->LevelConfig.DistractorPhrases.Num());
 
-	RemainingTime = GameInstance->CurrentLevelConfig.TimeLimit;
+	RemainingTime = GameInstance->CurrentLevelStatus->LevelConfig.TimeLimit;
 	// Load distractors
 	PhraseBank.Empty();
-	for(FString PhraseName : GameInstance->CurrentLevelConfig.DistractorPhrases)
+	for(FString PhraseName : GameInstance->CurrentLevelStatus->LevelConfig.DistractorPhrases)
 	{
 		PhraseBank.Append(UPhoneticPhrase::LoadPhrases(PhraseName));
 	}
@@ -73,7 +80,7 @@ void AVTLearnGameMode::BeginPlay()
 	// load training phrases
 	int32 PhraseIndex = -1;
 	TActorIterator<AVibeyItemReceiver> ReceiverItr(GetWorld());
-	for(FString PhraseName : GameInstance->CurrentLevelConfig.TrainingPhrases)
+	for(FString PhraseName : GameInstance->CurrentLevelStatus->LevelConfig.TrainingPhrases)
 	{
 		TArray<UPhoneticPhrase*> Vtts = UPhoneticPhrase::LoadPhrases(PhraseName);
 		if(Vtts.Num() == 0)

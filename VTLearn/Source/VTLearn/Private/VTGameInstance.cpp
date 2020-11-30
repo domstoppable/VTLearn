@@ -5,11 +5,54 @@
 #include "VTDevice.h"
 #include "VTTCPDevice.h"
 #include "VTSerialDevice.h"
+#include "VTPlayerController.h"
+#include "VTLevelProgress.h"
 #include "Engine/Engine.h"
+#include "Kismet/GameplayStatics.h"
 
 
-UVTGameInstance::UVTGameInstance()
+void UVTGameInstance::Init()
 {
+	if(!LevelsDataTable)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Levels Data Table is not configured in VTGameInstance!"));
+		return;
+	}
+
+	FString ContextString;
+	TArray<FName> GroupRowNames = LevelsDataTable->GetRowNames();
+	for(FName RowName : GroupRowNames)
+	{
+		FLevelGroup* LevelGroup = LevelsDataTable->FindRow<FLevelGroup>(RowName, ContextString);
+		if(LevelGroup)
+		{
+			TArray<ULevelStatus*> LevelStatuses;
+			if(!IsValid(LevelGroup->LevelConfigs))
+			{
+				UE_LOG(LogTemp, Warning, TEXT("%s group row has no level data table"), *LevelGroup->Name);
+			}
+			else
+			{
+				int Ordinal = 0;
+				TArray<FName> LevelRowNames = LevelGroup->LevelConfigs->GetRowNames();
+				for(FName LevelRowName : LevelRowNames)
+				{
+					FLevelConfig* LevelConfig = LevelGroup->LevelConfigs->FindRow<FLevelConfig>(LevelRowName, ContextString);
+
+					ULevelStatus* LevelStatus = NewObject<ULevelStatus>();
+					LevelStatus->LevelConfig = *LevelConfig;
+					LevelStatus->GroupName = LevelGroup->Name;
+					LevelStatus->Ordinal = Ordinal++;
+					LevelStatuses.Emplace(LevelStatus);
+				}
+			}
+
+			ULevelGroupStatus* GroupStatus = NewObject<ULevelGroupStatus>();
+			GroupStatus->LevelGroup = *LevelGroup;
+			GroupStatus->LevelStatuses = LevelStatuses;
+			LevelGroups.Emplace(GroupStatus);
+		}
+	}
 }
 
 void UVTGameInstance::ConnectToTCPDevice(FString IP, int32 Port)
@@ -53,40 +96,6 @@ void UVTGameInstance::Shutdown()
 	}
 }
 
-int32 ULevelStatus::StarCount()
-{
-	int32 Stars;
-	for(Stars=0; Stars<LevelConfig.StarThresholds.Num(); Stars++)
-	{
-		if(LevelConfig.StarThresholds[Stars] > HighScore)
-		{
-			break;
-		}
-	}
-
-	return Stars;
-}
-
-ULevelStatus* ULevelStatus::MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore, int32 InOrdinal, bool InUnlocked)
-{
-	ULevelStatus* LevelStatus = NewObject<ULevelStatus>();
-	LevelStatus->LevelConfig = InLevelConfig;
-	LevelStatus->HighScore = InHighScore;
-	LevelStatus->Ordinal = InOrdinal;
-	LevelStatus->Unlocked = InUnlocked;
-
-	return LevelStatus;
-}
-
-ULevelGroupStatus* ULevelGroupStatus::MakeLevelGroupStatus(FLevelGroup InLevelGroup, TArray<ULevelStatus*> InLevelStatuses)
-{
-	ULevelGroupStatus* GroupStatus = NewObject<ULevelGroupStatus>();
-	GroupStatus->LevelGroup = InLevelGroup;
-	GroupStatus->LevelStatuses = InLevelStatuses;
-
-	return GroupStatus;
-}
-
 void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatus* LevelStatus)
 {
 	if(!IsValid(LevelStatus))
@@ -95,9 +104,9 @@ void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatu
 		return;
 	}
 
-	CurrentLevelConfig = LevelStatus->LevelConfig;
+	CurrentLevelStatus = LevelStatus;
 
-	UE_LOG(LogTemp, Log, TEXT("%s - Loading %s"), ANSI_TO_TCHAR(__FUNCTION__), *CurrentLevelConfig.Name);
+	UE_LOG(LogTemp, Log, TEXT("%s - Loading %s"), ANSI_TO_TCHAR(__FUNCTION__), *LevelStatus->LevelConfig.Name);
 
 	FString Map = LevelStatus->LevelConfig.Map;
 	if(Map == "")
@@ -121,4 +130,98 @@ void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatu
 	FWorldContext &WorldContext = GEngine->GetWorldContextFromWorldChecked(World);
 
 	GEngine->SetClientTravel(World, *Map, TravelType);
+}
+
+UVTSaveGame* UVTGameInstance::AddUser(int32 PID, FString Username)
+{
+	USaveGame* Loaded = UGameplayStatics::CreateSaveGameObject(UVTSaveGame::StaticClass());
+	LoadedSave = Cast<UVTSaveGame>(Loaded);
+	if(LoadedSave)
+	{
+		LoadedSave->PID = PID;
+		LoadedSave->Username = Username;
+		SaveProgress();
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Failed to create new save game"));
+	}
+
+	return LoadedSave;
+}
+
+UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
+{
+	UE_LOG(LogTemp, Log, TEXT("Loading save %s"), *SlotName);
+
+	USaveGame* Loaded = UGameplayStatics::LoadGameFromSlot(SlotName, 0);
+	LoadedSave = Cast<UVTSaveGame>(Loaded);
+
+	for(ULevelGroupStatus* GroupStatus : LevelGroups)
+	{
+		bool LockedFromHere = false;
+		for(ULevelStatus* LevelStatus : GroupStatus->LevelStatuses)
+		{
+			LevelStatus->Unlocked = !LockedFromHere;
+
+			FVTLevelProgress Progress = LoadedSave->GetLevelProgress(LevelStatus->GroupName, LevelStatus->LevelConfig.Name);
+			LevelStatus->HighScore = Progress.HighScore;
+
+			if(!LockedFromHere)
+			{
+				if(LevelStatus->LevelConfig.StarThresholds.Num() > 0)
+				{
+					LockedFromHere = LevelStatus->GetStarCount() < 1;
+				}
+			}
+		}
+	}
+
+	return LoadedSave;
+}
+
+bool UVTGameInstance::SaveProgress()
+{
+	UE_LOG(LogTemp, Log, TEXT("Saving progress..."));
+	if(IsValid(CurrentLevelStatus))
+	{
+		if(AVTPlayerController* PlayerController = Cast<AVTPlayerController>(UGameplayStatics::GetPlayerController(this, 0)))
+		{
+			AVTPlayerState* State = PlayerController->GetVTPlayerState();
+			LoadedSave->SetHighScore(
+				CurrentLevelStatus->GroupName,
+				CurrentLevelStatus->LevelConfig.Name,
+				State->GetScore()
+			);
+		}
+	}
+
+	bool SaveOK = UGameplayStatics::SaveGameToSlot(LoadedSave, LoadedSave->GetSlotName(), 0);
+	if(!SaveOK)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Saving failed!"));
+	}
+
+	LoadProgress(LoadedSave->GetSlotName());
+	return SaveOK;
+}
+
+UVTGameInstance* UVTGameInstance::GetVTGameInstance(UObject* WorldContextObject)
+{
+	return Cast<UVTGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
+}
+
+int32 UVTGameInstance::GetStarCount(UVTSaveGame* SaveGame)
+{
+	int32 Stars = 0;
+	for(ULevelGroupStatus* GroupStatus : LevelGroups)
+	{
+		bool LockedFromHere = false;
+		for(ULevelStatus* LevelStatus : GroupStatus->LevelStatuses)
+		{
+			Stars += LevelStatus->GetStarCount(SaveGame->GetLevelProgress(LevelStatus->GroupName, LevelStatus->LevelConfig.Name).HighScore);
+		}
+	}
+
+	return Stars;
 }

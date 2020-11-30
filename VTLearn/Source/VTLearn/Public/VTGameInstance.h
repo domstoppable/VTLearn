@@ -1,10 +1,9 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
 
 #include "VTDevice.h"
 #include "Engine/DataTable.h"
-
+#include "LevelConfig.h"
+#include "VTSaveGame.h"
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
@@ -12,110 +11,45 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVTDeviceConnectionChanged);
 
-USTRUCT(BlueprintType)
-struct FLevelConfig : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	FString Description;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	FString Instructions;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	TArray<FString> TrainingPhrases;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	TArray<FString> DistractorPhrases;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	TArray<int32> StarThresholds;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	FString Map;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	float TimeLimit = 180.0f;
-};
-
-USTRUCT(BlueprintType)
-struct FLevelGroup : public FTableRowBase
-{
-	GENERATED_USTRUCT_BODY()
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	FString Name;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	FString Description;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	UDataTable* LevelConfigs;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
-	FString Map;
-};
-
-UCLASS(BlueprintType)
-class VTLEARN_API ULevelGroupStatus : public UObject
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FLevelGroup LevelGroup;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	TArray<ULevelStatus*> LevelStatuses;
-
-	UFUNCTION(BlueprintCallable)
-	static ULevelGroupStatus* MakeLevelGroupStatus(FLevelGroup InLevelGroup, TArray<ULevelStatus*> InLevelStatuses);
-};
-
-UCLASS(BlueprintType)
-class VTLEARN_API ULevelStatus : public UObject
-{
-	GENERATED_BODY()
-
-public:
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	FLevelConfig LevelConfig;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	bool Unlocked;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 HighScore;
-
-	UPROPERTY(BlueprintReadWrite, EditAnywhere)
-	int32 Ordinal;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int32 StarCount();
-
-	UFUNCTION(BlueprintCallable)
-	static ULevelStatus* MakeLevelStatus(FLevelConfig InLevelConfig, int32 InHighScore, int32 InOrdinal, bool InUnlocked);
-};
-
 UCLASS()
 class VTLEARN_API UVTGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
 
 public:
-	UVTGameInstance();
+	virtual void Init() override;
 
 	virtual void Shutdown() override;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* LevelsDataTable;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TArray<ULevelGroupStatus*> LevelGroups;
+
+	UPROPERTY(BlueprintReadWrite)
+	UVTSaveGame* LoadedSave = nullptr;
+
+	UPROPERTY(BlueprintReadWrite)
+	ULevelStatus* CurrentLevelStatus = nullptr;
 
 	UFUNCTION(BlueprintCallable)
 	void LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatus* LevelStatus);
 
-	UPROPERTY(BlueprintReadOnly)
-	FLevelConfig CurrentLevelConfig;
+	UFUNCTION(BlueprintCallable)
+	UVTSaveGame* AddUser(int32 PID, FString Username);
+
+	UFUNCTION(BlueprintCallable)
+	UVTSaveGame* LoadProgress(FString SlotName);
+
+	UFUNCTION(BlueprintPure)
+	int32 GetStarCount(UVTSaveGame* SaveGame);
+
+	UFUNCTION(BlueprintCallable)
+	bool SaveProgress();
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject))
+	static UVTGameInstance* GetVTGameInstance(UObject* WorldContextObject);
 
 	#pragma region Device client
 
