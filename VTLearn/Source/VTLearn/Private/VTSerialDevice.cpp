@@ -23,14 +23,20 @@ void UVTSerialDevice::Connect(
 ){
 
 	std::string PortName = std::string(TCHAR_TO_UTF8(*Port));
+	try{
+		port = new boost::asio::serial_port(io, PortName);
+		port->set_option(boost::asio::serial_port_base::baud_rate(Baud));
 
-	port = new boost::asio::serial_port(io, PortName);
-	port->set_option(boost::asio::serial_port_base::baud_rate(Baud));
+		ConnectedDelegate = OnConnect;
+		DisconnectedDelegate = OnDisconnect;
 
-	ConnectedDelegate = OnConnect;
-	DisconnectedDelegate = OnDisconnect;
-
-	OnConnected();
+		OnConnected();
+	}
+	catch(std::exception const& exception)
+	{
+		FString Message(exception.what());
+		UE_LOG(LogTemp, Warning, TEXT("Failed to connect to serial device %s @%d : %s"), *Port, Baud, *Message);
+	}
 }
 
 void UVTSerialDevice::BeginDestroy()
@@ -55,5 +61,12 @@ void UVTSerialDevice::Send(TArray<uint8> Data)
 		data[i] = (char)(Data[i]);
 	}
 
-	boost::asio::write(*port, boost::asio::buffer(data, Data.Num()));
+	try{
+		boost::asio::write(*port, boost::asio::buffer(data, Data.Num()));
+	}
+	catch(std::exception const& exception)
+	{
+		FString Message(exception.what());
+		UE_LOG(LogTemp, Warning, TEXT("Failed to write %d bytes to serial device: %s"), Data.Num(), *Message);
+	}
 }
