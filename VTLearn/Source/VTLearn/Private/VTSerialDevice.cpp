@@ -21,19 +21,22 @@ void UVTSerialDevice::Connect(
 	const FVTDeviceConnectionChangedDelegate& OnConnect,
 	const FVTDeviceConnectionChangedDelegate& OnDisconnect
 ){
-
 	std::string PortName = std::string(TCHAR_TO_UTF8(*Port));
 	try{
+		ConnectionState = EDeviceConnectionState::Connecting;
+
 		port = new boost::asio::serial_port(io, PortName);
 		port->set_option(boost::asio::serial_port_base::baud_rate(Baud));
 
 		ConnectedDelegate = OnConnect;
 		DisconnectedDelegate = OnDisconnect;
 
+		ConnectionState = EDeviceConnectionState::Connected;
 		OnConnected();
 	}
 	catch(std::exception const& exception)
 	{
+		ConnectionState = EDeviceConnectionState::Disconnected;
 		FString Message(exception.what());
 		UE_LOG(LogTemp, Warning, TEXT("Failed to connect to serial device %s @%d : %s"), *Port, Baud, *Message);
 	}
