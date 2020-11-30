@@ -71,7 +71,10 @@ void UVTSaveGame::SetHighScore(FString GroupName, FString LevelName, int32 Score
 	{
 		if(LevelProgress.GroupName == GroupName && LevelProgress.LevelName == LevelName)
 		{
-			LevelProgress.HighScore = Score;
+			if(Score > LevelProgress.HighScore)
+			{
+				LevelProgress.HighScore = Score;
+			}
 			return;
 		}
 	}
