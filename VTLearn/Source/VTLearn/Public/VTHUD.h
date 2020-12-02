@@ -34,20 +34,28 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> LevelCompleteWidgetClass;
 
+	UPROPERTY(EditDefaultsOnly)
+	UMenuTree* PauseMenuTree;
+
 	UPROPERTY(BlueprintReadWrite)
 	UVTHUDWidget* StatsWidget;
 
 	UPROPERTY(BlueprintReadWrite)
 	UMenuTreeWidget* PauseWidget;
 
-	UPROPERTY(EditDefaultsOnly)
-	UMenuTree* PauseMenuTree;
+	UPROPERTY()
+	TSubclassOf<UUserWidget> PauseWidgetClass;
+
+
 
 	UFUNCTION(BlueprintCallable)
 	void ShowPause();
 
 	UFUNCTION(BlueprintCallable)
 	void HidePause();
+
+	UFUNCTION()
+	void OnPauseAnimOutDone();
 
 	UFUNCTION(BlueprintCallable)
 	void ScoreChanged(int32 Delta, int32 Total);

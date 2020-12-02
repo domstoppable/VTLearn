@@ -5,6 +5,7 @@
 
 #include "VTPlayerController.h"
 #include "2D/MenuTreeWidget.h"
+#include "Misc/PKTools.h"
 
 AVTHUD::AVTHUD()
 {
@@ -12,8 +13,8 @@ AVTHUD::AVTHUD()
 
 	StatsWidgetClass = UVTHUDWidget::StaticClass();
 
-	FString ClassRefName = "WidgetBlueprint'/Psydekick/Visuals/2D/Menu/Runtime/MenuTreeWidgetBP.MenuTreeWidgetBP_C'";
-	UClass* PauseWidgetClass = LoadClass<UMenuTreeWidget>(NULL, *ClassRefName, NULL, LOAD_None, NULL);
+	FString ClassRefName = "WidgetBlueprint'/Psydekick/Visuals/2D/Menu/Runtime/MenuTreeWidgetBP.MenuTreeWidgetBP'";
+	PauseWidgetClass = PKTools::GetBlueprintClass(ClassRefName);
 	if(PauseWidgetClass)
 	{
 		PauseWidget = CreateWidget<UMenuTreeWidget>(GetWorld(), PauseWidgetClass);
@@ -33,9 +34,11 @@ void AVTHUD::BeginPlay()
 	{
 		StatsWidget->AddToViewport();
 	}
+
 	if(IsValid(PauseWidget))
 	{
 		PauseWidget->LoadMenuTree(PauseMenuTree);
+		PauseWidget->AnimateOutFinished.BindDynamic(this, &AVTHUD::OnPauseAnimOutDone);
 	}
 
 	if(IsValid(InstructionsWidgetClass))
@@ -54,6 +57,7 @@ void AVTHUD::ShowPause()
 {
 	if(IsValid(PauseWidget))
 	{
+		PauseWidget->AnimateIn();
 		PauseWidget->AddToViewport();
 	}else{
 		UE_LOG(LogTemp, Warning, TEXT("Pause widget bad :("));
@@ -64,8 +68,17 @@ void AVTHUD::HidePause()
 {
 	if(IsValid(PauseWidget))
 	{
-		PauseWidget->RemoveFromParent();
+		PauseWidget->AnimateOut();
 	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("No pause widget :("));
+	}
+}
+
+void AVTHUD::OnPauseAnimOutDone()
+{
+	PauseWidget->RemoveFromParent();
 }
 
 void AVTHUD::ScoreChanged(int32 Delta, int32 Total)
