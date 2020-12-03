@@ -3,6 +3,7 @@
 #pragma once
 
 #include "VTLevelProgress.h"
+#include "LevelConfig.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/SaveGame.h"
@@ -28,6 +29,12 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FVTLevelProgress GetLevelProgress(FString GroupName, FString LevelName);
+
+	UFUNCTION(BlueprintPure)
+	int32 GetLevelStarCount(ULevelStatus* LevelStatus);
+
+	UFUNCTION(BlueprintPure)
+	int32 GetGroupStarCount(ULevelGroupStatus* GroupStatus);
 
 	UFUNCTION(BlueprintCallable)
 	void SetHighScore(FString GroupName, FString LevelName, int32 Score);

@@ -1,4 +1,5 @@
 #include "VTSaveGame.h"
+#include "LevelConfig.h"
 
 #include "Misc/Paths.h"
 #include "HAL/PlatformFilemanager.h"
@@ -85,4 +86,22 @@ void UVTSaveGame::SetHighScore(FString GroupName, FString LevelName, int32 Score
 	LevelProgress.HighScore = Score;
 
 	Progress.Add(LevelProgress);
+}
+
+int32 UVTSaveGame::GetGroupStarCount(ULevelGroupStatus* GroupStatus)
+{
+	int32 Stars = 0;
+	for(ULevelStatus* LevelStatus : GroupStatus->LevelStatuses)
+	{
+		Stars += GetLevelStarCount(LevelStatus);
+	}
+
+	return Stars;
+}
+
+int32 UVTSaveGame::GetLevelStarCount(ULevelStatus* LevelStatus)
+{
+	FVTLevelProgress LevelProgress = GetLevelProgress(LevelStatus->GroupName, LevelStatus->LevelConfig.Name);
+
+	return LevelStatus->GetStarCount(LevelProgress.HighScore);
 }
