@@ -3,6 +3,7 @@
 #pragma once
 
 #include "VTPlayerState.h"
+#include "VTMenuController.h"
 
 #include "GameFramework/Actor.h"
 
@@ -14,7 +15,7 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVTControllerScoreChanged, int32, D
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTPauseChanged, bool, Paused);
 
 UCLASS()
-class VTLEARN_API AVTPlayerController : public APlayerController
+class VTLEARN_API AVTPlayerController : public AVTMenuController
 {
 	GENERATED_BODY()
 

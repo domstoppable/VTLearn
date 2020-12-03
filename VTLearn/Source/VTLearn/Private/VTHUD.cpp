@@ -1,6 +1,3 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "VTHUD.h"
 
 #include "VTPlayerController.h"
@@ -50,6 +47,7 @@ void AVTHUD::BeginPlay()
 	if(AVTPlayerController* PlayerController = Cast<AVTPlayerController>(PlayerOwner))
 	{
 		PlayerController->ScoreChanged.AddDynamic(this, &AVTHUD::ScoreChanged);
+		PlayerController->SetInputMode(FInputModeGameAndUI());
 	}
 }
 
