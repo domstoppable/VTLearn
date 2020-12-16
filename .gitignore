@@ -44,8 +44,9 @@
 *.code-workspace
 
 # Precompiled Assets
-SourceArt/**/*.png
-SourceArt/**/*.tga
+Source media/**/*.png
+Source media/**/*.tga
+Source media/**/*.blend1
 
 # Binary Files
 VTLearn/Binaries/*
