@@ -62,6 +62,10 @@
 		{
 			"Name": "CameraShakePreviewer",
 			"Enabled": false
+		},
+		{
+			"Name": "PythonScriptPlugin",
+			"Enabled": true
 		}
 	]
 }
