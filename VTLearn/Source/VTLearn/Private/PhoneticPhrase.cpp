@@ -85,6 +85,10 @@ UPhoneticPhrase* UPhoneticPhrase::LoadPhoneticPhrase(FString VTTFilename)
 	Idx += PhoneticBytes;
 
 	FString PhoneticText(PhoneticTextChars);
+	// strip silence from phonetic text
+	PhoneticText = PhoneticText.Replace(TEXT("sp"), TEXT(""));
+	PhoneticText = PhoneticText.Replace(TEXT("sil"), TEXT(""));
+	PhoneticText = PhoneticText.TrimStartAndEnd();
 
 	uint8 RawSamples[SampleCount*3];
 	FMemory::Memcpy(RawSamples, FileData.GetData() + Idx, SampleCount*3);

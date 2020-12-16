@@ -10,7 +10,6 @@ bool UPhonePhraseMatcher::Match(UPhoneticPhrase* Phrase)
 
 bool UPhoneSequenceMatcher::Match(UPhoneticPhrase* Phrase)
 {
-	FString Haystack = "sil " + Phrase->PhoneticText + " sil";
-	UE_LOG(LogTemp, Log, TEXT("Checking for '%s' in '%s'"), *SearchString, *Haystack);
-	return IsValid(Phrase) && Haystack.Contains(SearchString);
+	UE_LOG(LogTemp, Log, TEXT("Checking for '%s' in '%s'"), *SearchString, *Phrase->PhoneticText);
+	return IsValid(Phrase) && Phrase->PhoneticText.Contains(SearchString);
 }
