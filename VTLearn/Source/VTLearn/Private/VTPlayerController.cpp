@@ -226,12 +226,15 @@ void AVTPlayerController::DropItem()
 	Pawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItemReceiver>());
 	if(IsValid(Item) && ActorsInReach.Num() > 0)
 	{
-		if(AVibeyItemReceiver* Receiver = Cast<AVibeyItemReceiver>(ActorsInReach[0]))
+		for(AActor* ReachableActor : ActorsInReach)
 		{
-			Receiver->ReceiveItem(Item);
+			if(AVibeyItemReceiver* Receiver = Cast<AVibeyItemReceiver>(ReachableActor))
+			{
+				Receiver->ReceiveItem(Item);
+				break;
+			}
 		}
 	}
-
 }
 
 int32 AVTPlayerController::AdjustScore(int32 Amount)
