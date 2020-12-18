@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   sodipodi:docname="grocery-store-floor-tile.svg"
+   inkscape:version="1.0.1 (3bc2e813f5, 2020-09-07)"
+   id="svg8"
+   version="1.1"
+   viewBox="0 0 270.92992 270.92992"
+   height="1024"
+   width="1024"
+   inkscape:export-filename="/home/dom/code/VTLearn/Source media/Graphics/gocery-store-floor-tile.png"
+   inkscape:export-xdpi="48"
+   inkscape:export-ydpi="48">
+  <defs
+     id="defs2" />
+  <sodipodi:namedview
+     inkscape:window-maximized="1"
+     inkscape:window-y="0"
+     inkscape:window-x="36"
+     inkscape:window-height="1417"
+     inkscape:window-width="2524"
+     units="px"
+     inkscape:showpageshadow="false"
+     inkscape:pagecheckerboard="true"
+     showgrid="false"
+     inkscape:document-rotation="0"
+     inkscape:current-layer="g856"
+     inkscape:document-units="px"
+     inkscape:cy="492.82163"
+     inkscape:cx="438.94315"
+     inkscape:zoom="0.43054793"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     borderopacity="1.0"
+     bordercolor="#666666"
+     pagecolor="#ffffff"
+     id="base" />
+  <metadata
+     id="metadata5">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     id="layer1"
+     inkscape:groupmode="layer"
+     inkscape:label="Layer 1">
+    <g
+       id="g856"
+       transform="rotate(45,135.46495,135.46495)">
+      <path
+         id="rect838"
+         style="fill:#d59c77;fill-opacity:1;stroke:#502d16;stroke-width:2.6458;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)"
+         d="m -327.04132,0 h 135.46495 v 135.46495 h -135.46495 z m 135.46495,-135.46495 H -56.11142 V 0 h -135.46495 z" />
+      <path
+         id="rect842"
+         style="fill:#379191;fill-opacity:1;stroke:#502d16;stroke-width:2.6458;stroke-linecap:round;stroke-linejoin:round;stroke-miterlimit:4;stroke-dasharray:none"
+         transform="matrix(-0.70710678,-0.70710678,-0.70710678,0.70710678,0,0)"
+         d="m -327.04132,-135.46495 h 135.46495 V 0 H -327.04132 Z M -191.57637,0 h 135.46495 v 135.46495 h -135.46495 z" />
+    </g>
+  </g>
+</svg>
