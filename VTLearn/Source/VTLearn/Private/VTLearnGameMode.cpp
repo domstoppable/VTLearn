@@ -109,8 +109,8 @@ void AVTLearnGameMode::BeginPlay()
 		if(ReceiverItr->AllowAutoAssign)
 		{
 			GetWorld()->DestroyActor(*ReceiverItr);
-			++ReceiverItr;
 		}
+		++ReceiverItr;
 	}
 
 	PhraseBank.Append(TrainingPhrases);
