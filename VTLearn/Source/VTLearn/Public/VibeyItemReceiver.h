@@ -31,7 +31,7 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	UFUNCTION(BlueprintCallable)
-	void SetMatchPhrase(UPhoneticPhrase* Phrase);
+	void SetMatchPhrases(TArray<UPhoneticPhrase*> Phrases);
 
 	UFUNCTION(BlueprintCallable)
 	void ReceiveItem(AVibeyItem* Item);

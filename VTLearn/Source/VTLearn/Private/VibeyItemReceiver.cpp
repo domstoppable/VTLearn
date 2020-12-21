@@ -41,8 +41,11 @@ void AVibeyItemReceiver::SetHelpText(FString Text)
 	HelpTextChanged(Text);
 }
 
-void AVibeyItemReceiver::SetMatchPhrase(UPhoneticPhrase* Phrase)
+void AVibeyItemReceiver::SetMatchPhrases(TArray<UPhoneticPhrase*> Phrases)
 {
-	Matcher->SearchString = Phrase->PhoneticText;
-	SetHelpText(Phrase->WrittenText);
+	for(UPhoneticPhrase* Phrase : Phrases)
+	{
+		Matcher->SearchStrings.Emplace(Phrase->PhoneticText);
+		SetHelpText(Phrase->WrittenText);
+	}
 }

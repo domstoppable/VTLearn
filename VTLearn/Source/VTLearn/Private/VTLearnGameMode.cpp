@@ -21,11 +21,6 @@ AVTLearnGameMode::AVTLearnGameMode()
 	DefaultPawnClass = AVTLearnCharacter::StaticClass();
 	HUDClass = AVTHUD::StaticClass();
 
-	static ConstructorHelpers::FClassFinder<APlayerController> PlayerControllerBPClass(TEXT("/Game/VTT/VTPlayerControllerBP"));
-	if (PlayerControllerBPClass.Class != NULL)
-	{
-		PlayerControllerClass = PlayerControllerBPClass.Class;
-	}
 
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Characters/GameCharacter"));
 	if (PlayerPawnBPClass.Class != NULL)
@@ -99,7 +94,7 @@ void AVTLearnGameMode::BeginPlay()
 			break;
 		}
 
-		ReceiverItr->SetMatchPhrase(Vtts[0]);
+		ReceiverItr->SetMatchPhrases(Vtts);
 		TrainingPhrases.Append(Vtts);
 
 		++ReceiverItr;

@@ -29,7 +29,7 @@ class VTLEARN_API UPhoneSequenceMatcher : public UPhonePhraseMatcher
 
 public:
 	UPROPERTY(BlueprintReadWrite)
-	FString SearchString;
+	TArray<FString> SearchStrings;
 
 	bool Match(UPhoneticPhrase* Phrase) override;
 };

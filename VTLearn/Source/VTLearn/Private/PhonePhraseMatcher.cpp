@@ -10,6 +10,19 @@ bool UPhonePhraseMatcher::Match(UPhoneticPhrase* Phrase)
 
 bool UPhoneSequenceMatcher::Match(UPhoneticPhrase* Phrase)
 {
-	UE_LOG(LogTemp, Log, TEXT("Checking for '%s' in '%s'"), *SearchString, *Phrase->PhoneticText);
-	return IsValid(Phrase) && Phrase->PhoneticText.Contains(SearchString);
+	if(!IsValid(Phrase))
+	{
+		return false;
+	}
+
+	for(FString SearchString : SearchStrings)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Checking for '%s' in '%s'"), *SearchString, *Phrase->PhoneticText);
+		if(Phrase->PhoneticText.Contains(SearchString))
+		{
+			return true;
+		}
+	}
+
+	return false;
 }
