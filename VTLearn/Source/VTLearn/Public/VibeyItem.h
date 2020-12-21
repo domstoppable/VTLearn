@@ -3,14 +3,14 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "GameFramework/Actor.h"
+#include "Engine/StaticMeshActor.h"
 
 #include "PhoneticPhrase.h"
 
 #include "VibeyItem.generated.h"
 
-UCLASS()
-class VTLEARN_API AVibeyItem : public AActor
+UCLASS(BlueprintType)
+class VTLEARN_API AVibeyItem : public AStaticMeshActor
 {
 	GENERATED_BODY()
 
