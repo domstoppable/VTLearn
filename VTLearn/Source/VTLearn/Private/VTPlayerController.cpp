@@ -93,6 +93,11 @@ void AVTPlayerController::SetupInputComponent()
 	InputComponent->BindAxis("MoveRight", this, &AVTPlayerController::OnMoveRight);
 }
 
+FVector AVTPlayerController::GetForward2D()
+{
+	return FVector(1.0f, 0.0f, 0.0f);
+}
+
 void AVTPlayerController::OnMoveUp(float Value)
 {
 	APawn* Pawn = GetPawn();
@@ -101,8 +106,8 @@ void AVTPlayerController::OnMoveUp(float Value)
 		return;
 	}
 
-	const FVector Direction = FVector(1.0f, 0.0f, 0.0f);
-	Pawn->AddMovementInput(Direction, Value);
+	const FVector Forward = GetForward2D();
+	Pawn->AddMovementInput(Forward, Value);
 }
 
 void AVTPlayerController::OnMoveRight(float Value)
@@ -113,8 +118,8 @@ void AVTPlayerController::OnMoveRight(float Value)
 		return;
 	}
 
-	const FVector Direction = FVector(0.0f, 1.0f, 0.0f);
-	Pawn->AddMovementInput(Direction, Value);
+	const FVector Right = GetForward2D().RotateAngleAxis(90, FVector(0.0f, 0.0f, 1.0f));
+	Pawn->AddMovementInput(Right, Value);
 }
 
 void AVTPlayerController::OnJump()
@@ -139,10 +144,17 @@ void AVTPlayerController::OnGrab()
 	}else{
 		TArray<AActor*> ActorsInReach;
 		Pawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItem>());
+		UE_LOG(LogTemp, Log, TEXT("Attempting to hold - %d actors nearby"), ActorsInReach.Num());
 		for(auto Actor : ActorsInReach)
 		{
+			UE_LOG(LogTemp, Log, TEXT("Attempting to hold %s"), *Actor->GetActorLabel());
 			if(HoldItem(Actor)){
+				UE_LOG(LogTemp, Log, TEXT("I got it"));
 				break;
+			}
+			else
+			{
+				UE_LOG(LogTemp, Log, TEXT("It cannot be held"));
 			}
 		}
 	}

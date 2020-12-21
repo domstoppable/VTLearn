@@ -50,6 +50,9 @@ public:
 	virtual void Pause() override;
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual FVector GetForward2D();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
 	bool CanInteract();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
