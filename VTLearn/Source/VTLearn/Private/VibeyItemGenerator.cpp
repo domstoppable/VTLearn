@@ -17,7 +17,6 @@ AVibeyItemGenerator::AVibeyItemGenerator()
 void AVibeyItemGenerator::BeginPlay()
 {
 	Super::BeginPlay();
-
 }
 
 // Called every frame
@@ -29,10 +28,25 @@ void AVibeyItemGenerator::Tick(float DeltaTime)
 
 UPhoneticPhrase* AVibeyItemGenerator::RandomPhrase()
 {
-	if(Phrases.Num() == 0)
+	if(CurrentPool.Num() == 0)
 	{
+		CurrentPool.Append(Phrases);
+	}
+	if(CurrentPool.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("AVibeyItemGenerator::RandomPhrase No items to put in pool!"));
 		return nullptr;
 	}
 
-	return Phrases[FMath::RandRange(0, Phrases.Num()-1)];
+	int32 PhraseIdx = FMath::RandRange(0, CurrentPool.Num()-1);
+	UPhoneticPhrase* Phrase = CurrentPool[PhraseIdx];
+	CurrentPool.RemoveAt(PhraseIdx);
+
+	return Phrase;
+}
+
+void AVibeyItemGenerator::AddToPhraseBank(TArray<UPhoneticPhrase*> MorePhrases)
+{
+	Phrases.Append(MorePhrases);
+	UE_LOG(LogTemp, Log, TEXT("Item generator `%s` now has %d phrases"), *GetActorLabel(), Phrases.Num());
 }

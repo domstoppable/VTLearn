@@ -17,8 +17,14 @@ class VTLEARN_API AVibeyItem : public AStaticMeshActor
 public:
 	AVibeyItem();
 
+	UPROPERTY(BlueprintReadOnly)
+	UPhoneticPhrase* Phrase = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bGrabbable = true;
+
 	UPROPERTY(BlueprintReadWrite)
-	UPhoneticPhrase* Phrase;
+	bool bIsGood = false;
 
 protected:
 	virtual void BeginPlay() override;
@@ -26,6 +32,9 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void SetPhrase(UPhoneticPhrase* NewPhrase);
 
-
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void Grabbed(AActor* Grabber);
 };

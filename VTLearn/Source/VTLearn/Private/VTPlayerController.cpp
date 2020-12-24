@@ -181,9 +181,19 @@ void AVTPlayerController::OnRevibe()
 	// @TODO: Implement
 }
 
-bool AVTPlayerController::CanHold(AActor* Item)
+bool AVTPlayerController::CanHold(AActor* Actor)
 {
-	return IsValid(Item) && Item->IsA(AVibeyItem::StaticClass());
+	if(!IsValid(Actor))
+	{
+		return false;
+	}
+
+	if(AVibeyItem* Item = Cast<AVibeyItem>(Actor))
+	{
+		return Item->bGrabbable;
+	}
+
+	return false;
 }
 
 bool AVTPlayerController::HoldItem(AActor* Item)

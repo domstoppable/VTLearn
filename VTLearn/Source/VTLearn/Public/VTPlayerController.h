@@ -62,7 +62,7 @@ public:
 	bool CanHold(AActor* Item);
 
 	UFUNCTION(BlueprintCallable)
-	bool HoldItem(AActor* Item);
+	virtual bool HoldItem(AActor* Item);
 
 	UFUNCTION(BlueprintCallable)
 	void DropItem();

@@ -22,3 +22,18 @@ void AVibeyItem::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 }
+
+void AVibeyItem::SetPhrase_Implementation(UPhoneticPhrase* NewPhrase)
+{
+	Phrase = NewPhrase;
+	if(IsValid(NewPhrase))
+	{
+		UE_LOG(LogTemp, Log, TEXT("VibeyItem Phrase has been set to %s"), *NewPhrase->WrittenText);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Warning, TEXT("VibeyItem Phrase has been set to something invalid?"));
+	}
+
+
+}

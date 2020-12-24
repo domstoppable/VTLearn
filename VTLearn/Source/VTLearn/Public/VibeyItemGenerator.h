@@ -25,7 +25,12 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	TArray<UPhoneticPhrase*> Phrases;
 
+	UPROPERTY(BlueprintReadWrite)
+	TArray<UPhoneticPhrase*> CurrentPool;
+
 	UFUNCTION(BlueprintCallable)
 	UPhoneticPhrase* RandomPhrase();
 
+	UFUNCTION(BlueprintCallable)
+	void AddToPhraseBank(TArray<UPhoneticPhrase*> MorePhrases);
 };

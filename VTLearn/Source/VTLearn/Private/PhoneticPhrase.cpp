@@ -170,5 +170,10 @@ TArray<UPhoneticPhrase*> UPhoneticPhrase::LoadPhrases(FString PhraseName)
 		}
 	}
 
+	if(Phrases.Num() == 0)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Could not find any VTTs for phrase '%s'"), *PhraseName);
+	}
+
 	return Phrases;
 }

@@ -21,7 +21,6 @@ AVTLearnGameMode::AVTLearnGameMode()
 	DefaultPawnClass = AVTLearnCharacter::StaticClass();
 	HUDClass = AVTHUD::StaticClass();
 
-
 	static ConstructorHelpers::FClassFinder<APawn> PlayerPawnBPClass(TEXT("/Game/Characters/GameCharacter"));
 	if (PlayerPawnBPClass.Class != NULL)
 	{
@@ -49,6 +48,14 @@ void AVTLearnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+	LoadLevelInfo();
+	SetupGenerators();
+	SetupReceivers();
+}
+
+void AVTLearnGameMode::LoadLevelInfo()
+{
+
 	UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance());
 	if(!IsValid(GameInstance))
 	{
@@ -65,24 +72,66 @@ void AVTLearnGameMode::BeginPlay()
 	UE_LOG(LogTemp, Log, TEXT("%s - %d to train, %d to distract"), ANSI_TO_TCHAR(__FUNCTION__), GameInstance->CurrentLevelStatus->LevelConfig.TrainingPhrases.Num(), GameInstance->CurrentLevelStatus->LevelConfig.DistractorPhrases.Num());
 
 	RemainingTime = GameInstance->CurrentLevelStatus->LevelConfig.TimeLimit;
+
 	// Load distractors
-	PhraseBank.Empty();
+	DistractorPhrases.Empty();
 	for(FString PhraseName : GameInstance->CurrentLevelStatus->LevelConfig.DistractorPhrases)
 	{
-		PhraseBank.Append(UPhoneticPhrase::LoadPhrases(PhraseName));
+		for(UPhoneticPhrase* Phrase : UPhoneticPhrase::LoadPhrases(PhraseName))
+		{
+			DistractorPhrases.Add(PhraseName, Phrase);
+		}
+
 	}
 
-	// load training phrases
-	int32 PhraseIndex = -1;
-	TActorIterator<AVibeyItemReceiver> ReceiverItr(GetWorld());
+	// Load training phrases
+	TrainingPhrases.Empty();
 	for(FString PhraseName : GameInstance->CurrentLevelStatus->LevelConfig.TrainingPhrases)
 	{
-		TArray<UPhoneticPhrase*> Vtts = UPhoneticPhrase::LoadPhrases(PhraseName);
+		for(UPhoneticPhrase* Phrase : UPhoneticPhrase::LoadPhrases(PhraseName))
+		{
+			TrainingPhrases.Add(PhraseName, Phrase);
+		}
+	}
+}
+
+void AVTLearnGameMode::SetupGenerators()
+{
+	for (TActorIterator<AVibeyItemGenerator> GeneratorItr(GetWorld()); GeneratorItr; ++GeneratorItr)
+	{
+		AVibeyItemGenerator* ItemGenerator = *GeneratorItr;
+
+		TArray<UPhoneticPhrase*> TmpArray;
+
+		TrainingPhrases.GenerateValueArray(TmpArray);
+		ItemGenerator->AddToPhraseBank(TmpArray);
+
+		DistractorPhrases.GenerateValueArray(TmpArray);
+		ItemGenerator->AddToPhraseBank(TmpArray);
+
+		UE_LOG(LogTemp, Log, TEXT("Set up generator %s"), *ItemGenerator->GetActorLabel());
+	}
+}
+
+void AVTLearnGameMode::SetupReceivers()
+{
+	TActorIterator<AVibeyItemReceiver> ReceiverItr(GetWorld());
+
+	TArray<FString> PhraseStrings;
+	TrainingPhrases.GetKeys(PhraseStrings);
+
+	for(FString PhraseText : PhraseStrings)
+	{
+		// find vtts for this phrase
+		TArray<UPhoneticPhrase*> Vtts;
+		TrainingPhrases.MultiFind(PhraseText, Vtts);
 		if(Vtts.Num() == 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s Could not find any VTTs for %s"), ANSI_TO_TCHAR(__FUNCTION__), *PhraseName);
+			UE_LOG(LogTemp, Warning, TEXT("%s Could not find any VTTs for %s"), ANSI_TO_TCHAR(__FUNCTION__), *PhraseText);
 			continue;
 		}
+
+		// find a receiver to receive them
 		while(ReceiverItr && !ReceiverItr->AllowAutoAssign)
 		{
 			++ReceiverItr;
@@ -94,11 +143,12 @@ void AVTLearnGameMode::BeginPlay()
 			break;
 		}
 
+		// setup that receiver with those phrases
 		ReceiverItr->SetMatchPhrases(Vtts);
-		TrainingPhrases.Append(Vtts);
-
 		++ReceiverItr;
 	}
+
+	// destroy unused receivers
 	while(ReceiverItr)
 	{
 		if(ReceiverItr->AllowAutoAssign)
@@ -108,13 +158,5 @@ void AVTLearnGameMode::BeginPlay()
 		++ReceiverItr;
 	}
 
-	PhraseBank.Append(TrainingPhrases);
-
-	UE_LOG(LogTemp, Log, TEXT("Starting game with %d training phrases, %d phrases total"), TrainingPhrases.Num(), PhraseBank.Num());
-
-	for (TActorIterator<AVibeyItemGenerator> GeneratorItr(GetWorld()); GeneratorItr; ++GeneratorItr)
-	{
-		AVibeyItemGenerator* ItemGenerator = *GeneratorItr;
-		ItemGenerator->Phrases = PhraseBank;
-	}
 }
+

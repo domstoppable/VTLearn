@@ -1,13 +1,13 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
+
+#include "VTHintDisplayer.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "VTLearnCharacter.generated.h"
 
 UCLASS()
-class VTLEARN_API AVTLearnCharacter : public ACharacter
+class VTLEARN_API AVTLearnCharacter : public ACharacter, public IVTHintDisplayer
 {
 	GENERATED_BODY()
 
@@ -20,9 +20,13 @@ protected:
 public:
 	virtual void Tick(float DeltaTime) override;
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ItemGrabbed(AActor* Item);
 
-	UFUNCTION(BlueprintImplementableEvent)
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void ItemDropped(AActor* Item);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void Speak(const FString &Text, const float Duration);
+
 };

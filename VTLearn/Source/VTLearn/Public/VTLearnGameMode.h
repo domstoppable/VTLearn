@@ -22,14 +22,17 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float Delta) override;
 
-	UPROPERTY(BlueprintReadWrite)
-	TArray<UPhoneticPhrase*> PhraseBank;
+	virtual void LoadLevelInfo();
+	virtual void SetupGenerators();
+	virtual void SetupReceivers();
 
-	UPROPERTY(BlueprintReadWrite)
-	TArray<UPhoneticPhrase*> TrainingPhrases;
+	TMultiMap<FString, UPhoneticPhrase*> DistractorPhrases;
+	TMultiMap<FString, UPhoneticPhrase*> TrainingPhrases;
+
+	TArray<FString> PhraseKeys;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RemainingTime = 180.0;
+	float RemainingTime = 180.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 PointsForCorrect = 10;
