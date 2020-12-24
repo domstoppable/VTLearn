@@ -77,3 +77,5 @@ VTLearn/Plugins/*/Intermediate/*
 VTLearn/DerivedDataCache/*
 
 *.pdb
+
+VTLearn/Content/StarterContent
