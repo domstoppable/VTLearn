@@ -1,5 +1,6 @@
 ---,Name,Description,LevelConfigs,Map
 Food,Food,,DataTable'/Game/Data/Levels_Food.Levels_Food',GroceryStore
+Letters,Letters,,DataTable'/Game/Data/Levels_Letters.Levels_Letters',SoopLoops
 Numbers,Numbers,,DataTable'/Game/Data/Levels_Numbers.Levels_Numbers',BowlingAlley
 Animals,Animals,,DataTable'/Game/Data/Levels_Animals.Levels_Animals',
 Colors,Colors,,DataTable'/Game/Data/Levels_Colors.Levels_Colors',

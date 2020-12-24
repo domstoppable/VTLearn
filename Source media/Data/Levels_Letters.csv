@@ -1,0 +1,3 @@
+---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map
+1,ABC,Easy as 123,,"(""A"",""B"", ""C"")",,"(10,20,30)",
+2,Soop loops,"Brother, may I have some soop loops?",,"(""S"",""O"",""P"",""L"")",,"(10,20,30)",
