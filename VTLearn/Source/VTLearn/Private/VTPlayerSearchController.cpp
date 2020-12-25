@@ -7,6 +7,8 @@
 
 void AVTPlayerSearchController::BeginPlay()
 {
+	Super::BeginPlay();
+
 	TArray<UActorComponent*> Components = GetPawn()->GetComponentsByTag(UPrimitiveComponent::StaticClass(), FName(TEXT("interaction")));
 	if(Components.Num() > 0)
 	{
