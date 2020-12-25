@@ -22,6 +22,9 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float Delta) override;
 
+	UFUNCTION()
+	void TickAfterBeginPlay();
+
 	virtual void LoadLevelInfo();
 	virtual void SetupGenerators();
 	virtual void SetupReceivers();

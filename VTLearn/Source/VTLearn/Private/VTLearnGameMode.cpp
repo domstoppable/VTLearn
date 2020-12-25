@@ -48,6 +48,12 @@ void AVTLearnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
 
+
+	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AVTLearnGameMode::TickAfterBeginPlay);
+}
+
+void AVTLearnGameMode::TickAfterBeginPlay()
+{
 	LoadLevelInfo();
 	SetupGenerators();
 	SetupReceivers();
