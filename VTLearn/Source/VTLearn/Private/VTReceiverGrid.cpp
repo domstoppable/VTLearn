@@ -3,6 +3,8 @@
 
 #include "VTReceiverGrid.h"
 
+#include "Math/UnrealMathUtility.h"
+
 // Sets default values
 AVTReceiverGrid::AVTReceiverGrid()
 {
@@ -46,10 +48,6 @@ void AVTReceiverGrid::BeginPlay()
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 			AVibeyItemReceiver* Receiver = GetWorld()->SpawnActor<AVibeyItemReceiver>(ReceiverClass, Location, BoxRotation, SpawnParams);
 			Receiver->AttachToActor(this, AttachRules);
-
-			UE_LOG(LogTemp, Log, TEXT("Spawned receiver at %0.2f, %0.2f, %0.2f"), Location.X, Location.Y, Location.Z);
-
-			//CellAssignments.Add(FIntVector(xIDX, yIDX)) = Receiver;
 		}
 	}
 }
@@ -71,7 +69,10 @@ TArray<FVector> AVTReceiverGrid::GetOpenLocations()
 			for(AActor* Child : Children)
 			{
 				FVector ChildLocation = Child->GetActorLocation();
-				if(ChildLocation.X == Location.X && ChildLocation.Y == Location.Y)
+
+				bool XMatch = FMath::IsNearlyEqual(ChildLocation.X, Location.X, 1.0f);
+				bool YMatch = FMath::IsNearlyEqual(ChildLocation.Y, Location.Y, 1.0f);
+				if(XMatch && YMatch)
 				{
 					bCellOpen = false;
 					break;
