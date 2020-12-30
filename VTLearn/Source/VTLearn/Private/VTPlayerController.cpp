@@ -95,7 +95,7 @@ void AVTPlayerController::SetupInputComponent()
 
 FVector AVTPlayerController::GetForward2D()
 {
-	return FVector(1.0f, 0.0f, 0.0f);
+	return PlayerCameraManager->GetViewTarget()->GetActorForwardVector().GetSafeNormal2D();
 }
 
 void AVTPlayerController::OnMoveUp(float Value)
@@ -246,6 +246,7 @@ void AVTPlayerController::DropItem()
 
 	TArray<AActor*> ActorsInReach;
 	Pawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItemReceiver>());
+
 	if(IsValid(Item) && ActorsInReach.Num() > 0)
 	{
 		for(AActor* ReachableActor : ActorsInReach)
