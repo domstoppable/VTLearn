@@ -1,9 +1,10 @@
 #include "VTSaveGame.h"
 #include "LevelConfig.h"
 
+#include "Kismet/GameplayStatics.h"
+
 #include "Misc/Paths.h"
 #include "HAL/PlatformFilemanager.h"
-
 
 TArray<FString> UVTSaveGame::GetAllSaveGameSlotNames()
 {
@@ -43,6 +44,21 @@ TArray<FString> UVTSaveGame::GetAllSaveGameSlotNames()
 	}
 
 	Saves.Sort();
+
+	return Saves;
+}
+
+TArray<UVTSaveGame*> UVTSaveGame::LoadVTSaveGames()
+{
+	TArray<UVTSaveGame*> Saves;
+	TArray<FString> Names = GetAllSaveGameSlotNames();
+
+	for(FString Name : Names)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Loading save %s"), *Name);
+		USaveGame* Save = UGameplayStatics::LoadGameFromSlot(Name, 0);
+		Saves.Add((UVTSaveGame*)Save);
+	}
 
 	return Saves;
 }

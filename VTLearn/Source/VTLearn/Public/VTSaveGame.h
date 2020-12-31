@@ -42,4 +42,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = Game)
 	static TArray<FString> GetAllSaveGameSlotNames();
 
+	UFUNCTION(BlueprintCallable)
+	static TArray<UVTSaveGame*> LoadVTSaveGames();
 };
