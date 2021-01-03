@@ -2,8 +2,10 @@
 
 
 #include "VibeyItemGenerator.h"
-#include "Math/UnrealMathUtility.h"
 
+#include "Math/UnrealMathUtility.h"
+#include "TimerManager.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AVibeyItemGenerator::AVibeyItemGenerator()
@@ -48,5 +50,5 @@ UPhoneticPhrase* AVibeyItemGenerator::RandomPhrase()
 void AVibeyItemGenerator::AddToPhraseBank(TArray<UPhoneticPhrase*> MorePhrases)
 {
 	Phrases.Append(MorePhrases);
-	UE_LOG(LogTemp, Log, TEXT("Item generator `%s` now has %d phrases"), *GetActorLabel(), Phrases.Num());
+	UE_LOG(LogTemp, Log, TEXT("Item generator `%s` now has %d phrases"), *GetName(), Phrases.Num());
 }

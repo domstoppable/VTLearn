@@ -2,6 +2,8 @@
 
 #pragma once
 
+#include "Engine/StaticMesh.h"
+
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "VTAnimalConfig.generated.h"

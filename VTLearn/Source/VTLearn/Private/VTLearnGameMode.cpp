@@ -11,6 +11,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "EngineUtils.h"
+#include "TimerManager.h"
 
 AVTLearnGameMode::AVTLearnGameMode()
 {
@@ -115,7 +116,7 @@ void AVTLearnGameMode::SetupGenerators()
 		DistractorPhrases.GenerateValueArray(TmpArray);
 		ItemGenerator->AddToPhraseBank(TmpArray);
 
-		UE_LOG(LogTemp, Log, TEXT("Set up generator %s"), *ItemGenerator->GetActorLabel());
+		UE_LOG(LogTemp, Log, TEXT("Set up generator %s"), *ItemGenerator->GetName());
 	}
 }
 

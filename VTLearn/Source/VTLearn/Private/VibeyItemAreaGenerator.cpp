@@ -6,6 +6,8 @@
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "Engine/EngineTypes.h"
+#include "TimerManager.h"
+#include "Components/StaticMeshComponent.h"
 
 // Sets default values
 AVibeyItemAreaGenerator::AVibeyItemAreaGenerator()

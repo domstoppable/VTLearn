@@ -10,16 +10,6 @@ AVTHUD::AVTHUD()
 
 	StatsWidgetClass = UVTHUDWidget::StaticClass();
 
-	FString ClassRefName = "WidgetBlueprint'/Psydekick/Visuals/2D/Menu/Runtime/MenuTreeWidgetBP.MenuTreeWidgetBP'";
-	PauseWidgetClass = PKTools::GetBlueprintClass(ClassRefName);
-	if(PauseWidgetClass)
-	{
-		PauseWidget = CreateWidget<UMenuTreeWidget>(GetWorld(), PauseWidgetClass);
-	}
-	else
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Could not load widget class %s"), *ClassRefName);
-	}
 }
 
 void AVTHUD::BeginPlay()
@@ -32,10 +22,18 @@ void AVTHUD::BeginPlay()
 		StatsWidget->AddToViewport();
 	}
 
+	if(PauseWidgetClass)
+	{
+		UE_LOG(LogTemp, Log, TEXT("Creating pause widget"));
+		PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
+	}
+
 	if(IsValid(PauseWidget))
 	{
-		PauseWidget->LoadMenuTree(PauseMenuTree);
-		PauseWidget->AnimateOutFinished.BindDynamic(this, &AVTHUD::OnPauseAnimOutDone);
+		if(UMenuTreeWidget* PauseMenu = Cast<UMenuTreeWidget>(PauseWidget))
+		{
+			PauseMenu->LoadMenuTree(PauseMenuTree);
+		}
 	}
 
 	if(IsValid(InstructionsWidgetClass))
@@ -55,8 +53,14 @@ void AVTHUD::ShowPause()
 {
 	if(IsValid(PauseWidget))
 	{
-		PauseWidget->AnimateIn();
-		PauseWidget->AddToViewport();
+		if(UMenuTreeWidget* PauseMenu = Cast<UMenuTreeWidget>(PauseWidget))
+		{
+			PauseMenu->Show();
+		}
+		else
+		{
+			PauseWidget->AddToViewport();
+		}
 	}else{
 		UE_LOG(LogTemp, Warning, TEXT("Pause widget bad :("));
 	}
@@ -66,17 +70,15 @@ void AVTHUD::HidePause()
 {
 	if(IsValid(PauseWidget))
 	{
-		PauseWidget->AnimateOut();
+		if(UMenuTreeWidget* PauseMenu = Cast<UMenuTreeWidget>(PauseWidget))
+		{
+			PauseMenu->Hide();
+		}
 	}
 	else
 	{
 		UE_LOG(LogTemp, Warning, TEXT("No pause widget :("));
 	}
-}
-
-void AVTHUD::OnPauseAnimOutDone()
-{
-	PauseWidget->RemoveFromParent();
 }
 
 void AVTHUD::ScoreChanged(int32 Delta, int32 Total)

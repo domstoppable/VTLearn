@@ -2,8 +2,7 @@
 
 
 #include "VTCameraRelativePlayerController.h"
-//#include "VTPlayerController.h"
-
+#include "GameFramework/Pawn.h"
 
 FVector AVTCameraRelativePlayerController::GetForward2D()
 {

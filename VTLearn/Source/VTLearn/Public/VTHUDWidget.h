@@ -15,12 +15,3 @@ public:
 	UFUNCTION(BlueprintImplementableEvent)
 	void ScoreChanged(int32 Delta, int32 Total);
 };
-
-UCLASS()
-class VTLEARN_API UVTPauseMenuWidget : public UUserWidget
-{
-	GENERATED_BODY()
-
-public:
-
-};

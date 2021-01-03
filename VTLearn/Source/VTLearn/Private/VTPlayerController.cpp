@@ -147,7 +147,7 @@ void AVTPlayerController::OnGrab()
 		UE_LOG(LogTemp, Log, TEXT("Attempting to hold - %d actors nearby"), ActorsInReach.Num());
 		for(auto Actor : ActorsInReach)
 		{
-			UE_LOG(LogTemp, Log, TEXT("Attempting to hold %s"), *Actor->GetActorLabel());
+			UE_LOG(LogTemp, Log, TEXT("Attempting to hold %s"), *Actor->GetName());
 			if(HoldItem(Actor)){
 				UE_LOG(LogTemp, Log, TEXT("I got it"));
 				break;

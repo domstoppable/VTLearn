@@ -11,6 +11,7 @@
 #include "Engine/StaticMeshActor.h"
 #include "EngineUtils.h"
 #include "Math/UnrealMathUtility.h"
+#include "TimerManager.h"
 
 AVTSearchGameMode::AVTSearchGameMode() : AVTLearnGameMode()
 {

@@ -40,22 +40,17 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UVTHUDWidget* StatsWidget;
 
-	UPROPERTY(BlueprintReadWrite)
-	UMenuTreeWidget* PauseWidget;
-
-	UPROPERTY()
+	UPROPERTY(EditDefaults)
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
-
+	UPROPERTY(BlueprintReadWrite)
+	UUserWidget* PauseWidget;
 
 	UFUNCTION(BlueprintCallable)
 	void ShowPause();
 
 	UFUNCTION(BlueprintCallable)
 	void HidePause();
-
-	UFUNCTION()
-	void OnPauseAnimOutDone();
 
 	UFUNCTION(BlueprintCallable)
 	void ScoreChanged(int32 Delta, int32 Total);
