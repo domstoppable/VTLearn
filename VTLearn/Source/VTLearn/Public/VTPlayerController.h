@@ -11,7 +11,6 @@
 #include "GameFramework/PlayerController.h"
 #include "VTPlayerController.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVTControllerScoreChanged, int32, Delta, int32, Total);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTPauseChanged, bool, Paused);
 
 UCLASS()
@@ -28,9 +27,6 @@ public:
 	// @TODO: move this to character class
 	UPROPERTY(BlueprintReadOnly)
 	AActor* HeldItem;
-
-	UPROPERTY(BlueprintAssignable)
-	FVTControllerScoreChanged ScoreChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FVTPauseChanged PauseChanged;
@@ -67,18 +63,13 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void DropItem();
 
-	UFUNCTION()
-	int32 AdjustScore(int32 Amount);
-
-	UFUNCTION(BlueprintCallable)
-	int32 AwardPlayer();
-
-	UFUNCTION(BlueprintCallable)
-	int32 PunishPlayer();
-
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	AVTPlayerState* GetVTPlayerState();
 
 	UFUNCTION()
 	void OnLevelTimedOut();
+
+	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject))
+	static AVTPlayerController* GetVTPlayerController(UObject* WorldContextObject);
+
 };

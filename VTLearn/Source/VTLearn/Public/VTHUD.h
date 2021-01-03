@@ -40,7 +40,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	UVTHUDWidget* StatsWidget;
 
-	UPROPERTY(EditDefaults)
+	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite)

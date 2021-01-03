@@ -48,15 +48,7 @@ bool AVTPlayerSearchController::HoldItem(AActor* Item)
 		VibeyItem->bGrabbable = false;
 		VibeyItem->Grabbed(GetPawn());
 
-		if(VibeyItem->bIsGood)
-		{
-			AwardPlayer();
-		}
-		else
-		{
-			PunishPlayer();
-		}
-
+		GetPlayerState<AVTPlayerState>()->OnItemAttempted(VibeyItem->Phrase, VibeyItem->bIsGood);
 
 		return true;
 	}

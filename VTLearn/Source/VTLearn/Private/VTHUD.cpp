@@ -44,8 +44,8 @@ void AVTHUD::BeginPlay()
 
 	if(AVTPlayerController* PlayerController = Cast<AVTPlayerController>(PlayerOwner))
 	{
-		PlayerController->ScoreChanged.AddDynamic(this, &AVTHUD::ScoreChanged);
 		PlayerController->SetInputMode(FInputModeGameAndUI());
+		PlayerController->GetPlayerState<AVTPlayerState>()->ScoreChanged.AddDynamic(this, &AVTHUD::ScoreChanged);
 	}
 }
 

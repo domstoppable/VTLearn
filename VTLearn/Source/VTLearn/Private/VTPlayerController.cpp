@@ -13,6 +13,7 @@
 
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
 
 #include "Engine/Engine.h"
 
@@ -260,31 +261,12 @@ void AVTPlayerController::DropItem()
 	}
 }
 
-int32 AVTPlayerController::AdjustScore(int32 Amount)
-{
-	int32 NewScore = GetVTPlayerState()->GetScore() + Amount;
-	if(NewScore < 0){
-		NewScore = 0;
-	}
-	GetVTPlayerState()->SetScore(NewScore);
-	ScoreChanged.Broadcast(Amount, NewScore);
-
-	return NewScore;
-}
-
-int32 AVTPlayerController::AwardPlayer()
-{
-	GetVTPlayerState()->CorrectCount++;
-	return AdjustScore(GetWorld()->GetAuthGameMode<AVTLearnGameMode>()->PointsForCorrect);
-}
-
-int32 AVTPlayerController::PunishPlayer()
-{
-	GetVTPlayerState()->IncorrectCount++;
-	return AdjustScore(GetWorld()->GetAuthGameMode<AVTLearnGameMode>()->PointsForIncorrect);
-}
-
 AVTPlayerState* AVTPlayerController::GetVTPlayerState()
 {
 	return GetPlayerState<AVTPlayerState>();
+}
+
+AVTPlayerController* AVTPlayerController::GetVTPlayerController(UObject* WorldContextObject)
+{
+	return Cast<AVTPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
 }
