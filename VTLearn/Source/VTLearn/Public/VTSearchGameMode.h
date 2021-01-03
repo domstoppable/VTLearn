@@ -17,7 +17,7 @@ class VTLEARN_API AVTSearchGameMode : public AVTLearnGameMode
 public:
 	AVTSearchGameMode();
 
-	virtual void BeginPlay() override;
+	virtual void LoadLevelInfo() override;
 	virtual void SetupReceivers() override {}
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

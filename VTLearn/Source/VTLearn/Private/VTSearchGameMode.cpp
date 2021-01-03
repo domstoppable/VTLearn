@@ -18,15 +18,14 @@ AVTSearchGameMode::AVTSearchGameMode() : AVTLearnGameMode()
 	PlayerControllerClass = AVTPlayerSearchController::StaticClass();
 }
 
-
-void AVTSearchGameMode::BeginPlay()
+void AVTSearchGameMode::LoadLevelInfo()
 {
-	Super::BeginPlay();
+	Super::LoadLevelInfo();
 
 	Matcher = NewObject<UPhoneSequenceMatcher>();
 
 	TArray<FString> TmpPhraseKeys;
-	TrainingPhrases.GenerateKeyArray(TmpPhraseKeys); // @TODO: shuffle?
+	TrainingPhrases.GenerateKeyArray(TmpPhraseKeys);
 	for(FString PhraseText : TmpPhraseKeys)
 	{
 		PhraseKeys.AddUnique(PhraseText);
