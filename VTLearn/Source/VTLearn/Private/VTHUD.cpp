@@ -7,9 +7,7 @@
 AVTHUD::AVTHUD()
 {
 	SetTickableWhenPaused(true);
-
 	StatsWidgetClass = UVTHUDWidget::StaticClass();
-
 }
 
 void AVTHUD::BeginPlay()
@@ -73,6 +71,10 @@ void AVTHUD::HidePause()
 		if(UMenuTreeWidget* PauseMenu = Cast<UMenuTreeWidget>(PauseWidget))
 		{
 			PauseMenu->Hide();
+		}
+		else
+		{
+			PauseMenu->RemoveFromViewport();
 		}
 	}
 	else

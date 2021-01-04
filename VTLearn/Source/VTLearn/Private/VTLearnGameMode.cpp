@@ -48,21 +48,18 @@ void AVTLearnGameMode::Tick(float Delta)
 void AVTLearnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-
-
+	LoadLevelInfo();
 	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AVTLearnGameMode::TickAfterBeginPlay);
 }
 
 void AVTLearnGameMode::TickAfterBeginPlay()
 {
-	LoadLevelInfo();
 	SetupGenerators();
 	SetupReceivers();
 }
 
 void AVTLearnGameMode::LoadLevelInfo()
 {
-
 	UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance());
 	if(!IsValid(GameInstance))
 	{
@@ -164,6 +161,12 @@ void AVTLearnGameMode::SetupReceivers()
 		}
 		++ReceiverItr;
 	}
-
 }
 
+FString AVTLearnGameMode::GetHumanReadableRemainingTime()
+{
+	int Minutes = RemainingTime / 60;
+	int Seconds = RemainingTime - (Minutes*60);
+
+	return FString::Printf(TEXT("%d:%02d"), Minutes, Seconds);
+}

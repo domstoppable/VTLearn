@@ -6,7 +6,6 @@
 #include "VTMenuController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVTMenuAction);
-//DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTPauseChanged, bool, Paused);
 
 UCLASS(BlueprintType)
 class VTLEARN_API AVTMenuController : public APlayerController

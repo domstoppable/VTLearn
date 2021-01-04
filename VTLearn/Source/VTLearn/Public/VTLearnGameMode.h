@@ -35,7 +35,10 @@ public:
 	TArray<FString> PhraseKeys;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float RemainingTime = 180.0f;
+	float RemainingTime = 0.0f;
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FString GetHumanReadableRemainingTime();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 PointsForCorrect = 10;
