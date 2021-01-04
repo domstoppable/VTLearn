@@ -8,10 +8,16 @@
 int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 {
 	// Store attempt
-	TMap<UPhoneticPhrase*, int32> *Map = bCorrect ? &CorrectCounts : &IncorrectCounts;
-
-	int32 Count = Map->FindOrAdd(Phrase);
-	Map->Add(Phrase, ++Count);
+	FPhrasePerformance Performance = Counts.FindOrAdd(Phrase);
+	if(bCorrect)
+	{
+		Performance.Correct++;
+	}
+	else
+	{
+		Performance.Incorrect++;
+	}
+	Counts.Add(Phrase, Performance);
 
 	// Adjust score
 	AVTLearnGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTLearnGameMode>();
@@ -29,61 +35,50 @@ int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 
 int32 AVTPlayerState::GetTotalCorrectCount()
 {
-	return GetTotal(CorrectCounts);
-}
-
-int32 AVTPlayerState::GetTotalIncorrectCount()
-{
-	return GetTotal(IncorrectCounts);
-}
-
-int32 AVTPlayerState::GetTotal(const TMap<UPhoneticPhrase*, int32>& Map)
-{
-	TArray<int32> Counts;
-	Map.GenerateValueArray(Counts);
+	TArray<FPhrasePerformance> AllCounts;
+	Counts.GenerateValueArray(AllCounts);
 
 	int Total = 0;
-	for(int32 Count : Counts)
+	for(FPhrasePerformance Count : AllCounts)
 	{
-		Total += Count;
+		Total += Count.Correct;
 	}
 
 	return Total;
 }
 
-int32 AVTPlayerState::GetCorrectCountByPhrase(UPhoneticPhrase* Phrase)
+int32 AVTPlayerState::GetTotalIncorrectCount()
 {
-	return CorrectCounts.FindOrAdd(Phrase);
-}
+	TArray<FPhrasePerformance> AllCounts;
+	Counts.GenerateValueArray(AllCounts);
 
-int32 AVTPlayerState::GetIncorrectCountByPhrase(UPhoneticPhrase* Phrase)
-{
-	return CorrectCounts.FindOrAdd(Phrase);
-}
-
-int32 AVTPlayerState::GetCorrectCountByText(FString WrittenText)
-{
-	return GetCounts(WrittenText, CorrectCounts);
-}
-
-int32 AVTPlayerState::GetIncorrectCountByText(FString WrittenText)
-{
-	return GetCounts(WrittenText, IncorrectCounts);
-}
-
-int32 AVTPlayerState::GetCounts(FString WrittenText, const TMap<UPhoneticPhrase*, int32>& Map)
-{
-	TArray<UPhoneticPhrase*> Phrases;
-	Map.GenerateKeyArray(Phrases);
-
-	int32 Count = 0;
-	for(UPhoneticPhrase* Phrase : Phrases)
+	int Total = 0;
+	for(FPhrasePerformance Count : AllCounts)
 	{
-		if(WrittenText == Phrase->WrittenText)
-		{
-			Count += *Map.Find(Phrase);
-		}
+		Total += Count.Incorrect;
 	}
 
-	return Count;
+	return Total;
+}
+
+TMap<FString, FPhrasePerformance> AVTPlayerState::ReportByText()
+{
+	TMap<FString, FPhrasePerformance> Report;
+
+	TArray<UPhoneticPhrase*> Phrases;
+	Counts.GenerateKeyArray(Phrases);
+
+	for(UPhoneticPhrase* Phrase : Phrases)
+	{
+		FPhrasePerformance ReportCount = Report.FindOrAdd(Phrase->WrittenText);
+
+		FPhrasePerformance Count = Counts.FindOrAdd(Phrase);
+		UE_LOG(LogTemp, Log, TEXT("Reporting on %s, %d, %d"), *Phrase->WrittenText, Count.Correct, Count.Incorrect);
+		ReportCount.Correct += Count.Correct;
+		ReportCount.Incorrect += Count.Incorrect;
+
+		Report.Add(Phrase->WrittenText, ReportCount);
+	}
+
+	return Report;
 }

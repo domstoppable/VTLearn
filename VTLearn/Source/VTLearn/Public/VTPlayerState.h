@@ -8,6 +8,18 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_TwoParams(FVTScoreChanged, int32, Delta, int32, Total);
 
+USTRUCT(BlueprintType)
+struct FPhrasePerformance
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Correct = 0;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 Incorrect = 0;
+};
+
 UCLASS(BlueprintType)
 class VTLEARN_API AVTPlayerState : public APlayerState
 {
@@ -15,10 +27,10 @@ class VTLEARN_API AVTPlayerState : public APlayerState
 
 public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<UPhoneticPhrase*, int32> CorrectCounts;
+	TMap<UPhoneticPhrase*, FPhrasePerformance> Counts;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<UPhoneticPhrase*, int32> IncorrectCounts;
+	UPROPERTY(BlueprintAssignable)
+	FVTScoreChanged ScoreChanged;
 
 	UFUNCTION(BlueprintCallable)
 	int32 OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect);
@@ -29,22 +41,7 @@ public:
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int32 GetTotalIncorrectCount();
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int32 GetCorrectCountByPhrase(UPhoneticPhrase* Phrase);
+	UFUNCTION(BlueprintCallable)
+	TMap<FString, FPhrasePerformance> ReportByText();
 
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int32 GetIncorrectCountByPhrase(UPhoneticPhrase* Phrase);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int32 GetCorrectCountByText(FString WrittenText);
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	int32 GetIncorrectCountByText(FString WrittenText);
-
-	UPROPERTY(BlueprintAssignable)
-	FVTScoreChanged ScoreChanged;
-
-protected:
-	int32 GetTotal(const TMap<UPhoneticPhrase*, int32>& Map);
-	int32 GetCounts(FString WrittenText, const TMap<UPhoneticPhrase*, int32>& Map);
 };
