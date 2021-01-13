@@ -72,14 +72,14 @@ UPhoneticPhrase* UPhoneticPhrase::LoadPhoneticPhrase(FString VTTFilename)
 	UE_LOG(LogTemp, Log, TEXT("Sample period : %d"), SamplePeriod);
 	*/
 
-	char WrittenTextChars[TextBytes+1];
+	char* WrittenTextChars = new char[TextBytes+1];
 	FMemory::Memcpy(WrittenTextChars, FileData.GetData() + Idx, TextBytes);
 	WrittenTextChars[TextBytes] = '\0';
 	Idx += TextBytes;
 
 	FString WrittenText(WrittenTextChars);
 
-	char PhoneticTextChars[PhoneticBytes+1];
+	char* PhoneticTextChars = new char[PhoneticBytes+1];
 	FMemory::Memcpy(PhoneticTextChars, FileData.GetData() + Idx, PhoneticBytes);
 	PhoneticTextChars[PhoneticBytes] = '\0';
 	Idx += PhoneticBytes;
@@ -90,7 +90,7 @@ UPhoneticPhrase* UPhoneticPhrase::LoadPhoneticPhrase(FString VTTFilename)
 	PhoneticText = PhoneticText.Replace(TEXT("sil"), TEXT(""));
 	PhoneticText = PhoneticText.TrimStartAndEnd();
 
-	uint8 RawSamples[SampleCount*3];
+	uint8* RawSamples = new uint8[SampleCount*3];
 	FMemory::Memcpy(RawSamples, FileData.GetData() + Idx, SampleCount*3);
 
 	UPhoneticPhrase* Phrase = NewObject<UPhoneticPhrase>();
@@ -103,6 +103,10 @@ UPhoneticPhrase* UPhoneticPhrase::LoadPhoneticPhrase(FString VTTFilename)
 
 	// Split up phonetic text
 	Phrase->Phonemes = StringToSequence(PhoneticText);
+
+	delete[] WrittenTextChars;
+	delete[] PhoneticTextChars;
+	delete[] RawSamples;
 
 	return Phrase;
 }

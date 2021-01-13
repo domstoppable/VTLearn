@@ -60,7 +60,7 @@ void UVTSerialDevice::Disconnect()
 
 void UVTSerialDevice::Send(TArray<uint8> Data)
 {
-	char data[Data.Num()];
+	char* data = new char[Data.Num()];
 	for(int32 i=0; i<Data.Num(); i++)
 	{
 		data[i] = (char)(Data[i]);
@@ -74,6 +74,8 @@ void UVTSerialDevice::Send(TArray<uint8> Data)
 		FString Message(exception.what());
 		UE_LOG(LogTemp, Warning, TEXT("Failed to write %d bytes to serial device: %s"), Data.Num(), *Message);
 	}
+
+	delete[] data;
 }
 
 
