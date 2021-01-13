@@ -133,8 +133,6 @@ void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatu
 	}
 
 	ETravelType TravelType = TRAVEL_Absolute;
-	FWorldContext &WorldContext = GEngine->GetWorldContextFromWorldChecked(World);
-
 	GEngine->SetClientTravel(World, *Map, TravelType);
 }
 

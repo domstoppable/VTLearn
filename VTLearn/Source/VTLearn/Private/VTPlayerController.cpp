@@ -101,40 +101,40 @@ FVector AVTPlayerController::GetForward2D()
 
 void AVTPlayerController::OnMoveUp(float Value)
 {
-	APawn* Pawn = GetPawn();
-	if(!IsValid(Pawn))
+	APawn* PlayerPawn = GetPawn();
+	if(!IsValid(PlayerPawn))
 	{
 		return;
 	}
 
 	const FVector Forward = GetForward2D();
-	Pawn->AddMovementInput(Forward, Value);
+	PlayerPawn->AddMovementInput(Forward, Value);
 }
 
 void AVTPlayerController::OnMoveRight(float Value)
 {
-	APawn* Pawn = GetPawn();
-	if(!IsValid(Pawn))
+	APawn* PlayerPawn = GetPawn();
+	if(!IsValid(PlayerPawn))
 	{
 		return;
 	}
 
 	const FVector Right = GetForward2D().RotateAngleAxis(90, FVector(0.0f, 0.0f, 1.0f));
-	Pawn->AddMovementInput(Right, Value);
+	PlayerPawn->AddMovementInput(Right, Value);
 }
 
 void AVTPlayerController::OnJump()
 {
-	if(ACharacter* Character = Cast<ACharacter>(GetPawn()))
+	if(ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn()))
 	{
-		Character->Jump();
+		PlayerCharacter->Jump();
 	}
 }
 
 void AVTPlayerController::OnGrab()
 {
-	APawn* Pawn = GetPawn();
-	if(!IsValid(Pawn))
+	APawn* PlayerPawn = GetPawn();
+	if(!IsValid(PlayerPawn))
 	{
 		return;
 	}
@@ -144,7 +144,7 @@ void AVTPlayerController::OnGrab()
 		DropItem();
 	}else{
 		TArray<AActor*> ActorsInReach;
-		Pawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItem>());
+		PlayerPawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItem>());
 		UE_LOG(LogTemp, Log, TEXT("Attempting to hold - %d actors nearby"), ActorsInReach.Num());
 		for(auto Actor : ActorsInReach)
 		{
@@ -199,8 +199,8 @@ bool AVTPlayerController::CanHold(AActor* Actor)
 
 bool AVTPlayerController::HoldItem(AActor* Item)
 {
-	APawn* Pawn = GetPawn();
-	if(!IsValid(Pawn))
+	APawn* PlayerPawn = GetPawn();
+	if(!IsValid(PlayerPawn))
 	{
 		return false;
 	}
@@ -222,9 +222,9 @@ bool AVTPlayerController::HoldItem(AActor* Item)
 	}
 
 	HeldItem = Item;
-	if(AVTLearnCharacter* Character = Cast<AVTLearnCharacter>(Pawn))
+	if(AVTLearnCharacter* PlayerCharacter = Cast<AVTLearnCharacter>(PlayerPawn))
 	{
-		Character->ItemGrabbed(HeldItem);
+		PlayerCharacter->ItemGrabbed(HeldItem);
 	}
 
 	return true;
@@ -232,21 +232,21 @@ bool AVTPlayerController::HoldItem(AActor* Item)
 
 void AVTPlayerController::DropItem()
 {
-	APawn* Pawn = GetPawn();
-	if(!IsValid(Pawn))
+	APawn* PlayerPawn = GetPawn();
+	if(!IsValid(PlayerPawn))
 	{
 		return;
 	}
 
-	if(AVTLearnCharacter* Character = Cast<AVTLearnCharacter>(Pawn))
+	if(AVTLearnCharacter* PlayerCharacter = Cast<AVTLearnCharacter>(PlayerPawn))
 	{
-		Character->ItemDropped(HeldItem);
+		PlayerCharacter->ItemDropped(HeldItem);
 	}
 	AVibeyItem* Item = Cast<AVibeyItem>(HeldItem);
 	HeldItem = nullptr;
 
 	TArray<AActor*> ActorsInReach;
-	Pawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItemReceiver>());
+	PlayerPawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItemReceiver>());
 
 	if(IsValid(Item) && ActorsInReach.Num() > 0)
 	{

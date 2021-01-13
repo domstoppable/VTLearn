@@ -54,8 +54,8 @@ void AVTReceiverGrid::BeginPlay()
 
 TArray<FVector> AVTReceiverGrid::GetOpenLocations()
 {
-	TArray<AActor*> Children;
-	GetAttachedActors(Children);
+	TArray<AActor*> AttachedActors;
+	GetAttachedActors(AttachedActors);
 
 	TArray<FVector> OpenLocations;
 
@@ -66,7 +66,7 @@ TArray<FVector> AVTReceiverGrid::GetOpenLocations()
 			FVector Location = GridWorldLocations[xIDX][yIDX];
 
 			bool bCellOpen = true;
-			for(AActor* Child : Children)
+			for(AActor* Child : AttachedActors)
 			{
 				FVector ChildLocation = Child->GetActorLocation();
 

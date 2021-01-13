@@ -6,13 +6,13 @@
 
 FVector AVTCameraRelativePlayerController::GetForward2D()
 {
-	APawn* Pawn = GetPawn();
-	if(!IsValid(Pawn))
+	APawn* PlayerPawn = GetPawn();
+	if(!IsValid(PlayerPawn))
 	{
 		return Super::GetForward2D();
 	}
 
-	FVector PawnPosition = Pawn->GetTransform().GetTranslation();
+	FVector PawnPosition = PlayerPawn->GetTransform().GetTranslation();
 	FVector CameraPosition = PlayerCameraManager->GetViewTarget()->GetTransform().GetTranslation();
 
 	return (PawnPosition - CameraPosition).GetSafeNormal2D();
