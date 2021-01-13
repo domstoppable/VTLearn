@@ -84,6 +84,21 @@ TArray<FString> UVTSerialDevice::GetSerialPorts()
 	TArray<FString> Ports;
 
 	#if defined(WIN32) || defined(_WIN32)
+		wchar_t lpTargetPath[5000];
+
+		for (int i=0; i<256; i++)
+		{
+			std::string str = "COM" + std::to_string(i);
+			std::wstring stemp = std::wstring(str.begin(), str.end());
+			LPCWSTR sw = stemp.c_str();
+
+			DWORD test = QueryDosDevice(sw, lpTargetPath, 5000);
+
+			if (test != 0)
+			{
+				Ports.Add(FString(str.c_str()));
+			}
+		}
 	#else
 		class FDeviceNodeVisitor : public IPlatformFile::FDirectoryVisitor
 		{
