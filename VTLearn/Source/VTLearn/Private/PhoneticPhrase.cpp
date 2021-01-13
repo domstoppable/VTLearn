@@ -160,7 +160,11 @@ TArray<UPhoneticPhrase*> UPhoneticPhrase::LoadPhrases(FString PhraseName)
 	TArray<FString> Files;
 	IFileManager& FileManager = IFileManager::Get();
 
-	FString Path = "/home/dom/Documents/Dissertation Stimuli/vtt/";
+	#if defined(WIN32) || defined(_WIN32)
+		FString Path = "C:/Users/dom/Documents/vtt/";
+	#else
+		FString Path = "/home/dom/Documents/Dissertation Stimuli/vtt/";
+	#endif
 
 	FileManager.FindFiles(Files, *(Path + ("*-" + PhraseName + ".vtt")), true, false);
 	FileManager.FindFiles(Files, *(Path + (PhraseName + ".vtt")), true, false);
