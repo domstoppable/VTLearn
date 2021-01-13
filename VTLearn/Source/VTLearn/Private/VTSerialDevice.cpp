@@ -1,7 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 #include "VTSerialDevice.h"
+
 #include "VTDevice.h"
+#include "Misc/Paths.h"
 
 UVTSerialDevice* UVTSerialDevice::ConnectToSerialDevice(
 	FString Port,
@@ -72,4 +74,48 @@ void UVTSerialDevice::Send(TArray<uint8> Data)
 		FString Message(exception.what());
 		UE_LOG(LogTemp, Warning, TEXT("Failed to write %d bytes to serial device: %s"), Data.Num(), *Message);
 	}
+}
+
+
+TArray<FString> UVTSerialDevice::GetSerialPorts()
+{
+	TArray<FString> Ports;
+
+	#if defined(WIN32) || defined(_WIN32)
+	#else
+		class FDeviceNodeVisitor : public IPlatformFile::FDirectoryVisitor
+		{
+		public:
+			FDeviceNodeVisitor() {}
+
+			virtual bool Visit(const TCHAR* FilenameOrDirectory, bool bIsDirectory)
+			{
+				if (!bIsDirectory)
+				{
+					FString Path(FilenameOrDirectory);
+
+					if (Path.Contains("ttyUSB"))
+					{
+						DevicePaths.Add(Path);
+					}
+				}
+				return true;
+			}
+
+			TArray<FString> DevicePaths;
+		};
+
+		const FString DeviceFolder = TEXT("/dev/");
+
+		if (!DeviceFolder.IsEmpty())
+		{
+			FDeviceNodeVisitor Visitor;
+			FPlatformFileManager::Get().GetPlatformFile().IterateDirectory(*DeviceFolder, Visitor);
+			Ports = Visitor.DevicePaths;
+		}
+
+		//Ports.Sort();
+	#endif
+
+	return Ports;
 }

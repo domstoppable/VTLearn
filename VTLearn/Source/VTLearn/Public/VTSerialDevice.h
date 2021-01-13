@@ -56,6 +56,9 @@ public:
 	virtual void Disconnect() override;
 	virtual void Send(TArray<uint8> Data) override;
 
+	UFUNCTION(BlueprintCallable, Category="VTT")
+	static TArray<FString> GetSerialPorts();
+
 protected:
 
 	boost::asio::io_service io;
