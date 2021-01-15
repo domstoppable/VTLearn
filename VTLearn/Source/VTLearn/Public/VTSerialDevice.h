@@ -23,10 +23,13 @@ THIRD_PARTY_INCLUDES_START
 #include <boost/bind.hpp>
 #include <boost/thread.hpp>
 
-// Windows includes
+// platform includes
 #if defined(WIN32) || defined(_WIN32)
 	#include <string>
 	#include <Windows.h>
+#else
+	#include <limits.h>
+	#include <stdlib.h>
 #endif
 
 #pragma pop_macro("TEXT")
@@ -40,6 +43,27 @@ THIRD_PARTY_INCLUDES_END
 #include "CoreMinimal.h"
 #include "VTDevice.h"
 #include "VTSerialDevice.generated.h"
+
+USTRUCT(BlueprintType)
+struct FSerialPortInfo
+{
+	GENERATED_USTRUCT_BODY()
+
+	UPROPERTY(BlueprintReadOnly, Category=Serial)
+	FString Device;
+
+	UPROPERTY(BlueprintReadOnly, Category=Serial)
+	FString VendorID;
+
+	UPROPERTY(BlueprintReadOnly, Category=Serial)
+	FString ProductID;
+
+	UPROPERTY(BlueprintReadOnly, Category=Serial)
+	FString Manufacturer;
+
+	UPROPERTY(BlueprintReadOnly, Category=Serial)
+	FString Product;
+};
 
 UCLASS()
 class VTLEARN_API UVTSerialDevice : public UVTDevice
@@ -68,7 +92,18 @@ public:
 	virtual void Send(TArray<uint8> Data) override;
 
 	UFUNCTION(BlueprintCallable, Category="VTT")
-	static TArray<FString> GetSerialPorts();
+	static TArray<FSerialPortInfo> GetSerialPorts();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	static FString SerialPortToHumanReadable(FSerialPortInfo PortInfo){
+		return PortInfo.Device + ": " + PortInfo.Manufacturer + " - " + PortInfo.Product;
+	}
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	static bool IsPreferredDevice(FSerialPortInfo PortInfo){
+		return PortInfo.VendorID == "10c4" && PortInfo.ProductID == "ea60";
+	}
+
 
 protected:
 

@@ -4,6 +4,7 @@
 
 #include "VTDevice.h"
 #include "Misc/Paths.h"
+#include "Misc/FileHelper.h"
 
 UVTSerialDevice* UVTSerialDevice::ConnectToSerialDevice(
 	FString Port,
@@ -79,9 +80,9 @@ void UVTSerialDevice::Send(TArray<uint8> Data)
 }
 
 
-TArray<FString> UVTSerialDevice::GetSerialPorts()
+TArray<FSerialPortInfo> UVTSerialDevice::GetSerialPorts()
 {
-	TArray<FString> Ports;
+	TArray<FSerialPortInfo> Ports;
 
 	#if defined(WIN32) || defined(_WIN32)
 		wchar_t lpTargetPath[5000];
@@ -124,14 +125,46 @@ TArray<FString> UVTSerialDevice::GetSerialPorts()
 
 		const FString DeviceFolder = TEXT("/dev/");
 
-		if (!DeviceFolder.IsEmpty())
+		FDeviceNodeVisitor Visitor;
+		FPlatformFileManager::Get().GetPlatformFile().IterateDirectory(*DeviceFolder, Visitor);
+		for(FString Path : Visitor.DevicePaths)
 		{
-			FDeviceNodeVisitor Visitor;
-			FPlatformFileManager::Get().GetPlatformFile().IterateDirectory(*DeviceFolder, Visitor);
-			Ports = Visitor.DevicePaths;
+			UE_LOG(LogTemp, Log, TEXT("Examining %s"), *Path);
+			FSerialPortInfo PortInfo;
+			PortInfo.Device = Path;
+
+			char sympath[PATH_MAX];
+			sprintf(sympath, "/sys/class/tty/%s/device", TCHAR_TO_ANSI(*FPaths::GetCleanFilename(Path)));
+			char abspath[PATH_MAX];
+			char *res = realpath(sympath, abspath);
+
+			FString DeviceInfoPath = FString(abspath) + TEXT("/../../");
+			UE_LOG(LogTemp, Log, TEXT("\tdevice info path '%s'"), *DeviceInfoPath);
+
+			TArray<FString> Tmp;
+
+			FFileHelper::LoadANSITextFileToStrings(*(DeviceInfoPath + "idVendor"), &IFileManager::Get(), Tmp);
+			if(Tmp.Num() > 0) PortInfo.VendorID = Tmp[0];
+
+			Tmp.Reset();
+			FFileHelper::LoadANSITextFileToStrings(*(DeviceInfoPath + "idProduct"), &IFileManager::Get(), Tmp);
+			if(Tmp.Num() > 0) PortInfo.ProductID = Tmp[0];
+
+			Tmp.Reset();
+			FFileHelper::LoadANSITextFileToStrings(*(DeviceInfoPath + "manufacturer"), &IFileManager::Get(), Tmp);
+			if(Tmp.Num() > 0) PortInfo.Manufacturer = Tmp[0];
+
+			Tmp.Reset();
+			FFileHelper::LoadANSITextFileToStrings(*(DeviceInfoPath + "product"), &IFileManager::Get(), Tmp);
+			if(Tmp.Num() > 0) PortInfo.Product = Tmp[0];
+
+			UE_LOG(LogTemp, Log, TEXT("\tdevice ids %s:%s"), *PortInfo.VendorID, *PortInfo.ProductID);
+			UE_LOG(LogTemp, Log, TEXT("\tmanufacturer %s"), *PortInfo.Manufacturer);
+			UE_LOG(LogTemp, Log, TEXT("\tproduct %s"), *PortInfo.Product);
+
+			Ports.Add(PortInfo);
 		}
 
-		//Ports.Sort();
 	#endif
 
 	return Ports;
