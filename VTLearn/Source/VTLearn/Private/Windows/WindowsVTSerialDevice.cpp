@@ -1,45 +1,10 @@
 #include "VTSerialDevice.h"
 
 THIRD_PARTY_INCLUDES_START
-/*
-#pragma push_macro("CONSTEXPR")
-#undef CONSTEXPR
-#pragma push_macro("dynamic_cast")
-#undef dynamic_cast
-#pragma push_macro("check")
-#undef check
-#pragma push_macro("PI")
-#undef PI
-*/
-#pragma push_macro("TEXT")
-#undef TEXT
-
-/*
-// BOOST libs
-#include <boost/asio.hpp>
-#include <boost/asio/serial_port.hpp>
-#include <boost/system/error_code.hpp>
-#include <boost/system/system_error.hpp>
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-*/
-
-// platform includes
 #include <string>
 #include <Windows.h>
 #include <setupapi.h>
-
-#pragma pop_macro("TEXT")
-/*
-#pragma pop_macro("PI")
-#pragma pop_macro("check")
-#pragma pop_macro("dynamic_cast")
-#pragma pop_macro("CONSTEXPR")
-*/
-
 THIRD_PARTY_INCLUDES_END
-
-
 
 TArray<FSerialPortInfo> UVTSerialDevice::GetSerialPorts()
 {
