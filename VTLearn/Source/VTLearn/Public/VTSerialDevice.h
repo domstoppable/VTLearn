@@ -27,6 +27,7 @@ THIRD_PARTY_INCLUDES_START
 #if defined(WIN32) || defined(_WIN32)
 	#include <string>
 	#include <Windows.h>
+	#include <setupapi.h>
 #else
 	#include <limits.h>
 	#include <stdlib.h>
@@ -95,12 +96,14 @@ public:
 	static TArray<FSerialPortInfo> GetSerialPorts();
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)
-	static FString SerialPortToHumanReadable(FSerialPortInfo PortInfo){
-		return PortInfo.Device + ": " + PortInfo.Manufacturer + " - " + PortInfo.Product;
+	static FString SerialPortToHumanReadable(FSerialPortInfo PortInfo)
+	{
+		return FString::Printf(TEXT("[%s] %s - %s"), *PortInfo.Device, *PortInfo.Manufacturer, *PortInfo.Product);
 	}
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)
-	static bool IsPreferredDevice(FSerialPortInfo PortInfo){
+	static bool IsPreferredDevice(FSerialPortInfo PortInfo)
+	{
 		return PortInfo.VendorID == "10c4" && PortInfo.ProductID == "ea60";
 	}
 
