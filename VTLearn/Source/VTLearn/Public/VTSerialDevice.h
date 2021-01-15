@@ -1,6 +1,5 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
 #pragma once
+
 #define BOOST_ALL_NO_LIB // https://stackoverflow.com/questions/16663302/error-lnk1104-cannot-open-file-libboost-serialization-vc110-mt-gd-1-53-lib
 
 THIRD_PARTY_INCLUDES_START
@@ -15,23 +14,8 @@ THIRD_PARTY_INCLUDES_START
 #pragma push_macro("TEXT")
 #undef TEXT
 
-// BOOST libs
 #include <boost/asio.hpp>
 #include <boost/asio/serial_port.hpp>
-#include <boost/system/error_code.hpp>
-#include <boost/system/system_error.hpp>
-#include <boost/bind.hpp>
-#include <boost/thread.hpp>
-
-// platform includes
-#if defined(WIN32) || defined(_WIN32)
-	#include <string>
-	#include <Windows.h>
-	#include <setupapi.h>
-#else
-	#include <limits.h>
-	#include <stdlib.h>
-#endif
 
 #pragma pop_macro("TEXT")
 #pragma pop_macro("PI")
