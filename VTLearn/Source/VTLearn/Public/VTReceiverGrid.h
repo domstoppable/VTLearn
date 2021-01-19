@@ -17,6 +17,7 @@ public:
 	AVTReceiverGrid();
 
 	virtual void BeginPlay() override;
+	virtual void PostInitializeComponents() override;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* AreaBox;
@@ -34,9 +35,6 @@ public:
 	TArray<AVibeyItemReceiver*> Receivers;
 
 	TArray<TArray<FVector>> GridWorldLocations;
-
-	//TMap<FIntVector, AVibeyItemReceiver> CellAssignments;
-
 
 public:
 	UFUNCTION(BlueprintCallable)

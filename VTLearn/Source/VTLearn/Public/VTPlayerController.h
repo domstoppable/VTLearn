@@ -31,7 +31,7 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FVTPauseChanged PauseChanged;
 
-	virtual void SetupInputComponent() override;
+	virtual void BindInputActions() override;
 
 	void OnMoveUp(float Value);
 	void OnMoveRight(float Value);

@@ -20,24 +20,10 @@ void AVTHUD::BeginPlay()
 		StatsWidget->AddToViewport();
 	}
 
-	if(PauseWidgetClass)
-	{
-		UE_LOG(LogTemp, Log, TEXT("Creating pause widget"));
-		PauseWidget = CreateWidget<UUserWidget>(GetWorld(), PauseWidgetClass);
-	}
-
-	if(IsValid(PauseWidget))
-	{
-		if(UMenuTreeWidget* PauseMenu = Cast<UMenuTreeWidget>(PauseWidget))
-		{
-			PauseMenu->LoadMenuTree(PauseMenuTree);
-		}
-	}
-
 	if(IsValid(InstructionsWidgetClass))
 	{
 		UUserWidget* InstructionsWidget = CreateWidget<UUserWidget>(GetWorld(), InstructionsWidgetClass);
-		InstructionsWidget->AddToViewport();
+		PauseWidget = InstructionsWidget;
 	}
 
 	if(AVTPlayerController* PlayerController = Cast<AVTPlayerController>(PlayerOwner))
@@ -45,6 +31,7 @@ void AVTHUD::BeginPlay()
 		PlayerController->SetInputMode(FInputModeGameAndUI());
 		PlayerController->GetPlayerState<AVTPlayerState>()->ScoreChanged.AddDynamic(this, &AVTHUD::ScoreChanged);
 	}
+	PlayerOwner->Pause();
 }
 
 void AVTHUD::ShowPause()
@@ -60,7 +47,7 @@ void AVTHUD::ShowPause()
 			PauseWidget->AddToViewport();
 		}
 	}else{
-		UE_LOG(LogTemp, Warning, TEXT("Pause widget bad :("));
+		UE_LOG(LogTemp, Warning, TEXT("No pause widget to show :("));
 	}
 }
 
@@ -74,12 +61,12 @@ void AVTHUD::HidePause()
 		}
 		else
 		{
-			PauseMenu->RemoveFromViewport();
+			PauseWidget->RemoveFromViewport();
 		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("No pause widget :("));
+		UE_LOG(LogTemp, Warning, TEXT("No pause widget to hide :("));
 	}
 }
 

@@ -6,9 +6,13 @@
 void AVTMenuController::SetupInputComponent()
 {
 	Super::SetupInputComponent();
-
 	check(InputComponent);
 
+	BindInputActions();
+}
+
+void AVTMenuController::BindInputActions()
+{
 	InputComponent->BindAction("MenuPrimary", IE_Pressed, this, &AVTMenuController::OnMenuPrimaryAction);
 	InputComponent->BindAction("MenuSecondary", IE_Pressed, this, &AVTMenuController::OnMenuSecondaryAction);
 	InputComponent->BindAction("MenuTertiary", IE_Pressed, this, &AVTMenuController::OnMenuTertiaryAction);

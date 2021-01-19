@@ -22,23 +22,11 @@ public:
 	virtual void BeginPlay() override;
 	virtual void Tick(float Delta) override;
 
-	UFUNCTION()
-	void TickAfterBeginPlay();
-
-	virtual void LoadLevelInfo();
-	virtual void SetupGenerators();
-	virtual void SetupReceivers();
-
 	TMultiMap<FString, UPhoneticPhrase*> DistractorPhrases;
 	TMultiMap<FString, UPhoneticPhrase*> TrainingPhrases;
 
-	TArray<FString> PhraseKeys;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RemainingTime = 0.0f;
-
-	UFUNCTION(BlueprintCallable, BlueprintPure)
-	FString GetHumanReadableRemainingTime();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 PointsForCorrect = 10;
@@ -48,4 +36,24 @@ public:
 
 	UPROPERTY(BlueprintReadOnly)
 	FVTLevelTimedOut LevelTimedOut;
+
+	UFUNCTION(BlueprintCallable)
+	void QuitLevel();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	FString GetHumanReadableRemainingTime();
+
+	UFUNCTION(BlueprintPure, BlueprintCallable)
+	const TArray<UPhoneticPhrase*> GetTrainingPhrases()
+	{
+		TArray<UPhoneticPhrase*> Phrases;
+		TrainingPhrases.GenerateValueArray(Phrases);
+
+		return Phrases;
+	}
+
+protected:
+	virtual void LoadLevelInfo();
+	virtual void SetupGenerators();
+	virtual void SetupReceivers();
 };

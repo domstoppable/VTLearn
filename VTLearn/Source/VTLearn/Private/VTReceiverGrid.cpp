@@ -13,43 +13,53 @@ AVTReceiverGrid::AVTReceiverGrid()
 	AreaBox = CreateDefaultSubobject<UBoxComponent>(TEXT("AreaBox"));
 }
 
+void AVTReceiverGrid::PostInitializeComponents()
+{
+	if(IsValid(ReceiverClass))
+	{
+		FVector BoxExtent = AreaBox->GetScaledBoxExtent() * 2.0f;
+		FVector BoxLocation = AreaBox->GetComponentLocation();
+		FRotator BoxRotation = AreaBox->GetComponentRotation();
+
+		FVector ActorScale = GetActorScale();
+		FVector InverseScale(
+			1.0f / ActorScale.X,
+			1.0f / ActorScale.Y,
+			1.0f / ActorScale.Z
+		);
+
+		float xSpacing = BoxExtent.X / (XCount+1);
+		float ySpacing = BoxExtent.Y / (YCount+1);
+
+		FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, true);
+		FActorSpawnParameters SpawnParams;
+		SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+		SpawnParams.bAllowDuringConstructionScript = true;
+		SpawnParams.Owner = this;
+
+		for(int xIDX=0; xIDX<XCount; xIDX++)
+		{
+			GridWorldLocations.Emplace(TArray<FVector>());
+			for(int yIDX=0; yIDX<YCount; yIDX++)
+			{
+				FVector Location(
+					(BoxLocation.X - BoxExtent.X/2.0f) + ((xIDX+1) * xSpacing),
+					(BoxLocation.Y - BoxExtent.Y/2.0f) + ((yIDX+1) * ySpacing),
+					BoxLocation.Z
+				);
+				GridWorldLocations[xIDX].Emplace(Location);
+				AVibeyItemReceiver* Receiver = GetWorld()->SpawnActor<AVibeyItemReceiver>(ReceiverClass, Location, BoxRotation, SpawnParams);
+				Receiver->AttachToActor(this, AttachRules);
+			}
+		}
+	}
+
+	Super::PostInitializeComponents();
+}
+
 void AVTReceiverGrid::BeginPlay()
 {
 	Super::BeginPlay();
-
-	FVector BoxExtent = AreaBox->GetScaledBoxExtent() * 2.0f;
-	FVector BoxLocation = AreaBox->GetComponentLocation();
-	FRotator BoxRotation = AreaBox->GetComponentRotation();
-
-	FVector ActorScale = GetActorScale();
-	FVector InverseScale(
-		1.0f / ActorScale.X,
-		1.0f / ActorScale.Y,
-		1.0f / ActorScale.Z
-	);
-
-	float xSpacing = BoxExtent.X / (XCount+1);
-	float ySpacing = BoxExtent.Y / (YCount+1);
-
-	FAttachmentTransformRules AttachRules(EAttachmentRule::KeepWorld, true);
-
-	for(int xIDX=0; xIDX<XCount; xIDX++)
-	{
-		GridWorldLocations.Emplace(TArray<FVector>());
-		for(int yIDX=0; yIDX<YCount; yIDX++)
-		{
-			FVector Location(
-				(BoxLocation.X - BoxExtent.X/2.0f) + ((xIDX+1) * xSpacing),
-				(BoxLocation.Y - BoxExtent.Y/2.0f) + ((yIDX+1) * ySpacing),
-				BoxLocation.Z
-			);
-			GridWorldLocations[xIDX].Emplace(Location);
-			FActorSpawnParameters SpawnParams;
-			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-			AVibeyItemReceiver* Receiver = GetWorld()->SpawnActor<AVibeyItemReceiver>(ReceiverClass, Location, BoxRotation, SpawnParams);
-			Receiver->AttachToActor(this, AttachRules);
-		}
-	}
 }
 
 TArray<FVector> AVTReceiverGrid::GetOpenLocations()

@@ -94,6 +94,8 @@ UPhoneticPhrase* UPhoneticPhrase::LoadPhoneticPhrase(FString VTTFilename)
 	FMemory::Memcpy(RawSamples, FileData.GetData() + Idx, SampleCount*3);
 
 	UPhoneticPhrase* Phrase = NewObject<UPhoneticPhrase>();
+	Phrase->SourceFull = VTTFilename;
+	Phrase->SourceShort = FPaths::GetBaseFilename(VTTFilename);
 	Phrase->WrittenText = WrittenText;
 	Phrase->PhoneticText = PhoneticText;
 	Phrase->Period = SamplePeriod;

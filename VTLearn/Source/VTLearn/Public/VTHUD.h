@@ -34,14 +34,8 @@ public:
 	UPROPERTY(EditDefaultsOnly)
 	TSubclassOf<UUserWidget> LevelCompleteWidgetClass;
 
-	UPROPERTY(EditDefaultsOnly)
-	UMenuTree* PauseMenuTree;
-
 	UPROPERTY(BlueprintReadWrite)
 	UVTHUDWidget* StatsWidget;
-
-	UPROPERTY(EditDefaultsOnly)
-	TSubclassOf<UUserWidget> PauseWidgetClass;
 
 	UPROPERTY(BlueprintReadWrite)
 	UUserWidget* PauseWidget;

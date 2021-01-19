@@ -26,6 +26,7 @@ public:
 	FVTMenuAction MenuReject;
 
 	virtual void SetupInputComponent() override;
+	virtual void BindInputActions();
 
 	void OnMenuPrimaryAction();
 	void OnMenuSecondaryAction();

@@ -94,6 +94,12 @@ class VTLEARN_API UPhoneticPhrase : public UObject
 
 public:
 	UPROPERTY(BlueprintReadOnly)
+	FString SourceFull;
+
+	UPROPERTY(BlueprintReadOnly)
+	FString SourceShort;
+
+	UPROPERTY(BlueprintReadOnly)
 	FString WrittenText;
 
 	UPROPERTY(BlueprintReadOnly)

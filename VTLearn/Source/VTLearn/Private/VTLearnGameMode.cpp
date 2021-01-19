@@ -48,30 +48,26 @@ void AVTLearnGameMode::Tick(float Delta)
 void AVTLearnGameMode::BeginPlay()
 {
 	Super::BeginPlay();
-	LoadLevelInfo();
-	GetWorld()->GetTimerManager().SetTimerForNextTick(this, &AVTLearnGameMode::TickAfterBeginPlay);
-}
 
-void AVTLearnGameMode::TickAfterBeginPlay()
-{
+	LoadLevelInfo();
 	SetupGenerators();
 	SetupReceivers();
 }
 
 void AVTLearnGameMode::LoadLevelInfo()
 {
-	UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance());
-	if(!IsValid(GameInstance))
+	if(!CheckStillInWorld())
 	{
-		UE_LOG(LogTemp, Warning, TEXT("%s - Unexpected GameInstance class"), ANSI_TO_TCHAR(__FUNCTION__));
 		return;
 	}
 
+	UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance());
 	if(!IsValid(GameInstance->CurrentLevelStatus))
 	{
 		UE_LOG(LogTemp, Log, TEXT("%s : No level data loaded!"), ANSI_TO_TCHAR(__FUNCTION__));
 		return;
 	}
+
 	UE_LOG(LogTemp, Log, TEXT("%s - Setting up level %s"), ANSI_TO_TCHAR(__FUNCTION__), *(GameInstance->CurrentLevelStatus->LevelConfig.Name));
 	UE_LOG(LogTemp, Log, TEXT("%s - %d to train, %d to distract"), ANSI_TO_TCHAR(__FUNCTION__), GameInstance->CurrentLevelStatus->LevelConfig.TrainingPhrases.Num(), GameInstance->CurrentLevelStatus->LevelConfig.DistractorPhrases.Num());
 
@@ -169,4 +165,9 @@ FString AVTLearnGameMode::GetHumanReadableRemainingTime()
 	int Seconds = RemainingTime - (Minutes*60);
 
 	return FString::Printf(TEXT("%d:%02d"), Minutes, Seconds);
+}
+
+void AVTLearnGameMode::QuitLevel()
+{
+	RemainingTime = 0.01;
 }

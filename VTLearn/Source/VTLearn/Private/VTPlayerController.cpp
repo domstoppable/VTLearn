@@ -62,9 +62,10 @@ void AVTPlayerController::Pause()
 			if(IsValid(HUD->PauseWidget))
 			{
 				InputMode.SetWidgetToFocus(HUD->PauseWidget->TakeWidget());
+				UE_LOG(LogTemp, Log, TEXT("Focus pause widget"));
 			}
 			SetInputMode(InputMode);
-			bShowMouseCursor = true;
+			bShowMouseCursor = false;
 		}else{
 			HUD->HidePause();
 			SetInputMode(FInputModeGameAndUI());
@@ -78,12 +79,8 @@ void AVTPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 }
 
-void AVTPlayerController::SetupInputComponent()
+void AVTPlayerController::BindInputActions()
 {
-	Super::SetupInputComponent();
-
-	check(InputComponent);
-
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AVTPlayerController::OnJump);
 	InputComponent->BindAction("Grab", IE_Pressed, this, &AVTPlayerController::OnGrab);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &AVTPlayerController::OnInteract);
@@ -92,6 +89,8 @@ void AVTPlayerController::SetupInputComponent()
 
 	InputComponent->BindAxis("MoveUp", this, &AVTPlayerController::OnMoveUp);
 	InputComponent->BindAxis("MoveRight", this, &AVTPlayerController::OnMoveRight);
+
+	Super::BindInputActions();
 }
 
 FVector AVTPlayerController::GetForward2D()
@@ -101,6 +100,11 @@ FVector AVTPlayerController::GetForward2D()
 
 void AVTPlayerController::OnMoveUp(float Value)
 {
+	if(IsPaused())
+	{
+		return;
+	}
+
 	APawn* PlayerPawn = GetPawn();
 	if(!IsValid(PlayerPawn))
 	{
@@ -113,6 +117,11 @@ void AVTPlayerController::OnMoveUp(float Value)
 
 void AVTPlayerController::OnMoveRight(float Value)
 {
+	if(IsPaused())
+	{
+		return;
+	}
+
 	APawn* PlayerPawn = GetPawn();
 	if(!IsValid(PlayerPawn))
 	{
@@ -125,6 +134,11 @@ void AVTPlayerController::OnMoveRight(float Value)
 
 void AVTPlayerController::OnJump()
 {
+	if(IsPaused())
+	{
+		return;
+	}
+
 	if(ACharacter* PlayerCharacter = Cast<ACharacter>(GetPawn()))
 	{
 		PlayerCharacter->Jump();
@@ -133,6 +147,11 @@ void AVTPlayerController::OnJump()
 
 void AVTPlayerController::OnGrab()
 {
+	if(IsPaused())
+	{
+		return;
+	}
+
 	APawn* PlayerPawn = GetPawn();
 	if(!IsValid(PlayerPawn))
 	{
@@ -169,6 +188,11 @@ bool AVTPlayerController::CanInteract()
 
 void AVTPlayerController::OnInteract()
 {
+	if(IsPaused())
+	{
+		return;
+	}
+
 	// @TODO: Implement
 }
 
@@ -179,6 +203,11 @@ bool AVTPlayerController::CanRevibe()
 
 void AVTPlayerController::OnRevibe()
 {
+	if(IsPaused())
+	{
+		return;
+	}
+
 	// @TODO: Implement
 }
 

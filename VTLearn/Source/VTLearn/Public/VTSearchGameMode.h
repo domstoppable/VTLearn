@@ -31,6 +31,8 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FTimerHandle NextPhraseTimerHandle;
 
+	TArray<FString> PhraseKeys;
+
 	TArray<UPhoneticPhrase*> ItemPool;
 
 	UFUNCTION()
