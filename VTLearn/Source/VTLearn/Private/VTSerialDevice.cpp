@@ -48,15 +48,19 @@ void UVTSerialDevice::Connect(
 void UVTSerialDevice::BeginDestroy()
 {
 	Super::BeginDestroy();
-
 	Disconnect();
-	delete port;
-	port = nullptr;
 }
 
 
 void UVTSerialDevice::Disconnect()
 {
+	if(port)
+	{
+		port->close();
+		delete port;
+	}
+	port = nullptr;
+	ConnectionState = EDeviceConnectionState::Disconnected;
 }
 
 void UVTSerialDevice::Send(TArray<uint8> Data)
