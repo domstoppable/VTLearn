@@ -4,9 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
+
+#include "TimerManager.h"
+
 #include "VTDevice.generated.h"
 
 DECLARE_DYNAMIC_DELEGATE(FVTDeviceConnectionChangedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTDeviceVibingChanged, bool, bIsVibing);
 
 UENUM(BlueprintType)
 enum class EDeviceConnectionState : uint8
@@ -22,6 +26,9 @@ class VTLEARN_API UVTDevice : public UObject
 	GENERATED_BODY()
 
 public:
+	UPROPERTY()
+	UObject* WorldContextObject;
+
 	UPROPERTY(BlueprintReadOnly)
 	EDeviceConnectionState ConnectionState;
 
@@ -43,6 +50,12 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void PlayPhrase(UPhoneticPhrase* Phrase);
 
+	UFUNCTION(BlueprintCallable)
+	void BroadcastVibingStop();
+
+	UPROPERTY(BlueprintAssignable)
+	FVTDeviceVibingChanged DeviceVibingChanged;
+
 	#pragma region Interface functions
 
   	UFUNCTION(BlueprintCallable)
@@ -55,5 +68,7 @@ public:
 protected:
 	FVTDeviceConnectionChangedDelegate ConnectedDelegate;
 	FVTDeviceConnectionChangedDelegate DisconnectedDelegate;
+
+	FTimerHandle VibingStateTimerHandle;
 
 };

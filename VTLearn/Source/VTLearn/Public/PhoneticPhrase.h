@@ -108,12 +108,11 @@ public:
 	UPROPERTY(BlueprintReadOnly)
 	TArray<EPhoneme> Phonemes = TArray<EPhoneme>();
 
+	// In MS
 	UPROPERTY(BlueprintReadOnly)
 	int32 Period;
 
 	UPROPERTY(BlueprintReadOnly)
-	TArray<FVTTSample> Samples;
-
 	TArray<uint8> RawSamples;
 
 	UFUNCTION(BlueprintCallable, Category = "VTT")
@@ -127,6 +126,12 @@ public:
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
 	static TArray<EPhoneme> StringToSequence(FString PhoneText);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
+	int32 GetDurationInMS()
+	{
+		return Period*(RawSamples.Num()/3);
+	}
 
 	bool operator==(const UObject* Other) const
 	{

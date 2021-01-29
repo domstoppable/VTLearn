@@ -1,9 +1,7 @@
-// Fill out your copyright notice in the Description page of Project Settings.
-
-
 #include "VTDevice.h"
 
 #include "PhoneticPhrase.h"
+#include "TimerManager.h"
 
 void UVTDevice::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 {
@@ -108,4 +106,18 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 	Data.Add((uint8_t)Idx);
 
 	Send(Data);
+
+	UWorld* World = WorldContextObject->GetWorld();
+	if(IsValid(World))
+	{
+		float Duration = ((float)(Phrase->GetDurationInMS())) / 1000.0f;
+		// @TODO: Don't broadcast if paused, since the broadcast-stop timer won't start until unpaused?
+		DeviceVibingChanged.Broadcast(true);
+		World->GetTimerManager().SetTimer(VibingStateTimerHandle, this, &UVTDevice::BroadcastVibingStop, Duration, false, Duration);
+	}
+}
+
+void UVTDevice::BroadcastVibingStop()
+{
+	DeviceVibingChanged.Broadcast(false);
 }

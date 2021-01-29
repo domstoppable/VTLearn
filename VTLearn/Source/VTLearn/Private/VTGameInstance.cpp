@@ -64,6 +64,7 @@ void UVTGameInstance::ConnectToTCPDevice(FString IP, int32 Port)
 	DisconnectDelegate.BindDynamic(this, &UVTGameInstance::OnDeviceDisconnected);
 
 	VTDevice = UVTTCPDevice::ConnectToTCPDevice(IP, Port, ConnectDelegate, DisconnectDelegate);
+	VTDevice->WorldContextObject = this;
 }
 
 void UVTGameInstance::ConnectToSerialDevice(FString Port, int32 Baud)
@@ -75,6 +76,7 @@ void UVTGameInstance::ConnectToSerialDevice(FString Port, int32 Baud)
 	DisconnectDelegate.BindDynamic(this, &UVTGameInstance::OnDeviceDisconnected);
 
 	VTDevice = UVTSerialDevice::ConnectToSerialDevice(Port, Baud, ConnectDelegate, DisconnectDelegate);
+	VTDevice->WorldContextObject = this;
 
 	// Serial device connects immediately unless there's an error
 	if(VTDevice->ConnectionState != EDeviceConnectionState::Connected)
