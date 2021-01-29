@@ -1,29 +1,105 @@
 ---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map,TimeLimit
-1,Apples and bananas,Excepturi repellat id itaque animi perferendis suscipit sunt. Deleniti ducimus earum quia aut. Nostrum laudantium fugit voluptatem. Reiciendis cupiditate quo est velit itaque. Dicta praesentium mollitia voluptatem maxime adipisci dignissimos natus et.,"Vero voluptates provident et enim non quod. Neque id ea ut quia eos dolorem deleniti. Consequatur nobis neque et iste autem distinctio repudiandae. Non ut quia aperiam. Eaque cupiditate et numquam sit accusantium sint molestias sequi. Sapiente ut saepe provident.
-
-Consequatur quia esse atque et alias. Minima corporis omnis ipsam modi molestiae fuga. Consequatur a aut rerum sit autem fuga.
-
-Repellendus qui nostrum provident. Id qui nesciunt maiores aut rerum dolor. Qui magnam rem explicabo mollitia molestiae.","(""apple"",""banana"")",,"(100,200,300)",,180
-2,Desserts,Always room for jello,,"(""jello"", ""pie"")",,"(100,200,300)",,180
-3,Chili,They say you don’t know beans about chili if you put beans in your chili…,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-4,Level 4,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-5,Level 5,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-6,Level 6,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-7,Level 7,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-8,Level 8,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-9,Level 9,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-10,Level 10,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-11,Level 11,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-12,Level 12,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-13,Level 13,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-14,Level 14,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-15,Level 15,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-16,Level 16,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-17,Level 17,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-18,Level 18,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-19,Level 19,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-20,Level 20,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-21,Level 21,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-22,Level 22,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-23,Level 23,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
-24,Level 24,Something fun and witty goes here,,"(""beans"", ""chili"")",,"(100,200,300)",,180
+1,Desserts 1,,,"(""dessert"",""pie"")",,"(100,200,300)",,180
+2,Desserts 2,,,"(""jellybean"",""Ice cream"")",,"(100,200,300)",,180
+3,Desserts 3,,,"(""cocoa"",""yogurt"")",,"(100,200,300)",,180
+4,Desserts 4,,,"(""dessert"",""jellybean"",""cocoa"")",,"(100,200,300)",,180
+5,Desserts 5,,,"(""pie"",""Ice cream"",""yogurt"")",,"(100,200,300)",,180
+6,Desserts 6,,,"(""dessert"",""pie"",""jellybean"",""Ice cream"")",,"(100,200,300)",,180
+7,Desserts 7,,,"(""jellybean"",""Ice cream"",""cocoa"",""yogurt"")",,"(100,200,300)",,180
+8,Beverages 1,,,"(""coffee"",""tea"")",,"(100,200,300)",,180
+9,Beverages 2,,,"(""cocoa"",""espresso"")",,"(100,200,300)",,180
+10,Beverages 3,,,"(""cola"",""ice"")",,"(100,200,300)",,180
+11,Beverages 4,,,"(""milk"",""nog"")",,"(100,200,300)",,180
+12,Beverages 5,,,"(""coffee"",""tea"",""cocoa"",""espresso"")",,"(100,200,300)",,180
+13,Beverages 6,,,"(""cola"",""ice"",""milk"",""nog"")",,"(100,200,300)",,180
+14,Beverages 7,,,"(""coffee"",""cocoa"",""cola"",""milk"")",,"(100,200,300)",,180
+15,Beverages 8,,,"(""tea"",""espresso"",""ice"",""nog"")",,"(100,200,300)",,180
+16,Veggies 1,,,"(""vegetable"",""salad"")",,"(100,200,300)",,180
+17,Veggies 2,,,"(""asparagus"",""tomato"")",,"(100,200,300)",,180
+18,Veggies 3,,,"(""potato"",""avocado"")",,"(100,200,300)",,180
+19,Veggies 4,,,"(""cabbage"",""olive"")",,"(100,200,300)",,180
+20,Veggies 5,,,"(""cucumber"",""artichoke"")",,"(100,200,300)",,180
+21,Veggies 6,,,"(""radish"",""garlic"")",,"(100,200,300)",,180
+22,Veggies 7,,,"(""eggplant"",""fennel"")",,"(100,200,300)",,180
+23,Veggies 8,,,"(""pumpkin"",""pea"")",,"(100,200,300)",,180
+24,Veggies 9,,,"(""onion"",""yam"")",,"(100,200,300)",,180
+25,Veggies 10,,,"(""vegetable"",""salad"",""asparagus"",""tomato"")",,"(100,200,300)",,180
+26,Veggies 11,,,"(""potato"",""avocado"",""cabbage"",""olive"")",,"(100,200,300)",,180
+27,Veggies 12,,,"(""cucumber"",""artichoke"",""radish"",""garlic"")",,"(100,200,300)",,180
+28,Veggies 13,,,"(""eggplant"",""fennel"",""pumpkin"",""pea"")",,"(100,200,300)",,180
+29,Veggies 14,,,"(""onion"",""yam"",""vegetable"",""salad"")",,"(100,200,300)",,180
+30,Veggies 15,,,"(""vegetable"",""potato"",""cucumber"",""eggplant"",""onion"")",,"(100,200,300)",,180
+31,Veggies 16,,,"(""salad"",""avocado"",""artichoke"",""fennel"",""yam"")",,"(100,200,300)",,180
+32,Veggies 17,,,"(""asparagus"",""cabbage"",""radish"",""pumpkin"",""vegetable"")",,"(100,200,300)",,180
+33,Veggies 18,,,"(""tomato"",""olive"",""garlic"",""pea"",""salad"")",,"(100,200,300)",,180
+34,Fruits 1,,,"(""berry"",""banana"")",,"(100,200,300)",,180
+35,Fruits 2,,,"(""date"",""pear"")",,"(100,200,300)",,180
+36,Fruits 3,,,"(""apple"",""fruit"")",,"(100,200,300)",,180
+37,Fruits 4,,,"(""jello"",""grape"")",,"(100,200,300)",,180
+38,Fruits 5,,,"(""fig"",""jam"")",,"(100,200,300)",,180
+39,Fruits 6,,,"(""peach"",""raisin"")",,"(100,200,300)",,180
+40,Fruits 7,,,"(""apricot"",""guava"")",,"(100,200,300)",,180
+41,Fruits 8,,,"(""strawberry"",""kiwi"")",,"(100,200,300)",,180
+42,Fruits 9,,,"(""lemon"",""mango"")",,"(100,200,300)",,180
+43,Fruits 10,,,"(""orange"",""grapefruit"")",,"(100,200,300)",,180
+44,Fruits 11,,,"(""jelly"",""kumquat"")",,"(100,200,300)",,180
+45,Fruits 12,,,"(""melon"",""watermelon"")",,"(100,200,300)",,180
+46,Fruits 13,,,"(""berry"",""banana"",""date"",""pear"")",,"(100,200,300)",,180
+47,Fruits 14,,,"(""apple"",""fruit"",""jello"",""grape"")",,"(100,200,300)",,180
+48,Fruits 15,,,"(""fig"",""jam"",""peach"",""raisin"")",,"(100,200,300)",,180
+49,Fruits 16,,,"(""apricot"",""guava"",""strawberry"",""kiwi"")",,"(100,200,300)",,180
+50,Fruits 17,,,"(""lemon"",""mango"",""orange"",""grapefruit"")",,"(100,200,300)",,180
+51,Fruits 18,,,"(""jelly"",""kumquat"",""melon"",""watermelon"")",,"(100,200,300)",,180
+52,Fruits 19,,,"(""berry"",""apple"",""fig"",""apricot"",""lemon"",""jelly"")",,"(100,200,300)",,180
+53,Fruits 20,,,"(""banana"",""fruit"",""jam"",""guava"",""mango"",""kumquat"")",,"(100,200,300)",,180
+54,Fruits 21,,,"(""date"",""jello"",""peach"",""strawberry"",""orange"",""melon"")",,"(100,200,300)",,180
+55,Fruits 22,,,"(""pear"",""grape"",""raisin"",""kiwi"",""grapefruit"",""watermelon"")",,"(100,200,300)",,180
+56,Grains 1,,,"(""barley"",""wheat"")",,"(100,200,300)",,180
+57,Grains 2,,,"(""cashew"",""English muffin"")",,"(100,200,300)",,180
+58,Grains 3,,,"(""oatmeal"",""beans"")",,"(100,200,300)",,180
+59,Grains 4,,,"(""nut"",""bread"")",,"(100,200,300)",,180
+60,Grains 5,,,"(""yeast"",""barley"",""wheat"")",,"(100,200,300)",,180
+61,Grains 6,,,"(""cashew"",""English muffin"",""oatmeal"")",,"(100,200,300)",,180
+62,Grains 7,,,"(""beans"",""nut"",""bread"")",,"(100,200,300)",,180
+63,Grains 8,,,"(""yeast"",""cashew"",""beans"")",,"(100,200,300)",,180
+64,Grains 9,,,"(""barley"",""English muffin"",""nut"")",,"(100,200,300)",,180
+65,Grains 10,,,"(""wheat"",""oatmeal"",""bread"")",,"(100,200,300)",,180
+66,Entrees 1,,,"(""noodle"",""spaghetti"")",,"(100,200,300)",,180
+67,Entrees 2,,,"(""chili"",""lasagna"")",,"(100,200,300)",,180
+68,Entrees 3,,,"(""soup"",""macaroni"")",,"(100,200,300)",,180
+69,Entrees 4,,,"(""ravioli"",""hotdog"")",,"(100,200,300)",,180
+70,Entrees 5,,,"(""kabob"",""taco"")",,"(100,200,300)",,180
+71,Entrees 6,,,"(""noodle"",""spaghetti"",""chili"",""lasagna"")",,"(100,200,300)",,180
+72,Entrees 7,,,"(""soup"",""macaroni"",""ravioli"",""hotdog"")",,"(100,200,300)",,180
+73,Entrees 8,,,"(""kabob"",""taco"",""noodle"",""spaghetti"")",,"(100,200,300)",,180
+74,Entrees 9,,,"(""soup"",""macaroni"",""kabob"",""taco"")",,"(100,200,300)",,180
+75,Entrees 10,,,"(""noodle"",""soup"",""kabob"",""soup"")",,"(100,200,300)",,180
+76,Entrees 11,,,"(""spaghetti"",""macaroni"",""taco"",""macaroni"")",,"(100,200,300)",,180
+77,Entrees 12,,,"(""chili"",""ravioli"",""noodle"",""kabob"")",,"(100,200,300)",,180
+78,Entrees 13,,,"(""lasagna"",""hotdog"",""spaghetti"",""taco"")",,"(100,200,300)",,180
+79,Spices 1,,,"(""fennel"",""dill"")",,"(100,200,300)",,180
+80,Spices 2,,,"(""salt"",""garlic"")",,"(100,200,300)",,180
+81,Spices 3,,,"(""sugar"",""mint"")",,"(100,200,300)",,180
+82,Spices 4,,,"(""pepper"",""vanilla"")",,"(100,200,300)",,180
+83,Spices 5,,,"(""nutmeg"",""vinegar"")",,"(100,200,300)",,180
+84,Spices 6,,,"(""fennel"",""dill"",""salt"",""garlic"")",,"(100,200,300)",,180
+85,Spices 7,,,"(""sugar"",""mint"",""pepper"",""vanilla"")",,"(100,200,300)",,180
+86,Spices 8,,,"(""nutmeg"",""vinegar"",""fennel"",""dill"")",,"(100,200,300)",,180
+87,Spices 9,,,"(""sugar"",""mint"",""nutmeg"",""vinegar"")",,"(100,200,300)",,180
+88,Spices 10,,,"(""fennel"",""sugar"",""nutmeg"",""sugar"")",,"(100,200,300)",,180
+89,Spices 11,,,"(""dill"",""mint"",""vinegar"",""mint"")",,"(100,200,300)",,180
+90,Spices 12,,,"(""salt"",""pepper"",""fennel"",""nutmeg"")",,"(100,200,300)",,180
+91,Spices 13,,,"(""garlic"",""vanilla"",""dill"",""vinegar"")",,"(100,200,300)",,180
+92,Breakfast 1,,,"(""English muffin"",""tea"")",,"(100,200,300)",,180
+93,Breakfast 2,,,"(""grapefruit"",""orange"")",,"(100,200,300)",,180
+94,Breakfast 3,,,"(""milk"",""oatmeal"")",,"(100,200,300)",,180
+95,Breakfast 4,,,"(""coffee"",""waffle"")",,"(100,200,300)",,180
+96,Breakfast 5,,,"(""fruit"",""espresso"")",,"(100,200,300)",,180
+97,Breakfast 6,,,"(""jelly"",""yogurt"")",,"(100,200,300)",,180
+98,Breakfast 7,,,"(""English muffin"",""tea"",""grapefruit"",""orange"")",,"(100,200,300)",,180
+99,Breakfast 8,,,"(""milk"",""oatmeal"",""coffee"",""waffle"")",,"(100,200,300)",,180
+100,Breakfast 9,,,"(""fruit"",""espresso"",""jelly"",""yogurt"")",,"(100,200,300)",,180
+101,Breakfast 10,,,"(""English muffin"",""milk"",""fruit"")",,"(100,200,300)",,180
+102,Breakfast 11,,,"(""tea"",""oatmeal"",""espresso"")",,"(100,200,300)",,180
+103,Breakfast 12,,,"(""grapefruit"",""coffee"",""jelly"")",,"(100,200,300)",,180
+104,Breakfast 13,,,"(""orange"",""waffle"",""yogurt"")",,"(100,200,300)",,180
