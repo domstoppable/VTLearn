@@ -47,7 +47,7 @@ public:
 
 
 	virtual void Disconnect() override;
-	virtual void Send(TArray<uint8> Data) override;
+	virtual bool Send(TArray<uint8> Data) override;
 
 protected:
 

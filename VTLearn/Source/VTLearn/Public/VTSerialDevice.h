@@ -74,7 +74,7 @@ public:
 
 	virtual void BeginDestroy() override;
 	virtual void Disconnect() override;
-	virtual void Send(TArray<uint8> Data) override;
+	virtual bool Send(TArray<uint8> Data) override;
 
 	UFUNCTION(BlueprintCallable, Category="VTT")
 	static TArray<FSerialPortInfo> GetSerialPorts();

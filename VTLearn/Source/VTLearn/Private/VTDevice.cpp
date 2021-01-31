@@ -27,6 +27,8 @@ void UVTDevice::OnConnected() {
 	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Connected."));
 	ConnectionState = EDeviceConnectionState::Connected;
 	ConnectedDelegate.ExecuteIfBound();
+
+	DeviceConnectedChanged.Broadcast(ConnectionState);
 }
 
 void UVTDevice::OnDisconnected() {
@@ -34,6 +36,7 @@ void UVTDevice::OnDisconnected() {
 
 	ConnectionState = EDeviceConnectionState::Disconnected;
 	DisconnectedDelegate.ExecuteIfBound();
+	DeviceConnectedChanged.Broadcast(ConnectionState);
 }
 
 void UVTDevice::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
@@ -105,15 +108,17 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 	Data.Add(0x09);
 	Data.Add((uint8_t)Idx);
 
-	Send(Data);
-
-	UWorld* World = WorldContextObject->GetWorld();
-	if(IsValid(World))
+	if(Send(Data))
 	{
-		float Duration = ((float)(Phrase->GetDurationInMS())) / 1000.0f;
-		// @TODO: Don't broadcast if paused, since the broadcast-stop timer won't start until unpaused?
-		DeviceVibingChanged.Broadcast(true);
-		World->GetTimerManager().SetTimer(VibingStateTimerHandle, this, &UVTDevice::BroadcastVibingStop, Duration, false, Duration);
+		UWorld* World = WorldContextObject->GetWorld();
+		if(IsValid(World))
+		{
+			// @TODO: Don't broadcast if paused, since the broadcast-stop timer won't start until unpaused?
+			DeviceVibingChanged.Broadcast(true);
+
+			float Duration = ((float)(Phrase->GetDurationInMS())) / 1000.0f;
+			World->GetTimerManager().SetTimer(VibingStateTimerHandle, this, &UVTDevice::BroadcastVibingStop, Duration, false, Duration);
+		}
 	}
 }
 

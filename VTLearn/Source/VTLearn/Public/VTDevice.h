@@ -9,9 +9,6 @@
 
 #include "VTDevice.generated.h"
 
-DECLARE_DYNAMIC_DELEGATE(FVTDeviceConnectionChangedDelegate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTDeviceVibingChanged, bool, bIsVibing);
-
 UENUM(BlueprintType)
 enum class EDeviceConnectionState : uint8
 {
@@ -19,6 +16,10 @@ enum class EDeviceConnectionState : uint8
 	Connecting,
 	Connected
 };
+
+DECLARE_DYNAMIC_DELEGATE(FVTDeviceConnectionChangedDelegate);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTDeviceVibingChanged, bool, bIsVibing);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTDeviceConnectedChanged, EDeviceConnectionState, ConnectionState);
 
 UCLASS(BlueprintType)
 class VTLEARN_API UVTDevice : public UObject
@@ -56,12 +57,17 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FVTDeviceVibingChanged DeviceVibingChanged;
 
+	UPROPERTY(BlueprintAssignable)
+	FVTDeviceConnectedChanged DeviceConnectedChanged;
+
 	#pragma region Interface functions
 
   	UFUNCTION(BlueprintCallable)
 	virtual void Disconnect(){}
 
-	virtual void Send(TArray<uint8> Data){}
+	virtual bool Send(TArray<uint8> Data){
+		return false;
+	}
 
 	#pragma endregion
 

@@ -51,7 +51,6 @@ void UVTSerialDevice::BeginDestroy()
 	Disconnect();
 }
 
-
 void UVTSerialDevice::Disconnect()
 {
 	if(port)
@@ -61,10 +60,13 @@ void UVTSerialDevice::Disconnect()
 	}
 	port = nullptr;
 	ConnectionState = EDeviceConnectionState::Disconnected;
+	OnDisconnected();
 }
 
-void UVTSerialDevice::Send(TArray<uint8> Data)
+bool UVTSerialDevice::Send(TArray<uint8> Data)
 {
+	bool Success = false;
+
 	char* data = new char[Data.Num()];
 	for(int32 i=0; i<Data.Num(); i++)
 	{
@@ -73,12 +75,16 @@ void UVTSerialDevice::Send(TArray<uint8> Data)
 
 	try{
 		boost::asio::write(*port, boost::asio::buffer(data, Data.Num()));
+		Success = true;
 	}
 	catch(std::exception const& exception)
 	{
 		FString Message(exception.what());
 		UE_LOG(LogTemp, Warning, TEXT("Failed to write %d bytes to serial device: %s"), Data.Num(), *Message);
+		Disconnect();
 	}
 
 	delete[] data;
+
+	return Success;
 }
