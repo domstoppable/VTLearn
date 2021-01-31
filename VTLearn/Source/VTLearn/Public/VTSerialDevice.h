@@ -75,6 +75,10 @@ public:
 	virtual void BeginDestroy() override;
 	virtual void Disconnect() override;
 	virtual bool Send(TArray<uint8> Data) override;
+	virtual bool Send(TArray<uint8> Data, bool bAutoRecover=true);
+
+	UFUNCTION()
+	bool RecoverConnection();
 
 	UFUNCTION(BlueprintCallable, Category="VTT")
 	static TArray<FSerialPortInfo> GetSerialPorts();
@@ -90,6 +94,12 @@ public:
 	{
 		return PortInfo.VendorID == "10c4" && PortInfo.ProductID == "ea60";
 	}
+
+	UPROPERTY(BlueprintReadOnly)
+	FString LastPort;
+
+	UPROPERTY(BlueprintReadOnly)
+	int32 LastBaud;
 
 
 protected:

@@ -35,6 +35,9 @@ void UVTSerialDevice::Connect(
 		DisconnectedDelegate = OnDisconnect;
 
 		ConnectionState = EDeviceConnectionState::Connected;
+
+		LastPort = Port;
+		LastBaud = Baud;
 		OnConnected();
 	}
 	catch(std::exception const& exception)
@@ -65,6 +68,11 @@ void UVTSerialDevice::Disconnect()
 
 bool UVTSerialDevice::Send(TArray<uint8> Data)
 {
+	return Send(Data, true);
+}
+
+bool UVTSerialDevice::Send(TArray<uint8> Data, bool bAutoRecover)
+{
 	bool Success = false;
 
 	char* data = new char[Data.Num()];
@@ -81,10 +89,42 @@ bool UVTSerialDevice::Send(TArray<uint8> Data)
 	{
 		FString Message(exception.what());
 		UE_LOG(LogTemp, Warning, TEXT("Failed to write %d bytes to serial device: %s"), Data.Num(), *Message);
-		Disconnect();
+		if(bAutoRecover && RecoverConnection())
+		{
+			return Send(Data, false);
+		}
+		else
+		{
+			Disconnect();
+		}
 	}
 
 	delete[] data;
 
 	return Success;
+}
+
+bool UVTSerialDevice::RecoverConnection()
+{
+	UE_LOG(LogTemp, Log, TEXT("Attempting to recover serial connection"));
+
+	TArray<FSerialPortInfo> Ports = UVTSerialDevice::GetSerialPorts();
+	for(FSerialPortInfo PortInfo : Ports)
+	{
+		if(UVTSerialDevice::IsPreferredDevice(PortInfo))
+		{
+			Connect(PortInfo.Device, LastBaud, ConnectedDelegate, DisconnectedDelegate);
+			if(ConnectionState == EDeviceConnectionState::Connected)
+			{
+				TArray<UPhoneticPhrase*> TmpPhrases;
+				TmpPhrases.Append(UploadedPhrases);
+				UploadPhrases(TmpPhrases);
+
+				return true;
+			}
+		}
+	}
+
+	UE_LOG(LogTemp, Warning, TEXT("Connection recovery failed!"));
+	return false;
 }
