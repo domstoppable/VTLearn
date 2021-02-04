@@ -15,6 +15,11 @@
 				"SlateCore",
 				"CoreUObject"
 			]
+		},
+		{
+			"Name": "VTLearnEd",
+			"Type": "Editor",
+			"LoadingPhase": "Default"
 		}
 	],
 	"Plugins": [
