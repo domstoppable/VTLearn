@@ -3,6 +3,7 @@
 #pragma once
 
 #include "Misc/Paths.h"
+#include "Engine/DataAsset.h"
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
@@ -88,41 +89,26 @@ public:
 };
 
 UCLASS(BlueprintType)
-class VTLEARN_API UPhoneticPhrase : public UObject
+class VTLEARN_API UPhoneticPhrase : public UDataAsset
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY(BlueprintReadOnly)
-	FString SourceFull;
-
-	UPROPERTY(BlueprintReadOnly)
-	FString SourceShort;
-
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString WrittenText;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString PhoneticText;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<EPhoneme> Phonemes = TArray<EPhoneme>();
 
 	// In MS
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 Period;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<uint8> RawSamples;
-
-	UFUNCTION(BlueprintCallable, Category = "VTT")
-	static UPhoneticPhrase* LoadPhoneticPhrase(FString VTTFilename);
-
-	UFUNCTION(BlueprintCallable, Category = "VTT")
-	static TArray<UPhoneticPhrase*> LoadPhrasesFromDirectory(FString Path);
-
-	UFUNCTION(BlueprintCallable, Category = "VTT")
-	static TArray<UPhoneticPhrase*> LoadPhrases(FString PhraseName);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
 	static TArray<EPhoneme> StringToSequence(FString PhoneText);

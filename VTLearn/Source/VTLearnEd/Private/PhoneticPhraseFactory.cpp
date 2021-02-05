@@ -28,9 +28,13 @@ UObject* UPhoneticPhraseFactory::FactoryCreateBinary
 	FFeedbackContext*	Warn
 )
 {
-	UPhoneticPhrase* ExistingPhrase = FindObject<UPhoneticPhrase>(InParent, *Name.ToString());
-
 	GEditor->GetEditorSubsystem<UImportSubsystem>()->BroadcastAssetPreImport(this, Class, InParent, *Name.ToString(), Type);
+
+	UPhoneticPhrase* ExistingPhrase = FindObject<UPhoneticPhrase>(InParent, *Name.ToString());
+	if(!ExistingPhrase)
+	{
+		ExistingPhrase = NewObject<UPhoneticPhrase>(InParent, Name, Flags);
+	}
 
 	if (AssetImportTask && AssetImportTask->bAutomated)
 	{
@@ -45,7 +49,6 @@ UObject* UPhoneticPhraseFactory::FactoryCreateBinary
 	}
 
 	UPhoneticPhrase* Phrase = LoadPhoneticPhrase(Buffer, BufferEnd, ExistingPhrase);
-
 	if(!Phrase)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("PhoneticPhrase import failed %s"), *Name.ToString());

@@ -26,6 +26,9 @@ public:
 	TMultiMap<FString, UPhoneticPhrase*> TrainingPhrases;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FString VTTPath = TEXT("/Game/Data/VTT");
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RemainingTime = 0.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
