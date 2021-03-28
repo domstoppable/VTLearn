@@ -21,7 +21,7 @@ AVibeyItemAreaGenerator::AVibeyItemAreaGenerator()
 void AVibeyItemAreaGenerator::BeginPlay()
 {
 	Super::BeginPlay();
-	GetWorld()->GetTimerManager().SetTimer(SpawnDelayTimerHandle, this, &AVibeyItemAreaGenerator::SpawnItem, FMath::RandRange(MinTriggerTime, MaxTriggerTime), true, 3.0f);
+	StartSpawnTimer();
 	GetWorld()->GetTimerManager().PauseTimer(SpawnDelayTimerHandle);
 }
 
@@ -37,35 +37,51 @@ void AVibeyItemAreaGenerator::SpawnItem()
 
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	APawn* PlayerPawn = PlayerController->GetPawn();
+
 	if(PlayerPawn->GetVelocity().Size2D() < 0.1f)
 	{
 		UE_LOG(LogTemp, Log, TEXT("AVibeyItemAreaGenerator not spawning because player is not moving"));
-		return;
 	}
-
-	// Spawn item
-	UPhoneticPhrase* Phrase = RandomPhrase();
-	if(!IsValid(Phrase))
+	else
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Failed to generate phrase"));
-		return;
+		// Spawn item
+		UPhoneticPhrase* Phrase = RandomPhrase();
+		if(IsValid(Phrase))
+		{
+			FVector Location = PlayerPawn->GetActorLocation();
+			FRotator Rotation = PlayerPawn->GetActorRotation();
+
+			FActorSpawnParameters SpawnParams;
+			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
+
+			CurrentItem = GetWorld()->SpawnActor<AVibeyItem>(ItemClass, Location, Rotation, SpawnParams);
+			CurrentItem->SetPhrase(Phrase);
+
+			CurrentItem->GetStaticMeshComponent()->SetCollisionProfileName(FName(TEXT("OverlapAll")), true);
+			CurrentItem->GetStaticMeshComponent()->SetSimulatePhysics(false);
+			CurrentItem->GetStaticMeshComponent()->SetHiddenInGame(true);
+
+			CurrentItem->SetActorLocation(Location);
+
+			UE_LOG(LogTemp, Log, TEXT("Spawned new item: %s"), *Phrase->WrittenText);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to generate phrase"));
+		}
 	}
-	FVector Location = PlayerPawn->GetActorLocation();
-	Location.Z += 99999.9f; // spawn far away so that overlap events aren't triggered until after the phrase has been set
-	FRotator Rotation = PlayerPawn->GetActorRotation();
-	FActorSpawnParameters SpawnParams;
-	SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-	CurrentItem = GetWorld()->SpawnActor<AVibeyItem>(ItemClass, Location, Rotation, SpawnParams);
-	CurrentItem->SetPhrase(Phrase);
 
-	CurrentItem->GetStaticMeshComponent()->SetCollisionProfileName(FName(TEXT("OverlapAll")), true);
-	CurrentItem->GetStaticMeshComponent()->SetSimulatePhysics(false);
-	CurrentItem->GetStaticMeshComponent()->SetHiddenInGame(true);
+	StartSpawnTimer();
+}
 
-	Location.Z -= 99999.9f;
-	CurrentItem->SetActorLocation(Location);
-
-	UE_LOG(LogTemp, Log, TEXT("Spawned new item: %s"), *Phrase->WrittenText);
+void AVibeyItemAreaGenerator::StartSpawnTimer()
+{
+	GetWorld()->GetTimerManager().SetTimer(
+		SpawnDelayTimerHandle,
+		this, &AVibeyItemAreaGenerator::SpawnItem,          // Callback
+		FMath::RandRange(MinTriggerTime, MaxTriggerTime),   // Rate
+		false                                               // loop
+	);
 }
 
 void AVibeyItemAreaGenerator::AreaBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult )
