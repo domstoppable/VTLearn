@@ -114,14 +114,7 @@ bool UVTSerialDevice::RecoverConnection()
 		if(UVTSerialDevice::IsPreferredDevice(PortInfo))
 		{
 			Connect(PortInfo.Device, LastBaud, ConnectedDelegate, DisconnectedDelegate);
-			if(ConnectionState == EDeviceConnectionState::Connected)
-			{
-				TArray<UPhoneticPhrase*> TmpPhrases;
-				TmpPhrases.Append(UploadedPhrases);
-				UploadPhrases(TmpPhrases);
-
-				return true;
-			}
+			return ConnectionState == EDeviceConnectionState::Connected;
 		}
 	}
 

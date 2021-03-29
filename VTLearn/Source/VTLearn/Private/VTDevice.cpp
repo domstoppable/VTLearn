@@ -95,18 +95,12 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 		return;
 	}
 
-	int32 Idx = UploadedPhrases.Find(Phrase);
-
-	if(Idx == INDEX_NONE)
-	{
-		Idx = UploadedPhrases.Num();
-		UploadPhrase(Idx, Phrase);
-	}
+	UploadPhrase(0, Phrase);
 
 	TArray<uint8> Data;
 	Data.Add(0x00);
 	Data.Add(0x09);
-	Data.Add((uint8_t)Idx);
+	Data.Add(0x00);
 
 	if(Send(Data))
 	{
