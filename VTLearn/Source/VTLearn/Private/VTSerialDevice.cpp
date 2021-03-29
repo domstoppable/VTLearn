@@ -82,8 +82,15 @@ bool UVTSerialDevice::Send(TArray<uint8> Data, bool bAutoRecover)
 	}
 
 	try{
-		boost::asio::write(*port, boost::asio::buffer(data, Data.Num()));
-		Success = true;
+		if(ConnectionState == EDeviceConnectionState::Connected)
+		{
+			boost::asio::write(*port, boost::asio::buffer(data, Data.Num()));
+			Success = true;
+		}
+		else
+		{
+			throw std::exception();
+		}
 	}
 	catch(std::exception const& exception)
 	{
