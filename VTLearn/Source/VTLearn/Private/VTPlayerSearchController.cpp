@@ -23,12 +23,15 @@ void AVTPlayerSearchController::OnPlayerBeginOverlap(UPrimitiveComponent* Overla
 {
 	if(AVibeyItem* Item = Cast<AVibeyItem>(OtherActor))
 	{
-		ItemInReach.Broadcast(Item);
-
-		UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
-		if(IsValid(GameInstance->VTDevice))
+		if(Item->bGrabbable)
 		{
-			GameInstance->VTDevice->PlayPhrase(Item->Phrase);
+			ItemInReach.Broadcast(Item);
+
+			UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
+			if(IsValid(GameInstance->VTDevice))
+			{
+				GameInstance->VTDevice->PlayPhrase(Item->Phrase);
+			}
 		}
 	}
 }
