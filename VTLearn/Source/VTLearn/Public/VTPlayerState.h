@@ -2,6 +2,9 @@
 
 #pragma once
 
+#include "Data/PsydekickData.h"
+#include "Data/CSVLogger.h"
+
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerState.h"
 #include "VTPlayerState.generated.h"
@@ -26,6 +29,9 @@ class VTLEARN_API AVTPlayerState : public APlayerState
 	GENERATED_BODY()
 
 public:
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCSVLogger* DataLogger = nullptr;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TMap<UPhoneticPhrase*, FPhrasePerformance> Counts;
 

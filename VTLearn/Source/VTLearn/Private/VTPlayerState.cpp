@@ -5,6 +5,12 @@
 
 #include "VTLearnGameMode.h"
 
+#include "Data/PsydekickData.h"
+#include "Data/CSVLogger.h"
+#include "VTGameInstance.h"
+
+#include "Misc/Paths.h"
+
 int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 {
 	// Store attempt
@@ -29,6 +35,29 @@ int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 
 	SetScore(NewScore);
 	ScoreChanged.Broadcast(PointDelta, NewScore);
+
+	if(!DataLogger)
+	{
+		DataLogger = UPsydekickData::CreateCSVLogger(TEXT("TrainingLog"), TEXT("TrainingData"));
+		TArray<FString> FieldNames;
+
+		FieldNames.Add(TEXT("PID"));
+		FieldNames.Add(TEXT("Level"));
+		FieldNames.Add(TEXT("Stimulus"));
+		FieldNames.Add(TEXT("Correct"));
+
+		DataLogger->SetFieldNames(FieldNames);
+	}
+
+	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
+	TMap<FString, FString> LogRecord;
+
+	LogRecord.Add("PID", FString::Printf(TEXT("%d"), GameInstance->LoadedSave->PID));
+	LogRecord.Add("Level", FString::Printf(TEXT("%s"), *GameInstance->CurrentLevelStatus->LevelConfig.Name));
+	LogRecord.Add("Stimulus", FString::Printf(TEXT("%s"), *FPaths::GetCleanFilename(Phrase->Source)));
+	LogRecord.Add("Correct", FString::Printf(TEXT("%d"), Performance.Correct));
+
+	DataLogger->LogStrings(LogRecord);
 
 	return NewScore;
 }
