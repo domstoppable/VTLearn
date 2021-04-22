@@ -67,6 +67,17 @@ UObject* UPhoneticPhraseFactory::FactoryCreateBinary
 	return Phrase;
 }
 
+UObject* UPhoneticPhraseFactory::FactoryCreateFile(UClass* InClass, UObject* InParent, FName InName, EObjectFlags Flags, const FString& Filename, const TCHAR* Parms, FFeedbackContext* Warn, bool & bOutOperationCanceled)
+{
+	UObject* Object = Super::FactoryCreateFile(InClass, InParent, InName, Flags, Filename, Parms, Warn, bOutOperationCanceled);
+	if(UPhoneticPhrase* Phrase = Cast<UPhoneticPhrase>(Object))
+	{
+		Phrase->Source = Filename;
+	}
+
+	return Object;
+}
+
 UPhoneticPhrase* UPhoneticPhraseFactory::LoadPhoneticPhrase(const uint8*& Buffer, const uint8* BufferEnd, UPhoneticPhrase* ExistingPhrase)
 {
 	UE_LOG(LogTemp, Log, TEXT("Loading VTT from buffer"));

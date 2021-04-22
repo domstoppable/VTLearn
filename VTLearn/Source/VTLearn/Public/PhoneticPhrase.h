@@ -101,6 +101,9 @@ public:
 	FString PhoneticText;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	FString Source;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	TArray<EPhoneme> Phonemes = TArray<EPhoneme>();
 
 	// In MS
