@@ -25,6 +25,8 @@ THIRD_PARTY_INCLUDES_START
 
 THIRD_PARTY_INCLUDES_END
 
+#include "Misc/Paths.h"
+
 #include "CoreMinimal.h"
 #include "VTDevice.h"
 #include "VTSerialDevice.generated.h"
@@ -86,7 +88,18 @@ public:
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 	static FString SerialPortToHumanReadable(FSerialPortInfo PortInfo)
 	{
-		return FString::Printf(TEXT("[%s] %s - %s"), *PortInfo.Device, *PortInfo.Manufacturer, *PortInfo.Product);
+		FString DeviceString = FString::Printf(
+			TEXT("[%s] %s - %s"),
+			*FPaths::GetCleanFilename(PortInfo.Device),
+			*PortInfo.Manufacturer,
+			*PortInfo.Product
+		);
+
+		if(DeviceString.Len() > 40){
+			DeviceString = DeviceString.Mid(0, 37) + "...";
+		}
+
+		return DeviceString;
 	}
 
 	UFUNCTION(BlueprintPure, BlueprintCallable)
