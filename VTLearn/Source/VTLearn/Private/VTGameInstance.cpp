@@ -7,9 +7,11 @@
 #include "VTSerialDevice.h"
 #include "VTPlayerController.h"
 #include "VTLevelProgress.h"
+#include "SeafileClient.h"
+
 #include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
-
+#include "GenericPlatform/GenericPlatformMisc.h"
 
 void UVTGameInstance::Init()
 {
@@ -53,6 +55,8 @@ void UVTGameInstance::Init()
 			LevelGroups.Emplace(GroupStatus);
 		}
 	}
+
+	UploadTrainingLogs();
 }
 
 void UVTGameInstance::ConnectToTCPDevice(FString IP, int32 Port)
@@ -196,6 +200,8 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 
 bool UVTGameInstance::SaveProgress()
 {
+	UploadTrainingLogs();
+
 	UE_LOG(LogTemp, Log, TEXT("Saving progress..."));
 	if(IsValid(CurrentLevelStatus))
 	{
@@ -238,4 +244,52 @@ int32 UVTGameInstance::GetStarCount(UVTSaveGame* SaveGame)
 	}
 
 	return Stars;
+}
+
+void UVTGameInstance::UploadTrainingLogs()
+{
+	FilesToUpload.Empty();
+	FString SearchPath = *(FPaths::ProjectLogDir() + "TrainingData/*");
+	IFileManager::Get().FindFiles(FilesToUpload, *SearchPath, true, false);
+
+	if(FilesToUpload.Num() == 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("No files to upload in '%s'"), *SearchPath);
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("%d files are ready to upload"), FilesToUpload.Num());
+
+	FHTTPActionComplete AuthDelegate;
+	AuthDelegate.BindDynamic(this, &UVTGameInstance::OnSeafileAuthComplete);
+
+	SeafileClient = NewObject<USeafileClient>();
+	SeafileClient->Authenticate(SeafileServer, SeafileUsername, SeafilePassword, AuthDelegate);
+}
+
+void UVTGameInstance::OnSeafileAuthComplete(bool Success)
+{
+	FString BasePath = *(FPaths::ProjectLogDir() + "TrainingData/");
+
+	for(FString File : FilesToUpload)
+	{
+		FUploadComplete UploadComplete;
+		UploadComplete.BindDynamic(this, &UVTGameInstance::OnUploadComplete);
+
+		SeafileClient->UploadFile(BasePath + File, SeafileRemotePath, "", "", UploadComplete);
+	}
+}
+
+void UVTGameInstance::OnUploadComplete(bool Success, FString Filename)
+{
+	FString UploadedPath = FPaths::GetPath(Filename) + "/Uploaded/";
+	FPlatformFileManager::Get().GetPlatformFile().CreateDirectoryTree(*UploadedPath);
+
+	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
+
+	if(Success)
+	{
+		FString Destination = (UploadedPath + FPaths::GetCleanFilename(Filename));
+		PlatformFile.MoveFile(*Destination, *Filename);
+	}
 }
