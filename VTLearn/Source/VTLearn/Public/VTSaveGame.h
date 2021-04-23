@@ -9,7 +9,7 @@
 #include "GameFramework/SaveGame.h"
 #include "VTSaveGame.generated.h"
 
-UCLASS()
+UCLASS(Config=VTSettings)
 class VTLEARN_API UVTSaveGame : public USaveGame
 {
 	GENERATED_BODY()
@@ -23,6 +23,12 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Username;
+
+	UPROPERTY(Config)
+	int32 DefaultPID;
+
+	UPROPERTY(Config)
+	FString DefaultUsername;
 
 	UFUNCTION(BlueprintPure)
 	FString GetSlotName();

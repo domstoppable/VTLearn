@@ -53,6 +53,19 @@ TArray<UVTSaveGame*> UVTSaveGame::LoadVTSaveGames()
 	TArray<UVTSaveGame*> Saves;
 	TArray<FString> Names = GetAllSaveGameSlotNames();
 
+	USaveGame* DefaultSaveGame = UGameplayStatics::CreateSaveGameObject(UVTSaveGame::StaticClass());
+	if(UVTSaveGame* DefaultVTSaveGame = Cast<UVTSaveGame>(DefaultSaveGame))
+	{
+		DefaultVTSaveGame->PID = DefaultVTSaveGame->DefaultPID;
+		DefaultVTSaveGame->Username = DefaultVTSaveGame->DefaultUsername;
+
+		if(!Names.Contains(DefaultVTSaveGame->GetSlotName()))
+		{
+			UGameplayStatics::SaveGameToSlot(DefaultVTSaveGame, DefaultVTSaveGame->GetSlotName(), 0);
+			Names.Add(DefaultVTSaveGame->GetSlotName());
+		}
+	}
+
 	for(FString Name : Names)
 	{
 		UE_LOG(LogTemp, Log, TEXT("Loading save %s"), *Name);
