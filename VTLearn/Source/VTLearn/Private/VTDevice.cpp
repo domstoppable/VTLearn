@@ -24,7 +24,7 @@ void UVTDevice::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 }
 
 void UVTDevice::OnConnected() {
-	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Connected."));
+	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Connected (%s)"), *ToString());
 	ConnectionState = EDeviceConnectionState::Connected;
 	ConnectedDelegate.ExecuteIfBound();
 
@@ -32,7 +32,7 @@ void UVTDevice::OnConnected() {
 }
 
 void UVTDevice::OnDisconnected() {
-	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Disconnected."));
+	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Disconnected (%s)"), *ToString());
 
 	ConnectionState = EDeviceConnectionState::Disconnected;
 	DisconnectedDelegate.ExecuteIfBound();
@@ -114,6 +114,73 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 			World->GetTimerManager().SetTimer(VibingStateTimerHandle, this, &UVTDevice::BroadcastVibingStop, Duration, false, Duration);
 		}
 	}
+}
+
+void UVTDevice::EnableActuator(int32 ActuatorID)
+{
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTDevice: Not connected"));
+		return;
+	}
+
+	TArray<uint8> Data;
+	Data.Add(0x00);
+	Data.Add(0x0A);
+	Data.Add(ActuatorID);
+	Data.Add(254);
+
+	if(Send(Data))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Sent ACTIVATE to %d"), ActuatorID);
+	}else{
+		UE_LOG(LogTemp, Log, TEXT("FAILED: ACTIVATE %d"), ActuatorID);
+	}
+
+}
+
+void UVTDevice::DisableActuator(int32 ActuatorID)
+{
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTDevice: Not connected"));
+		return;
+	}
+
+	TArray<uint8> Data;
+	Data.Add(0x00);
+	Data.Add(0x0A);
+	Data.Add(ActuatorID);
+	Data.Add(0);
+
+	if(Send(Data))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Sent DEactivate to %d"), ActuatorID);
+	}else{
+		UE_LOG(LogTemp, Log, TEXT("FAILED: DEactivate %d"), ActuatorID);
+	}
+
+}
+
+void UVTDevice::DisableAll()
+{
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTDevice: Not connected"));
+		return;
+	}
+
+	TArray<uint8> Data;
+	Data.Add(0x00);
+	Data.Add(0x07);
+
+	if(Send(Data))
+	{
+		UE_LOG(LogTemp, Log, TEXT("Sent STOP"));
+	}else{
+		UE_LOG(LogTemp, Log, TEXT("FAILED: send STOP"));
+	}
+
 }
 
 void UVTDevice::BroadcastVibingStop()

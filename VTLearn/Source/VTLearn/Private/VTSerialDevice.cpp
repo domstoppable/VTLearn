@@ -66,11 +66,6 @@ void UVTSerialDevice::Disconnect()
 	OnDisconnected();
 }
 
-bool UVTSerialDevice::Send(TArray<uint8> Data)
-{
-	return Send(Data, true);
-}
-
 bool UVTSerialDevice::Send(TArray<uint8> Data, bool bAutoRecover)
 {
 	bool Success = false;
@@ -127,4 +122,9 @@ bool UVTSerialDevice::RecoverConnection()
 
 	UE_LOG(LogTemp, Warning, TEXT("Connection recovery failed!"));
 	return false;
+}
+
+FString UVTSerialDevice::ToString()
+{
+	return FString::Printf(TEXT("%s @ %d"), *LastPort, LastBaud);
 }

@@ -52,6 +52,15 @@ public:
 	void PlayPhrase(UPhoneticPhrase* Phrase);
 
 	UFUNCTION(BlueprintCallable)
+	void EnableActuator(int32 ActuatorID);
+
+	UFUNCTION(BlueprintCallable)
+	void DisableActuator(int32 ActuatorID);
+
+	UFUNCTION(BlueprintCallable)
+	void DisableAll();
+
+	UFUNCTION(BlueprintCallable)
 	void BroadcastVibingStop();
 
 	UPROPERTY(BlueprintAssignable)
@@ -65,8 +74,14 @@ public:
   	UFUNCTION(BlueprintCallable)
 	virtual void Disconnect(){}
 
-	virtual bool Send(TArray<uint8> Data){
+	virtual bool Send(TArray<uint8> Data, bool bAutoRecover = true){
 		return false;
+	}
+
+	UFUNCTION(BlueprintCallable, BlueprintPure)
+	virtual FString ToString()
+	{
+		return TEXT("");
 	}
 
 	#pragma endregion

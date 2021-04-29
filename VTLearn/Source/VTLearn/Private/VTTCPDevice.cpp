@@ -73,7 +73,7 @@ void UVTTCPDevice::OnClientDisconnected(int32 ConnID)
 	OnDisconnected();
 }
 
-bool UVTTCPDevice::Send(TArray<uint8> Data)
+bool UVTTCPDevice::Send(TArray<uint8> Data, bool bAutoRecover)
 {
 	return TcpClient->SendData(ConnectionID, Data);
 }
