@@ -33,12 +33,12 @@ public:
 
 	virtual void BindInputActions() override;
 
-	void OnMoveUp(float Value);
-	void OnMoveRight(float Value);
-	void OnJump();
-	void OnGrab();
-	void OnRevibe();
-	void OnInteract();
+	virtual void OnMoveUp(float Value);
+	virtual void OnMoveRight(float Value);
+	virtual void OnJump();
+	virtual void OnGrab();
+	virtual void OnRevibe();
+	virtual void OnInteract();
 
 	UFUNCTION(BlueprintCallable)
 	void TogglePause();
@@ -49,13 +49,13 @@ public:
 	virtual FVector GetForward2D();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool CanInteract();
+	virtual bool CanInteract();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool CanRevibe();
+	virtual bool CanRevibe();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
-	bool CanHold(AActor* Item);
+	virtual bool CanHold(AActor* Item);
 
 	UFUNCTION(BlueprintCallable)
 	virtual bool HoldItem(AActor* Item);

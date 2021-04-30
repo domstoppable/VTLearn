@@ -208,7 +208,16 @@ void AVTPlayerController::OnRevibe()
 		return;
 	}
 
-	// @TODO: Implement
+	if(AVibeyItem* Item = Cast<AVibeyItem>(HeldItem))
+	{
+		if(UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance()))
+		{
+			if(IsValid(GameInstance->VTDevice))
+			{
+				GameInstance->VTDevice->PlayPhrase(Item->Phrase);
+			}
+		}
+	}
 }
 
 bool AVTPlayerController::CanHold(AActor* Actor)

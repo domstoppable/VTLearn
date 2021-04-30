@@ -24,8 +24,17 @@ public:
 	UFUNCTION()
 	void OnPlayerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
 
+	UFUNCTION()
+	void OnPlayerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	UPROPERTY(BlueprintreadWrite)
+	AVibeyItem* ReachableItem;
+
 	UPROPERTY(BlueprintAssignable)
 	FVTVibeyItemInReach	ItemInReach;
+
+	bool CanRevibe() override;
+	void OnRevibe() override;
 
 	virtual bool HoldItem(AActor* Item) override;
 

@@ -16,6 +16,7 @@ void AVTPlayerSearchController::BeginPlay()
 	if(Components.Num() > 0)
 	{
 		Cast<UPrimitiveComponent>(Components[0])->OnComponentBeginOverlap.AddDynamic(this, &AVTPlayerSearchController::OnPlayerBeginOverlap);
+		Cast<UPrimitiveComponent>(Components[0])->OnComponentEndOverlap.AddDynamic(this, &AVTPlayerSearchController::OnPlayerEndOverlap);
 	}
 }
 
@@ -25,6 +26,7 @@ void AVTPlayerSearchController::OnPlayerBeginOverlap(UPrimitiveComponent* Overla
 	{
 		if(Item->bGrabbable)
 		{
+			ReachableItem = Item;
 			ItemInReach.Broadcast(Item);
 
 			UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
@@ -33,6 +35,14 @@ void AVTPlayerSearchController::OnPlayerBeginOverlap(UPrimitiveComponent* Overla
 				GameInstance->VTDevice->PlayPhrase(Item->Phrase);
 			}
 		}
+	}
+}
+
+void AVTPlayerSearchController::OnPlayerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor == ReachableItem)
+	{
+		ReachableItem = nullptr;
 	}
 }
 
@@ -57,4 +67,25 @@ bool AVTPlayerSearchController::HoldItem(AActor* Item)
 	}
 
 	return false;
+}
+
+bool AVTPlayerSearchController::CanRevibe()
+{
+	return IsValid(ReachableItem);
+}
+
+void AVTPlayerSearchController::OnRevibe()
+{
+	if(IsPaused() || !IsValid(ReachableItem))
+	{
+		return;
+	}
+
+	if(UVTGameInstance* GameInstance = Cast<UVTGameInstance>(GetGameInstance()))
+	{
+		if(IsValid(GameInstance->VTDevice))
+		{
+			GameInstance->VTDevice->PlayPhrase(ReachableItem->Phrase);
+		}
+	}
 }
