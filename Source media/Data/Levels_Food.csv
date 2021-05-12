@@ -1,11 +1,11 @@
 ---,Name,Description,Instructions,TrainingPhrases,DistractorPhrases,StarThresholds,Map,TimeLimit
 1,Desserts 1,,,"(""dessert"",""pie"")",,"(100,200,300)",,180
-2,Desserts 2,,,"(""jellybean"",""Ice cream"")",,"(100,200,300)",,180
+2,Desserts 2,,,"(""jellybean"",""icecream"")",,"(100,200,300)",,180
 3,Desserts 3,,,"(""cocoa"",""yogurt"")",,"(100,200,300)",,180
 4,Desserts 4,,,"(""dessert"",""jellybean"",""cocoa"")",,"(100,200,300)",,180
-5,Desserts 5,,,"(""pie"",""Ice cream"",""yogurt"")",,"(100,200,300)",,180
-6,Desserts 6,,,"(""dessert"",""pie"",""jellybean"",""Ice cream"")",,"(100,200,300)",,180
-7,Desserts 7,,,"(""jellybean"",""Ice cream"",""cocoa"",""yogurt"")",,"(100,200,300)",,180
+5,Desserts 5,,,"(""pie"",""icecream"",""yogurt"")",,"(100,200,300)",,180
+6,Desserts 6,,,"(""dessert"",""pie"",""jellybean"",""icecream"")",,"(100,200,300)",,180
+7,Desserts 7,,,"(""jellybean"",""icecream"",""cocoa"",""yogurt"")",,"(100,200,300)",,180
 8,Beverages 1,,,"(""coffee"",""tea"")",,"(100,200,300)",,180
 9,Beverages 2,,,"(""cocoa"",""espresso"")",,"(100,200,300)",,180
 10,Beverages 3,,,"(""cola"",""ice"")",,"(100,200,300)",,180
