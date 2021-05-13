@@ -93,7 +93,7 @@ bool UVTSerialDevice::Send(TArray<uint8> Data, bool bAutoRecover)
 		UE_LOG(LogTemp, Warning, TEXT("Failed to write %d bytes to serial device: %s"), Data.Num(), *Message);
 		if(bAutoRecover && RecoverConnection())
 		{
-			return Send(Data, false);
+			Success = Send(Data, false);
 		}
 		else
 		{

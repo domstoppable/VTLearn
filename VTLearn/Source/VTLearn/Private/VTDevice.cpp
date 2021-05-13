@@ -24,6 +24,8 @@ void UVTDevice::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 }
 
 void UVTDevice::OnConnected() {
+	UploadedPhrases.Empty();
+
 	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Connected (%s)"), *ToString());
 	ConnectionState = EDeviceConnectionState::Connected;
 	ConnectedDelegate.ExecuteIfBound();
@@ -33,6 +35,7 @@ void UVTDevice::OnConnected() {
 
 void UVTDevice::OnDisconnected() {
 	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Disconnected (%s)"), *ToString());
+	UploadedPhrases.Empty();
 
 	ConnectionState = EDeviceConnectionState::Disconnected;
 	DisconnectedDelegate.ExecuteIfBound();
