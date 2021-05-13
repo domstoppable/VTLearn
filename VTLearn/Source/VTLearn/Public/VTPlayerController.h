@@ -7,6 +7,8 @@
 
 #include "GameFramework/Actor.h"
 
+#include "Sound/SoundWave.h"
+#include "Components/AudioComponent.h"
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
 #include "VTPlayerController.generated.h"
@@ -23,6 +25,12 @@ public:
 
 	virtual void BeginPlay() override;
 	virtual void EndPlay(const EEndPlayReason::Type EndPlayReason) override;
+
+	UPROPERTY(BlueprintReadWrite)
+	USoundWave* NoiseWave = nullptr;
+
+	UPROPERTY(BlueprintReadWrite)
+	UAudioComponent* NoiseAudio = nullptr;
 
 	// @TODO: move this to character class
 	UPROPERTY(BlueprintReadOnly)

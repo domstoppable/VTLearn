@@ -14,6 +14,7 @@
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
+#include "AudioDevice.h"
 
 #include "Engine/Engine.h"
 
@@ -21,6 +22,15 @@
 AVTPlayerController::AVTPlayerController()
 {
 	bShouldPerformFullTickWhenPaused = 1;
+
+	ConstructorHelpers::FObjectFinder<USoundWave> SoundFinder(TEXT("SoundWave'/Game/Effects/Audio/noise.noise'"));
+	if(SoundFinder.Succeeded())
+	{
+		NoiseWave = SoundFinder.Object;
+	}else{
+		UE_LOG(LogTemp, Warning, TEXT("Could not find SoundWave for noise"));
+	}
+
 }
 
 void AVTPlayerController::BeginPlay()
@@ -39,6 +49,11 @@ void AVTPlayerController::OnLevelTimedOut()
 	if(AVTHUD* HUD = Cast<AVTHUD>(MyHUD))
 	{
 		HUD->ShowLevelComplete();
+	}
+
+	if(NoiseAudio)
+	{
+		NoiseAudio->Stop();
 	}
 }
 
@@ -73,6 +88,32 @@ void AVTPlayerController::Pause()
 		}
 	}
 	PauseChanged.Broadcast(IsPaused());
+
+	if(!NoiseAudio && NoiseWave)
+	{
+		FAudioDevice::FCreateComponentParams Params(GetWorld());
+		NoiseAudio = FAudioDevice::CreateComponent(NoiseWave, Params);
+		if(NoiseAudio)
+		{
+			NoiseAudio->bIsUISound = true;
+			NoiseAudio->VolumeMultiplier = 1.0f;
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to create noise AudioComponent"));
+		}
+	}
+
+	if(NoiseAudio)
+	{
+		if(IsPaused())
+		{
+			NoiseAudio->Stop();
+		}else{
+			NoiseAudio->Play(0.0f);
+		}
+
+	}
 }
 
 void AVTPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
