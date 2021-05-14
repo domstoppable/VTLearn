@@ -80,4 +80,7 @@ public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject))
 	static AVTPlayerController* GetVTPlayerController(UObject* WorldContextObject);
 
+	UFUNCTION()
+	void OnWindowFocusChanged(bool bIsFocused);
+
 };

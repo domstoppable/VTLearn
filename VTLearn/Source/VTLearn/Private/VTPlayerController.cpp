@@ -35,11 +35,20 @@ AVTPlayerController::AVTPlayerController()
 
 void AVTPlayerController::BeginPlay()
 {
-	UE_LOG(LogTemp, Log, TEXT("Controller Begin Play"));
-	AVTLearnGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTLearnGameMode>();
-	if(GameMode)
+	if(AVTLearnGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTLearnGameMode>())
 	{
 		GameMode->LevelTimedOut.AddDynamic(this, &AVTPlayerController::OnLevelTimedOut);
+	}
+
+	FSlateApplication::Get().OnApplicationActivationStateChanged()
+		.AddUObject(this, &AVTPlayerController::OnWindowFocusChanged);
+}
+
+void AVTPlayerController::OnWindowFocusChanged(bool bIsFocused)
+{
+	if(!bIsFocused && !IsPaused())
+	{
+		Pause();
 	}
 }
 
