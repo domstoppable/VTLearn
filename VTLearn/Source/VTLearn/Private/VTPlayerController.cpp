@@ -50,6 +50,8 @@ void AVTPlayerController::OnWindowFocusChanged(bool bIsFocused)
 	{
 		Pause();
 	}
+
+	AppFocusChanged.Broadcast(bIsFocused);
 }
 
 void AVTPlayerController::OnLevelTimedOut()
@@ -82,17 +84,19 @@ void AVTPlayerController::Pause()
 		if(IsPaused())
 		{
 			HUD->ShowPause();
-			FInputModeGameAndUI InputMode;
+			FInputModeGameOnly InputMode;
+			/*
 			if(IsValid(HUD->PauseWidget))
 			{
 				InputMode.SetWidgetToFocus(HUD->PauseWidget->TakeWidget());
 				UE_LOG(LogTemp, Log, TEXT("Focus pause widget"));
 			}
+			*/
 			SetInputMode(InputMode);
 			bShowMouseCursor = false;
 		}else{
 			HUD->HidePause();
-			SetInputMode(FInputModeGameAndUI());
+			SetInputMode(FInputModeGameOnly());
 			bShowMouseCursor = false;
 		}
 	}

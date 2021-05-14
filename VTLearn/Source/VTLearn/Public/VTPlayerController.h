@@ -14,6 +14,7 @@
 #include "VTPlayerController.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTPauseChanged, bool, Paused);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTAppFocusChanged, bool, IsFocused);
 
 UCLASS()
 class VTLEARN_API AVTPlayerController : public AVTMenuController
@@ -38,6 +39,9 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FVTPauseChanged PauseChanged;
+
+	UPROPERTY(BlueprintAssignable)
+	FVTAppFocusChanged AppFocusChanged;
 
 	virtual void BindInputActions() override;
 
