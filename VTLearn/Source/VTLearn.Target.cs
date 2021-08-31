@@ -9,6 +9,6 @@ public class VTLearnTarget : TargetRules
 	{
 		Type = TargetType.Game;
 		DefaultBuildSettings = BuildSettingsVersion.V2;
-		ExtraModuleNames.AddRange( new string[] { "VTLearn", "VTLearnEd" } );
+		ExtraModuleNames.AddRange( new string[] { "VTLearn" } );
 	}
 }
