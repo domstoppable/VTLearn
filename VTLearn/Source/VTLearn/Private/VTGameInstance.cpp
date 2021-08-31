@@ -9,7 +9,6 @@
 #include "VTLevelProgress.h"
 #include "SeafileClient.h"
 
-#include "Engine/Engine.h"
 #include "Kismet/GameplayStatics.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
 
@@ -282,14 +281,12 @@ void UVTGameInstance::OnSeafileAuthComplete(bool Success)
 
 void UVTGameInstance::OnUploadComplete(bool Success, FString Filename)
 {
-	FString UploadedPath = FPaths::GetPath(Filename) + "/Uploaded/";
-	FPlatformFileManager::Get().GetPlatformFile().CreateDirectoryTree(*UploadedPath);
-
-	IPlatformFile& PlatformFile = FPlatformFileManager::Get().GetPlatformFile();
-
 	if(Success)
 	{
+		FString UploadedPath = FPaths::GetPath(Filename) + "/Uploaded/";
+		FPlatformFileManager::Get().GetPlatformFile().CreateDirectoryTree(*UploadedPath);
+		
 		FString Destination = (UploadedPath + FPaths::GetCleanFilename(Filename));
-		PlatformFile.MoveFile(*Destination, *Filename);
+		IFileManager::Get().Move(*Destination, *Filename);
 	}
 }
