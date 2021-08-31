@@ -82,14 +82,12 @@ void AVTPlayerController::Pause()
 		if(IsPaused())
 		{
 			HUD->ShowPause();
-			FInputModeGameOnly InputMode;
-			/*
+			FInputModeGameAndUI InputMode;
 			if(IsValid(HUD->PauseWidget))
 			{
 				InputMode.SetWidgetToFocus(HUD->PauseWidget->TakeWidget());
 				UE_LOG(LogTemp, Log, TEXT("Focus pause widget"));
 			}
-			*/
 			SetInputMode(InputMode);
 			bShowMouseCursor = false;
 		}else{
