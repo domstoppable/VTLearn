@@ -17,3 +17,9 @@ SeafileRemotePath=[SEAFILE_REMOTE_PATH]
 DefaultPID=[DEFAULT_PID]
 DefaultUsername=[DEFAULT_USERNAME]
 ```
+
+To use Playstation buttons, add this to `Saved/Config/Linux/Engine.ini`:
+```ini
+[/Psydekick/Visuals/2D/PKActionBoundMenuButton.PKActionBoundMenuButton_C]
+UsePSButtonConfig=True
+```
