@@ -43,6 +43,11 @@ void AVibeyItemReceiver::SetHelpText(FString Text)
 
 void AVibeyItemReceiver::SetMatchPhrases(TArray<UPhoneticPhrase*> Phrases)
 {
+	UE_LOG(LogTemp, Log, TEXT("Setting receiver to take %d match phrases"), Phrases.Num());
+	if (!Matcher) {
+		Matcher = NewObject<UPhoneSequenceMatcher>();
+	}
+
 	Matcher->SetMatchPhrases(Phrases);
 	if(Phrases.Num() > 0)
 	{

@@ -10,6 +10,7 @@
 #include "VTLearnGameMode.generated.h"
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVTLevelTimedOut);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVTLevelDataLoadCompleted);
 
 UCLASS()
 class VTLEARN_API AVTLearnGameMode : public AGameModeBase
@@ -28,6 +29,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString VTTPath = TEXT("/Game/Data/VTT");
 
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	bool bLoaded = false;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float RemainingTime = 0.0f;
 
@@ -37,8 +41,11 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int32 PointsForIncorrect = -5;
 
-	UPROPERTY(BlueprintReadOnly)
+	UPROPERTY(BlueprintAssignable)
 	FVTLevelTimedOut LevelTimedOut;
+
+	UPROPERTY(BlueprintAssignable)
+	FVTLevelDataLoadCompleted LevelDataLoaded;
 
 	UFUNCTION(BlueprintCallable)
 	void QuitLevel();
@@ -49,6 +56,7 @@ public:
 	UFUNCTION(BlueprintPure, BlueprintCallable)
 	const TArray<UPhoneticPhrase*> GetTrainingPhrases()
 	{
+		UE_LOG(LogTemp, Log, TEXT("Training phrases requested... there are %d of them"), TrainingPhrases.Num());
 		TArray<UPhoneticPhrase*> Phrases;
 		TrainingPhrases.GenerateValueArray(Phrases);
 

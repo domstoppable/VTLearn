@@ -56,6 +56,8 @@ void AVTLearnGameMode::BeginPlay()
 
 void AVTLearnGameMode::LoadLevelInfo()
 {
+	UE_LOG(LogTemp, Log, TEXT("AVTLearnGameMode - Loading level info"));
+
 	if(!CheckStillInWorld())
 	{
 		return;
@@ -118,6 +120,8 @@ void AVTLearnGameMode::LoadLevelInfo()
 			}
 		}
 	}
+	bLoaded = true;
+	LevelDataLoaded.Broadcast();
 }
 
 void AVTLearnGameMode::SetupGenerators()
@@ -140,22 +144,28 @@ void AVTLearnGameMode::SetupGenerators()
 
 void AVTLearnGameMode::SetupReceivers()
 {
+	UE_LOG(LogTemp, Log, TEXT("Setting up receivers"));
 	TActorIterator<AVibeyItemReceiver> ReceiverItr(GetWorld());
 
 	TArray<FString> PhraseStrings;
 	TrainingPhrases.GetKeys(PhraseStrings);
 
+	UE_LOG(LogTemp, Log, TEXT("There are %d PhraseStrings"), PhraseStrings.Num());
+
 	for(FString PhraseText : PhraseStrings)
 	{
+		UE_LOG(LogTemp, Log, TEXT("Searching for Vtts for '%s'"), *PhraseText);
+
 		// find vtts for this phrase
 		TArray<UPhoneticPhrase*> Vtts;
 		TrainingPhrases.MultiFind(PhraseText, Vtts);
 		if(Vtts.Num() == 0)
 		{
-			UE_LOG(LogTemp, Warning, TEXT("%s Could not find any VTTs for %s"), ANSI_TO_TCHAR(__FUNCTION__), *PhraseText);
+			UE_LOG(LogTemp, Warning, TEXT("%s Could not find any VTTs for '%s'"), ANSI_TO_TCHAR(__FUNCTION__), *PhraseText);
 			continue;
 		}
 
+		UE_LOG(LogTemp, Log, TEXT("Searching for available receiver for '%s'"), *PhraseText);
 		// find a receiver to receive them
 		while(ReceiverItr && !ReceiverItr->AllowAutoAssign)
 		{
@@ -169,8 +179,10 @@ void AVTLearnGameMode::SetupReceivers()
 		}
 
 		// setup that receiver with those phrases
+		UE_LOG(LogTemp, Log, TEXT("VTTs and receiver found for '%s'"), *PhraseText);
 		ReceiverItr->SetMatchPhrases(Vtts);
 		++ReceiverItr;
+		UE_LOG(LogTemp, Log, TEXT("Done with '%s'"), *PhraseText);
 	}
 
 	// destroy unused receivers
