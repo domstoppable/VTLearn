@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// (c) 2021 Dominic Canare <dom@dominiccanare.com>
 
 #pragma once
 
@@ -9,67 +9,17 @@
 #include "UObject/NoExportTypes.h"
 #include "PhoneticPhrase.generated.h"
 
-/**
- *
- */
 UENUM(BlueprintType)
 enum class EPhoneme : uint8
 {
-	B,
-	D,
-	G,
-	P,
-	T,
-	K,
-	DX,
-	Q,
-	JH,
-	CH,
-	S,
-	SH,
-	Z,
-	ZH,
-	F,
-	TH,
-	V,
-	DH,
-	M,
-	N,
-	NG,
-	EM,
-	EN,
-	ENG,
-	NX,
-	L,
-	R,
-	W,
-	Y,
-	HH,
-	HV,
-	EL,
-	IY,
-	IH,
-	EH,
-	EY,
-	AE,
-	AA,
-	AW,
-	AY,
-	AH,
-	AO,
-	OY,
-	OW,
-	UH,
-	UW,
-	UX,
-	ER,
-	AX,
-	IX,
-	AXR,
-	AX_H,
-	_,
-	SP,
-	SI
+	B, D, G, P, T, K, DX,
+	Q, JH, CH, S, SH, Z, ZH,
+	F, TH, V, DH, M, N, NG,
+	EM, EN, ENG, NX, L, R, W,
+	Y, HH, HV, EL, IY, IH, EH,
+	EY, AE, AA, AW, AY, AH, AO,
+	OY, OW, UH, UW, UX, ER, AX,
+	IX, AXR, AX_H, _, SP, SI
 };
 
 USTRUCT(BlueprintType)

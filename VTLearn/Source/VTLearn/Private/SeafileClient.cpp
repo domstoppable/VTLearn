@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// (c) 2021 Dominic Canare <dom@dominiccanare.com>
 
 #include "SeafileClient.h"
 
@@ -8,8 +8,6 @@
 
 #include "Misc/Paths.h"
 #include "Misc/FileHelper.h"
-
-//#include "Base64.h"
 
 TSharedRef<IHttpRequest> USeafileClient::CreateRequest(FString Route, FString Method)
 {

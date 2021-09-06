@@ -1,14 +1,11 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// (c) 2021 Dominic Canare <dom@dominiccanare.com>
 
 #pragma once
-
 
 #include "Engine/Texture2D.h"
 #include "CoreMinimal.h"
 #include "Engine/DataAsset.h"
 #include "GamepadButtonImages.generated.h"
-
-
 
 UCLASS(BlueprintType)
 class VTLEARN_API UGamepadButtonImages : public UDataAsset

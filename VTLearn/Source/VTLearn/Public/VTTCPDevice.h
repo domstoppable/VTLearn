@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// (c) 2021 Dominic Canare <dom@dominiccanare.com>
 
 #pragma once
 
@@ -10,8 +10,6 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "VTTCPDevice.generated.h"
-
-//DECLARE_DYNAMIC_DELEGATE(FVTNetworkClientStatusChangedDelegate);
 
 UCLASS(BlueprintType)
 class VTLEARN_API UVTTCPDevice : public UVTDevice
