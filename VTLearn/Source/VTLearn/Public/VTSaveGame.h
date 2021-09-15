@@ -9,7 +9,7 @@
 #include "GameFramework/SaveGame.h"
 #include "VTSaveGame.generated.h"
 
-UCLASS(Config=VTSettings)
+UCLASS()
 class VTLEARN_API UVTSaveGame : public USaveGame
 {
 	GENERATED_BODY()
@@ -23,12 +23,6 @@ public:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Username;
-
-	UPROPERTY(Config)
-	int32 DefaultPID;
-
-	UPROPERTY(Config)
-	FString DefaultUsername;
 
 	UFUNCTION(BlueprintPure)
 	FString GetSlotName();
@@ -48,6 +42,6 @@ public:
 	UFUNCTION(BlueprintPure, Category = Game)
 	static TArray<FString> GetAllSaveGameSlotNames();
 
-	UFUNCTION(BlueprintCallable)
-	static TArray<UVTSaveGame*> LoadVTSaveGames();
+	UFUNCTION(BlueprintCallable, meta = (WorldContext = WorldContextObject))
+	static TArray<UVTSaveGame*> LoadVTSaveGames(UObject * WorldContextObject);
 };

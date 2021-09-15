@@ -202,11 +202,6 @@ void USeafileClient::Mkdir(FUploadRequestInfo* UploadInfo){
 }
 
 void USeafileClient::UploadFile(FString LocalPath, FString RemotePath, FString RepoID, FString NameOverride, const FUploadComplete& OnUploadComplete){
-	if(RepoID.Equals(""))
-	{
-		RepoID = this->DefaultRepoID;
-	}
-
 	if (!RemotePath.StartsWith("/"))
 	{
 		RemotePath = "/" + RemotePath;

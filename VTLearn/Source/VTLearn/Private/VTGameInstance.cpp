@@ -246,6 +246,12 @@ int32 UVTGameInstance::GetStarCount(UVTSaveGame* SaveGame)
 
 void UVTGameInstance::UploadTrainingLogs()
 {
+	if(SeafileServer == "")
+	{
+		UE_LOG(LogTemp, Error, TEXT("Seafile server not configured! Training logs will NOT be uploaded!"));
+		return;
+	}
+
 	FilesToUpload.Empty();
 	FString SearchPath = *(FPaths::ProjectLogDir() + "TrainingData/*");
 	IFileManager::Get().FindFiles(FilesToUpload, *SearchPath, true, false);
@@ -274,7 +280,7 @@ void UVTGameInstance::OnSeafileAuthComplete(bool Success)
 		FUploadComplete UploadComplete;
 		UploadComplete.BindDynamic(this, &UVTGameInstance::OnUploadComplete);
 
-		SeafileClient->UploadFile(BasePath + File, SeafileRemotePath, "", "", UploadComplete);
+		SeafileClient->UploadFile(BasePath + File, SeafileRemotePath, SeafileRepoID, "", UploadComplete);
 	}
 }
 

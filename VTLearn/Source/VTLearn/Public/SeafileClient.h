@@ -39,7 +39,7 @@ public:
 		: LocalPath(InLocalPath), RemotePath(InRemotePath), RepoID(InRepoID), NameOverride(InNameOverride) {}
 };
 
-UCLASS(BlueprintType, Config=VTSettings)
+UCLASS(BlueprintType)
 class VTLEARN_API USeafileClient : public UObject {
 	GENERATED_BODY()
 
@@ -57,9 +57,6 @@ public:
 
 	UPROPERTY()
 	FString Token;
-
-	UPROPERTY(Config)
-	FString DefaultRepoID;
 
 	UPROPERTY()
 	FString BaseURL;

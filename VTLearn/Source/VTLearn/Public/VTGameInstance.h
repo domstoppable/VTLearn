@@ -46,18 +46,6 @@ public:
 	UFUNCTION(BlueprintPure)
 	int32 GetStarCount(UVTSaveGame* SaveGame);
 
-	UPROPERTY(Config, EditAnywhere)
-	FString SeafileServer;
-
-	UPROPERTY(Config, EditAnywhere)
-	FString SeafileUsername;
-
-	UPROPERTY(Config, EditAnywhere)
-	FString SeafilePassword;
-
-	UPROPERTY(Config, EditAnywhere)
-	FString SeafileRemotePath;
-
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	USeafileClient* SeafileClient;
 
@@ -75,8 +63,36 @@ public:
 	UFUNCTION(BlueprintCallable)
 	bool SaveProgress();
 
-	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject))
+	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject, CompactNodeTitle = "VTGameInstance", Category = "VTT"))
 	static UVTGameInstance* GetVTGameInstance(UObject* WorldContextObject);
+
+	#pragma region Settings
+
+	UPROPERTY(GlobalConfig)
+	int32 DefaultPID;
+
+	UPROPERTY(GlobalConfig)
+	FString DefaultUsername;
+
+	UPROPERTY(GlobalConfig, BlueprintReadOnly)
+	FString ContactInfo;
+
+	UPROPERTY(GlobalConfig)
+	FString SeafileServer;
+
+	UPROPERTY(GlobalConfig)
+	FString SeafileRepoID;
+
+	UPROPERTY(GlobalConfig)
+	FString SeafileUsername;
+
+	UPROPERTY(GlobalConfig)
+	FString SeafilePassword;
+
+	UPROPERTY(GlobalConfig)
+	FString SeafileRemotePath;
+
+	#pragma endregion
 
 	#pragma region Device client
 

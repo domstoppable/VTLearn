@@ -1,5 +1,8 @@
+// (c) 2021 Dominic Canare <dom@dominiccanare.com>
+
 #include "VTSaveGame.h"
 #include "LevelConfig.h"
+#include "VTGameInstance.h"
 
 #include "Kismet/GameplayStatics.h"
 
@@ -48,7 +51,7 @@ TArray<FString> UVTSaveGame::GetAllSaveGameSlotNames()
 	return Saves;
 }
 
-TArray<UVTSaveGame*> UVTSaveGame::LoadVTSaveGames()
+TArray<UVTSaveGame*> UVTSaveGame::LoadVTSaveGames(UObject* WorldContextObject)
 {
 	TArray<UVTSaveGame*> Saves;
 	TArray<FString> Names = GetAllSaveGameSlotNames();
@@ -56,8 +59,9 @@ TArray<UVTSaveGame*> UVTSaveGame::LoadVTSaveGames()
 	USaveGame* DefaultSaveGame = UGameplayStatics::CreateSaveGameObject(UVTSaveGame::StaticClass());
 	if(UVTSaveGame* DefaultVTSaveGame = Cast<UVTSaveGame>(DefaultSaveGame))
 	{
-		DefaultVTSaveGame->PID = DefaultVTSaveGame->DefaultPID;
-		DefaultVTSaveGame->Username = DefaultVTSaveGame->DefaultUsername;
+		UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(WorldContextObject);
+		DefaultVTSaveGame->PID = GameInstance->DefaultPID;
+		DefaultVTSaveGame->Username = GameInstance->DefaultUsername;
 
 		if(!Names.Contains(DefaultVTSaveGame->GetSlotName()))
 		{
