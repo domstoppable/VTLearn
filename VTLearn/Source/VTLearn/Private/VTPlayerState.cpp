@@ -35,9 +35,12 @@ int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 	SetScore(NewScore);
 	ScoreChanged.Broadcast(PointDelta, NewScore);
 
+	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
 	if(!DataLogger)
 	{
-		DataLogger = UPsydekickData::CreateCSVLogger(TEXT("TrainingLog"), TEXT("TrainingData"));
+		FString Filename = FString::Printf(TEXT("TrainingLog-%04d"), GameInstance->LoadedSave->PID);
+
+		DataLogger = UPsydekickData::CreateCSVLogger(Filename, TEXT("TrainingData"));
 		TArray<FString> FieldNames;
 
 		FieldNames.Add(TEXT("PID"));
@@ -48,7 +51,6 @@ int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 		DataLogger->SetFieldNames(FieldNames);
 	}
 
-	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
 	TMap<FString, FString> LogRecord;
 
 	LogRecord.Add("PID", FString::Printf(TEXT("%d"), GameInstance->LoadedSave->PID));
