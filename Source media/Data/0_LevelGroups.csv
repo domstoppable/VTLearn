@@ -1,8 +1,8 @@
 ---,Name,Description,LevelConfigs,Map
-Food,Food,,DataTable'/Game/Data/Levels_Food.Levels_Food',GroceryStore
-Letters,Letters,,DataTable'/Game/Data/Levels_Letters.Levels_Letters',SoopLoops
-Numbers,Numbers,,DataTable'/Game/Data/Levels_Numbers.Levels_Numbers',BowlingAlley
-Animals,Animals,,DataTable'/Game/Data/Levels_Animals.Levels_Animals',
+Food,Food,Pick up mystery food and sort it into the correct bag,DataTable'/Game/Data/Levels_Food.Levels_Food',GroceryStore
+Letters,Letters,Swim around in a giant bowl of Canare's Delicious SoopLoops™,DataTable'/Game/Data/Levels_Letters.Levels_Letters',SoopLoops
+Numbers,Numbers,Who left their bowling ball out?,DataTable'/Game/Data/Levels_Numbers.Levels_Numbers',BowlingAlley
+Animals,Animals,Help these animals out by making sure each one receives the correct food.,DataTable'/Game/Data/Levels_Animals.Levels_Animals',
 Colors,Colors,,DataTable'/Game/Data/Levels_Colors.Levels_Colors',
 Time,Time,,DataTable'/Game/Data/Levels_Time.Levels_Time',
 People,People,,DataTable'/Game/Data/Levels_People.Levels_People',
