@@ -47,6 +47,7 @@
 Source media/**/*.png
 Source media/**/*.tga
 Source media/**/*.blend1
+Source media/**/*.ico
 
 # Binary Files
 VTLearn/Binaries/*
