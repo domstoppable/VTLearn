@@ -56,7 +56,7 @@ int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 	LogRecord.Add("PID", FString::Printf(TEXT("%d"), GameInstance->LoadedSave->PID));
 	LogRecord.Add("Level", FString::Printf(TEXT("%s"), *GameInstance->CurrentLevelStatus->LevelConfig.Name));
 	LogRecord.Add("Stimulus", FString::Printf(TEXT("%s"), *FPaths::GetCleanFilename(Phrase->Source)));
-	LogRecord.Add("Correct", FString::Printf(TEXT("%d"), Performance.Correct));
+	LogRecord.Add("Correct", FString::Printf(TEXT("%d"), bCorrect));
 
 	DataLogger->LogStrings(LogRecord);
 
