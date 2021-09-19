@@ -66,6 +66,9 @@ public:
 	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject, CompactNodeTitle = "VTGameInstance", Category = "VTT"))
 	static UVTGameInstance* GetVTGameInstance(UObject* WorldContextObject);
 
+	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject, CompactNodeTitle = "Tearing Down", Category = "VTT"))
+	static bool WorldIsTearingDown(UObject* WorldContextObject);
+
 	#pragma region Settings
 
 	UPROPERTY(GlobalConfig)

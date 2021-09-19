@@ -229,6 +229,11 @@ UVTGameInstance* UVTGameInstance::GetVTGameInstance(UObject* WorldContextObject)
 	return Cast<UVTGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
 }
 
+bool UVTGameInstance::WorldIsTearingDown(UObject* WorldContextObject)
+{
+	return WorldContextObject->GetWorld()->bIsTearingDown;
+}
+
 int32 UVTGameInstance::GetStarCount(UVTSaveGame* SaveGame)
 {
 	int32 Stars = 0;
@@ -290,7 +295,7 @@ void UVTGameInstance::OnUploadComplete(bool Success, FString Filename)
 	{
 		FString UploadedPath = FPaths::GetPath(Filename) + "/Uploaded/";
 		FPlatformFileManager::Get().GetPlatformFile().CreateDirectoryTree(*UploadedPath);
-		
+
 		FString Destination = (UploadedPath + FPaths::GetCleanFilename(Filename));
 		IFileManager::Get().Move(*Destination, *Filename);
 	}
