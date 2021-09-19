@@ -224,12 +224,7 @@ void AVTPlayerController::OnGrab()
 		{
 			UE_LOG(LogTemp, Log, TEXT("Attempting to hold %s"), *Reachable->GetName());
 			if(HoldItem(Reachable)){
-				UE_LOG(LogTemp, Log, TEXT("I got it"));
 				break;
-			}
-			else
-			{
-				UE_LOG(LogTemp, Log, TEXT("It cannot be held"));
 			}
 		}
 	}
@@ -262,7 +257,6 @@ bool AVTPlayerController::CanInteract()
 				}
 			}
 
-			UE_LOG(LogTemp, Log, TEXT("I can interact with %s"), *Reachable->GetName());
 			return true;
 		}
 	}
@@ -384,7 +378,7 @@ AVTPlayerController* AVTPlayerController::GetVTPlayerController(UObject* WorldCo
 }
 
 void AVTPlayerController::OnPlayerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{	
+{
 	if (OtherActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
 	{
 		Reachables.Add(OtherActor);

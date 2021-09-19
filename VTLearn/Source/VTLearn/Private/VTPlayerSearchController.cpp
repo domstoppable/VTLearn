@@ -24,7 +24,14 @@ void AVTPlayerSearchController::OnPlayerBeginOverlap(UPrimitiveComponent* Overla
 			UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
 			if(IsValid(GameInstance->VTDevice))
 			{
-				GameInstance->VTDevice->PlayPhrase(Item->Phrase);
+				if(IsValid(Item->Phrase))
+				{
+					GameInstance->VTDevice->PlayPhrase(Item->Phrase);
+				}
+				else
+				{
+					UE_LOG(LogTemp, Error, TEXT("VibeyItem has invalid phrase (%s)"), *Item->GetName());
+				}
 			}
 		}
 	}

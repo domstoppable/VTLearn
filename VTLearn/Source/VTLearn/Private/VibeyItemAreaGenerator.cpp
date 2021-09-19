@@ -51,14 +51,14 @@ void AVibeyItemAreaGenerator::SpawnItem()
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
 
-			CurrentItem = GetWorld()->SpawnActor<AVibeyItem>(ItemClass, Location, Rotation, SpawnParams);
+			CurrentItem = GetWorld()->SpawnActor<AVibeyItem>(ItemClass, FVector(-500, -500, -500), Rotation, SpawnParams);
 			CurrentItem->SetPhrase(Phrase);
+
+			CurrentItem->SetActorLocation(Location, false, nullptr, ETeleportType::ResetPhysics);
 
 			CurrentItem->GetStaticMeshComponent()->SetCollisionProfileName(FName(TEXT("OverlapAll")), true);
 			CurrentItem->GetStaticMeshComponent()->SetSimulatePhysics(false);
 			CurrentItem->GetStaticMeshComponent()->SetHiddenInGame(true);
-
-			CurrentItem->SetActorLocation(Location);
 
 			GetWorld()->GetTimerManager().SetTimer(
 				KillDelayTimerHandle,

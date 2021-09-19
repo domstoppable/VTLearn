@@ -31,11 +31,12 @@ UPhoneticPhrase* AVibeyItemGenerator::RandomPhrase()
 {
 	if(CurrentPool.Num() == 0)
 	{
+		UE_LOG(LogTemp, Log, TEXT("AVibeyItemGenerator::RandomPhrase Refreshing pool"));
 		CurrentPool.Append(Phrases);
 	}
 	if(CurrentPool.Num() == 0)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("AVibeyItemGenerator::RandomPhrase No items to put in pool!"));
+		UE_LOG(LogTemp, Error, TEXT("AVibeyItemGenerator::RandomPhrase No items to put in pool!"));
 		return nullptr;
 	}
 
