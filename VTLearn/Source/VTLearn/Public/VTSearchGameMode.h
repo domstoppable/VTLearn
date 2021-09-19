@@ -38,4 +38,10 @@ public:
 	UFUNCTION()
 	void NextPhrase();
 
+	UFUNCTION()
+	void ShowPhraseHint();
+
+	UFUNCTION()
+	void ShowHint(FString Hint);
+
 };

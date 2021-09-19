@@ -65,13 +65,39 @@ void AVTSearchGameMode::NextPhrase()
 	TrainingPhrases.MultiFind(PhraseText, Phrases);
 	Matcher->SetMatchPhrases(Phrases);
 
-	for (TActorIterator<AActor> HinterItr(GetWorld()); HinterItr; ++HinterItr)
+	if (CurrentPhraseIdx == 0)
 	{
-		if(IVTHintDisplayer* Hinter = Cast<IVTHintDisplayer>(*HinterItr))
-		{
-			UE_LOG(LogTemp, Log, TEXT("I found a hint giver!"));
-			Hinter->Execute_ShowHint(*HinterItr, PhraseText);
-		}
+		ShowPhraseHint();
+	}
+	else
+	{
+		ShowHint(TEXT("Ok!"));
+
+		FTimerHandle TimerHandle;
+		GetWorld()->GetTimerManager().SetTimer(
+			TimerHandle,
+			this, &AVTSearchGameMode::ShowPhraseHint,	// Callback
+			1.0f,										// Rate
+			false                                       // loop
+		);
 	}
 }
 
+void AVTSearchGameMode::ShowPhraseHint()
+{
+	FString PhraseText = PhraseKeys[CurrentPhraseIdx];
+	FString PhraseHint = FString::Printf(TEXT("Now find the letter \"%s\"\nIgnore everything else!"), *PhraseText);
+	ShowHint(PhraseHint);
+}
+
+
+void AVTSearchGameMode::ShowHint(FString Hint)
+{
+	for (TActorIterator<AActor> HinterItr(GetWorld()); HinterItr; ++HinterItr)
+	{
+		if (IVTHintDisplayer* Hinter = Cast<IVTHintDisplayer>(*HinterItr))
+		{
+			Hinter->Execute_ShowHint(*HinterItr, Hint);
+		}
+	}
+}
