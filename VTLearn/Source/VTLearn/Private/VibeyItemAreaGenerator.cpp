@@ -2,6 +2,9 @@
 
 #include "VibeyItemAreaGenerator.h"
 
+#include "VTPlayerState.h"
+#include "VTSearchGameMode.h"
+
 #include "Kismet/GameplayStatics.h"
 #include "Math/UnrealMathUtility.h"
 #include "Engine/EngineTypes.h"
@@ -90,10 +93,16 @@ void AVibeyItemAreaGenerator::KillItem()
 {
 	if (IsValid(CurrentItem) && CurrentItem->bGrabbable)
 	{
-		UE_LOG(LogTemp, Warning, TEXT("Item generator destroying unused item"));
-		GetWorld()->DestroyActor(CurrentItem);
-		CurrentItem = nullptr;
+		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
+
+		AVTSearchGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTSearchGameMode>();
+		CurrentItem->bIsGood = !GameMode->Matcher->Match(CurrentItem->Phrase);
+
+		AVTPlayerState* PlayerState = PlayerController->GetPlayerState<AVTPlayerState>();
+		PlayerState->OnItemAttempted(CurrentItem->Phrase, CurrentItem->bIsGood);
+		CurrentItem->Expired();
 	}
+	CurrentItem = nullptr;
 
 	StartSpawnTimer();
 }

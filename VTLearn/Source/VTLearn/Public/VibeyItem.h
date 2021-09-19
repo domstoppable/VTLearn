@@ -38,4 +38,7 @@ public:
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
 	void Grabbed(AActor* Grabber);
+
+	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
+	void Expired();
 };

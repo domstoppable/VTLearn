@@ -4,6 +4,7 @@
 
 #include "VTSearchGameMode.h"
 #include "VTGameInstance.h"
+#include "VTPlayerState.h"
 
 #include "Components/PrimitiveComponent.h"
 #include "Engine/World.h"
