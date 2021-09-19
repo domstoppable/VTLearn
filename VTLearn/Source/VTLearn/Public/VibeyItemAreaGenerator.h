@@ -26,10 +26,16 @@ public:
 	TSubclassOf<AVibeyItem> ItemClass = AVibeyItem::StaticClass();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MinTriggerTime = 3.0f;
+	float MinTriggerTime = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxTriggerTime = 7.0f;
+	float MaxTriggerTime = 3.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float TriggerRetryTime = 1.0f;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	float ItemTimeToLive = 5.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	UBoxComponent* AreaBox;
@@ -40,6 +46,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FTimerHandle SpawnDelayTimerHandle;
 
+	UPROPERTY(BlueprintReadWrite)
+	FTimerHandle KillDelayTimerHandle;
+
 	UFUNCTION()
 	void AreaBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult );
 
@@ -48,6 +57,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void SpawnItem();
+
+	UFUNCTION(BlueprintCallable)
+	void KillItem();
 
 	UFUNCTION()
 	void StartSpawnTimer();

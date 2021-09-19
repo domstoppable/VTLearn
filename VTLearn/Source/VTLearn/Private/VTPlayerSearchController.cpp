@@ -11,38 +11,22 @@
 void AVTPlayerSearchController::BeginPlay()
 {
 	Super::BeginPlay();
-
-	TArray<UActorComponent*> Components = GetPawn()->GetComponentsByTag(UPrimitiveComponent::StaticClass(), FName(TEXT("interaction")));
-	if(Components.Num() > 0)
-	{
-		Cast<UPrimitiveComponent>(Components[0])->OnComponentBeginOverlap.AddDynamic(this, &AVTPlayerSearchController::OnPlayerBeginOverlap);
-		Cast<UPrimitiveComponent>(Components[0])->OnComponentEndOverlap.AddDynamic(this, &AVTPlayerSearchController::OnPlayerEndOverlap);
-	}
 }
 
 void AVTPlayerSearchController::OnPlayerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
+	Super::OnPlayerBeginOverlap(OverlappedComponent, OtherActor, OtherComp, OtherBodyIndex, bFromSweep, SweepResult);
+
 	if(AVibeyItem* Item = Cast<AVibeyItem>(OtherActor))
 	{
 		if(Item->bGrabbable)
 		{
-			ReachableItem = Item;
-			ItemInReach.Broadcast(Item);
-
 			UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
 			if(IsValid(GameInstance->VTDevice))
 			{
 				GameInstance->VTDevice->PlayPhrase(Item->Phrase);
 			}
 		}
-	}
-}
-
-void AVTPlayerSearchController::OnPlayerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if(OtherActor == ReachableItem)
-	{
-		ReachableItem = nullptr;
 	}
 }
 
@@ -63,6 +47,8 @@ bool AVTPlayerSearchController::HoldItem(AActor* Item)
 
 		GetPlayerState<AVTPlayerState>()->OnItemAttempted(VibeyItem->Phrase, VibeyItem->bIsGood);
 
+		Reachables.Remove(VibeyItem);
+
 		return true;
 	}
 
@@ -71,12 +57,12 @@ bool AVTPlayerSearchController::HoldItem(AActor* Item)
 
 bool AVTPlayerSearchController::CanRevibe()
 {
-	return IsValid(ReachableItem);
+	return CanInteract();
 }
 
 void AVTPlayerSearchController::OnRevibe()
 {
-	if(IsPaused() || !IsValid(ReachableItem))
+	if(IsPaused() || !CanRevibe())
 	{
 		return;
 	}
@@ -85,7 +71,8 @@ void AVTPlayerSearchController::OnRevibe()
 	{
 		if(IsValid(GameInstance->VTDevice))
 		{
-			GameInstance->VTDevice->PlayPhrase(ReachableItem->Phrase);
+			AVibeyItem* VibeyItem = GetFirstReachableOfClass<AVibeyItem>();
+			GameInstance->VTDevice->PlayPhrase(VibeyItem->Phrase);
 		}
 	}
 }

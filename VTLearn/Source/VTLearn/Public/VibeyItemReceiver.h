@@ -3,13 +3,15 @@
 #pragma once
 
 #include "PhoneSequenceMatcher.h"
+#include "Interactable.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
 #include "VibeyItemReceiver.generated.h"
 
 UCLASS()
-class VTLEARN_API AVibeyItemReceiver : public AActor
+class VTLEARN_API AVibeyItemReceiver : public AActor, public IInteractable
 {
 	GENERATED_BODY()
 

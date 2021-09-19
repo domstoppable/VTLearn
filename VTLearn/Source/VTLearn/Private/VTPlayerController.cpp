@@ -9,6 +9,7 @@
 #include "VTPlayerState.h"
 #include "VTGameInstance.h"
 #include "VTHUD.h"
+#include "Interactable.h"
 
 #include "GameFramework/Actor.h"
 #include "GameFramework/Character.h"
@@ -31,6 +32,8 @@ AVTPlayerController::AVTPlayerController()
 
 void AVTPlayerController::BeginPlay()
 {
+	Reachables = TArray<AActor*>();
+
 	if(AVTLearnGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTLearnGameMode>())
 	{
 		GameMode->LevelTimedOut.AddDynamic(this, &AVTPlayerController::OnLevelTimedOut);
@@ -38,6 +41,13 @@ void AVTPlayerController::BeginPlay()
 
 	FSlateApplication::Get().OnApplicationActivationStateChanged()
 		.AddUObject(this, &AVTPlayerController::OnWindowFocusChanged);
+
+	TArray<UActorComponent*> Components = GetPawn()->GetComponentsByTag(UPrimitiveComponent::StaticClass(), FName(TEXT("interaction")));
+	if (Components.Num() > 0)
+	{
+		Cast<UPrimitiveComponent>(Components[0])->OnComponentBeginOverlap.AddDynamic(this, &AVTPlayerController::OnPlayerBeginOverlap);
+		Cast<UPrimitiveComponent>(Components[0])->OnComponentEndOverlap.AddDynamic(this, &AVTPlayerController::OnPlayerEndOverlap);
+	}
 }
 
 void AVTPlayerController::OnWindowFocusChanged(bool bIsFocused)
@@ -210,13 +220,10 @@ void AVTPlayerController::OnGrab()
 	{
 		DropItem();
 	}else{
-		TArray<AActor*> ActorsInReach;
-		PlayerPawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItem>());
-		UE_LOG(LogTemp, Log, TEXT("Attempting to hold - %d actors nearby"), ActorsInReach.Num());
-		for(auto Actor : ActorsInReach)
+		for(auto Reachable : Reachables)
 		{
-			UE_LOG(LogTemp, Log, TEXT("Attempting to hold %s"), *Actor->GetName());
-			if(HoldItem(Actor)){
+			UE_LOG(LogTemp, Log, TEXT("Attempting to hold %s"), *Reachable->GetName());
+			if(HoldItem(Reachable)){
 				UE_LOG(LogTemp, Log, TEXT("I got it"));
 				break;
 			}
@@ -230,8 +237,37 @@ void AVTPlayerController::OnGrab()
 
 bool AVTPlayerController::CanInteract()
 {
-	// @TODO: Implement
-	return true;
+	if (IsValid(HeldItem))
+	{
+		return true;
+	}
+
+	for (AActor* Reachable : Reachables)
+	{
+		if (IsValid(Reachable))
+		{
+			if (AVibeyItem* Item = Cast<AVibeyItem>(Reachable))
+			{
+				if (!(IsValid(Item) && Item->bGrabbable))
+				{
+					continue;
+				}
+			}
+
+			if (AVibeyItemReceiver* Receiver = Cast<AVibeyItemReceiver>(Reachable))
+			{
+				if(!IsValid(HeldItem))
+				{
+					continue;
+				}
+			}
+
+			UE_LOG(LogTemp, Log, TEXT("I can interact with %s"), *Reachable->GetName());
+			return true;
+		}
+	}
+
+	return false;
 }
 
 void AVTPlayerController::OnInteract()
@@ -240,8 +276,6 @@ void AVTPlayerController::OnInteract()
 	{
 		return;
 	}
-
-	// @TODO: Implement
 }
 
 bool AVTPlayerController::CanRevibe()
@@ -331,19 +365,11 @@ void AVTPlayerController::DropItem()
 	AVibeyItem* Item = Cast<AVibeyItem>(HeldItem);
 	HeldItem = nullptr;
 
-	TArray<AActor*> ActorsInReach;
-	PlayerPawn->GetOverlappingActors(ActorsInReach, TSubclassOf<AVibeyItemReceiver>());
+	AVibeyItemReceiver* Receiver = GetFirstReachableOfClass<AVibeyItemReceiver>();
 
-	if(IsValid(Item) && ActorsInReach.Num() > 0)
+	if(IsValid(Item) && IsValid(Receiver))
 	{
-		for(AActor* ReachableActor : ActorsInReach)
-		{
-			if(AVibeyItemReceiver* Receiver = Cast<AVibeyItemReceiver>(ReachableActor))
-			{
-				Receiver->ReceiveItem(Item);
-				break;
-			}
-		}
+		Receiver->ReceiveItem(Item);
 	}
 }
 
@@ -355,4 +381,21 @@ AVTPlayerState* AVTPlayerController::GetVTPlayerState()
 AVTPlayerController* AVTPlayerController::GetVTPlayerController(UObject* WorldContextObject)
 {
 	return Cast<AVTPlayerController>(UGameplayStatics::GetPlayerController(WorldContextObject, 0));
+}
+
+void AVTPlayerController::OnPlayerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{	
+	if (OtherActor->GetClass()->ImplementsInterface(UInteractable::StaticClass()))
+	{
+		Reachables.Add(OtherActor);
+		if (AVibeyItem* Item = Cast<AVibeyItem>(OtherActor))
+		{
+			ItemInReach.Broadcast(Item);
+		}
+	}
+}
+
+void AVTPlayerController::OnPlayerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	Reachables.Remove(OtherActor);
 }

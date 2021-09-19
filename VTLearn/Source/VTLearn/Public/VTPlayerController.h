@@ -4,6 +4,7 @@
 
 #include "VTPlayerState.h"
 #include "VTMenuController.h"
+#include "Interactable.h"
 
 #include "GameFramework/Actor.h"
 
@@ -15,6 +16,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTPauseChanged, bool, Paused);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTAppFocusChanged, bool, IsFocused);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTVibeyItemInReach, AVibeyItem*, Item);
 
 UCLASS()
 class VTLEARN_API AVTPlayerController : public AVTMenuController
@@ -42,6 +44,12 @@ public:
 
 	UPROPERTY(BlueprintAssignable)
 	FVTAppFocusChanged AppFocusChanged;
+
+	UPROPERTY(BlueprintReadWrite)
+	TArray<AActor*> Reachables;
+
+	UPROPERTY(BlueprintAssignable)
+	FVTVibeyItemInReach	ItemInReach;
 
 	virtual void BindInputActions() override;
 
@@ -87,4 +95,23 @@ public:
 	UFUNCTION()
 	void OnWindowFocusChanged(bool bIsFocused);
 
+	UFUNCTION()
+	virtual void OnPlayerBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult);
+
+	UFUNCTION()
+	virtual void OnPlayerEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+	template<class T>
+	T* GetFirstReachableOfClass()
+	{
+		for (AActor* Interactable : Reachables)
+		{
+			if (T* Object = Cast<T>(Interactable))
+			{
+				return Object;
+			}
+		}
+
+		return nullptr;
+	}
 };

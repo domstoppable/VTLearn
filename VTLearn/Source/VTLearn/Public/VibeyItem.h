@@ -6,11 +6,12 @@
 #include "Engine/StaticMeshActor.h"
 
 #include "PhoneticPhrase.h"
+#include "Interactable.h"
 
 #include "VibeyItem.generated.h"
 
 UCLASS(BlueprintType)
-class VTLEARN_API AVibeyItem : public AStaticMeshActor
+class VTLEARN_API AVibeyItem : public AStaticMeshActor, public IInteractable
 {
 	GENERATED_BODY()
 

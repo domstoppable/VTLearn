@@ -26,20 +26,18 @@ void AVibeyItemAreaGenerator::BeginPlay()
 
 void AVibeyItemAreaGenerator::SpawnItem()
 {
-	// @TODO: add kill timer
-	if(IsValid(CurrentItem) && CurrentItem->bGrabbable)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("Item generator destroying unused item"));
-		GetWorld()->DestroyActor(CurrentItem);
-		CurrentItem = nullptr;
-	}
-
 	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
 	APawn* PlayerPawn = PlayerController->GetPawn();
 
 	if(PlayerPawn->GetVelocity().Size2D() < 0.1f)
 	{
-		UE_LOG(LogTemp, Log, TEXT("AVibeyItemAreaGenerator not spawning because player is not moving"));
+		UE_LOG(LogTemp, Log, TEXT("AVibeyItemAreaGenerator not spawning because player is not moving. Will try again in %0.2f"), TriggerRetryTime);
+		GetWorld()->GetTimerManager().SetTimer(
+			SpawnDelayTimerHandle,
+			this, &AVibeyItemAreaGenerator::SpawnItem,	// Callback
+			TriggerRetryTime,							// Rate
+			false                                       // loop
+		);
 	}
 	else
 	{
@@ -62,6 +60,13 @@ void AVibeyItemAreaGenerator::SpawnItem()
 
 			CurrentItem->SetActorLocation(Location);
 
+			GetWorld()->GetTimerManager().SetTimer(
+				KillDelayTimerHandle,
+				this, &AVibeyItemAreaGenerator::KillItem,   // Callback
+				ItemTimeToLive,								// Rate
+				false                                       // loop
+			);
+
 			UE_LOG(LogTemp, Log, TEXT("Spawned new item: %s"), *Phrase->WrittenText);
 		}
 		else
@@ -69,8 +74,6 @@ void AVibeyItemAreaGenerator::SpawnItem()
 			UE_LOG(LogTemp, Warning, TEXT("Failed to generate phrase"));
 		}
 	}
-
-	StartSpawnTimer();
 }
 
 void AVibeyItemAreaGenerator::StartSpawnTimer()
@@ -81,6 +84,18 @@ void AVibeyItemAreaGenerator::StartSpawnTimer()
 		FMath::RandRange(MinTriggerTime, MaxTriggerTime),   // Rate
 		false                                               // loop
 	);
+}
+
+void AVibeyItemAreaGenerator::KillItem()
+{
+	if (IsValid(CurrentItem) && CurrentItem->bGrabbable)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Item generator destroying unused item"));
+		GetWorld()->DestroyActor(CurrentItem);
+		CurrentItem = nullptr;
+	}
+
+	StartSpawnTimer();
 }
 
 void AVibeyItemAreaGenerator::AreaBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult )
