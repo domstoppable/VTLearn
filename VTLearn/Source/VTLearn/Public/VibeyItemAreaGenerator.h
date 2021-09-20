@@ -26,10 +26,10 @@ public:
 	TSubclassOf<AVibeyItem> ItemClass = AVibeyItem::StaticClass();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MinTriggerTime = 1.0f;
+	float MinTriggerTime = 0.5f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxTriggerTime = 3.0f;
+	float MaxTriggerTime = 2.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TriggerRetryTime = 1.0f;

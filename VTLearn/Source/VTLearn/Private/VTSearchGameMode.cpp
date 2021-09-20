@@ -86,10 +86,9 @@ void AVTSearchGameMode::NextPhrase()
 void AVTSearchGameMode::ShowPhraseHint()
 {
 	FString PhraseText = PhraseKeys[CurrentPhraseIdx];
-	FString PhraseHint = FString::Printf(TEXT("Now find the letter \"%s\"\nIgnore everything else!"), *PhraseText);
+	FString PhraseHint = FString::Printf(TEXT("Find the letter \"%s\"\nIgnore everything else!"), *PhraseText);
 	ShowHint(PhraseHint);
 }
-
 
 void AVTSearchGameMode::ShowHint(FString Hint)
 {
