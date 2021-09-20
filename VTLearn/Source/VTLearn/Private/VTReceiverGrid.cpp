@@ -100,6 +100,13 @@ TArray<FVector> AVTReceiverGrid::GetOpenLocations()
 void AVTReceiverGrid::MoveToRandomCell(AVibeyItemReceiver* Receiver)
 {
 	TArray<FVector> OpenLocations = GetOpenLocations();
-	FVector Location = OpenLocations[FMath::RandRange(0, OpenLocations.Num()-1)];
-	Receiver->SetActorLocation(FVector(Location.X, Location.Y, Receiver->GetActorLocation().Z));
+	if(OpenLocations.Num() == 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("No open locations for receiver grid"));
+	}
+	else
+	{
+		FVector Location = OpenLocations[FMath::RandRange(0, OpenLocations.Num()-1)];
+		Receiver->SetActorLocation(FVector(Location.X, Location.Y, Receiver->GetActorLocation().Z));
+	}
 }
