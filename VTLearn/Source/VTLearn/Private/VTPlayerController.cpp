@@ -339,7 +339,6 @@ bool AVTPlayerController::HoldItem(AActor* Item)
 	if(AVTLearnCharacter* PlayerCharacter = Cast<AVTLearnCharacter>(PlayerPawn))
 	{
 		PlayerCharacter->ItemGrabbed(HeldItem);
-		HeldItem->OnGrabbed(PlayerCharacter);
 	}
 
 	return true;

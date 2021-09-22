@@ -46,7 +46,7 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	FTimerHandle ExpirationTimerHandle;
 
-	UFUNCTION()
+	UFUNCTION(BlueprintCallable)
 	void StartExpirationTimer(float Period);
 
 protected:

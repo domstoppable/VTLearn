@@ -12,6 +12,12 @@
 
 int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect, bool bExpired)
 {
+	if(!Phrase || !IsValid(Phrase))
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Player attempted item with bad phrase"));
+		return GetScore();
+	}
+
 	// Store attempt
 	FPhrasePerformance Performance = Counts.FindOrAdd(Phrase);
 	if(bCorrect)
