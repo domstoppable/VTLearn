@@ -35,32 +35,42 @@ int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 	SetScore(NewScore);
 	ScoreChanged.Broadcast(PointDelta, NewScore);
 
-	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
 	if(!DataLogger)
 	{
-		FString Filename = FString::Printf(TEXT("TrainingLog-%04d"), GameInstance->LoadedSave->PID);
-
-		DataLogger = UPsydekickData::CreateCSVLogger(Filename, TEXT("TrainingData"));
-		TArray<FString> FieldNames;
-
-		FieldNames.Add(TEXT("PID"));
-		FieldNames.Add(TEXT("Level"));
-		FieldNames.Add(TEXT("Stimulus"));
-		FieldNames.Add(TEXT("Correct"));
-
-		DataLogger->SetFieldNames(FieldNames);
+		StartNewLogger();
 	}
 
+	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
 	TMap<FString, FString> LogRecord;
 
 	LogRecord.Add("PID", FString::Printf(TEXT("%d"), GameInstance->LoadedSave->PID));
 	LogRecord.Add("Level", FString::Printf(TEXT("%s"), *GameInstance->CurrentLevelStatus->LevelConfig.Name));
 	LogRecord.Add("Stimulus", FString::Printf(TEXT("%s"), *FPaths::GetCleanFilename(Phrase->Source)));
 	LogRecord.Add("Correct", FString::Printf(TEXT("%d"), bCorrect));
+	LogRecord.Add("LevelAttemptGuid", GameInstance->LevelAttemptGuid);
+	LogRecord.Add("Filename", DataLogger->Filename);
 
 	DataLogger->LogStrings(LogRecord);
 
 	return NewScore;
+}
+
+void AVTPlayerState::StartNewLogger()
+{
+	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(this);
+	FString Filename = FString::Printf(TEXT("TrainingLog-%04d-%s"), GameInstance->LoadedSave->PID, *GameInstance->LevelAttemptGuid);
+
+	DataLogger = UPsydekickData::CreateCSVLogger(Filename, TEXT("TrainingData"));
+	TArray<FString> FieldNames;
+
+	FieldNames.Add(TEXT("PID"));
+	FieldNames.Add(TEXT("Level"));
+	FieldNames.Add(TEXT("Stimulus"));
+	FieldNames.Add(TEXT("Correct"));
+	FieldNames.Add(TEXT("LevelAttemptGuid"));
+	FieldNames.Add(TEXT("Filename"));
+
+	DataLogger->SetFieldNames(FieldNames);
 }
 
 int32 AVTPlayerState::GetTotalCorrectCount()

@@ -50,4 +50,7 @@ public:
 	UFUNCTION(BlueprintCallable)
 	TMap<FString, FPhrasePerformance> ReportByText();
 
+	UFUNCTION(BlueprintCallable)
+	void StartNewLogger();
+
 };

@@ -10,6 +10,7 @@
 
 #include "Kismet/GameplayStatics.h"
 #include "GenericPlatform/GenericPlatformMisc.h"
+#include "Misc/Guid.h"
 
 void UVTGameInstance::Init()
 {
@@ -144,6 +145,12 @@ void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatu
 		return;
 	}
 
+	LevelAttemptGuid = FGuid::NewGuid().ToString();
+	if(VTDevice && IsValid(VTDevice))
+	{
+		// the VTDevice persists between levels, so it needs to be told when to start a new logger
+		VTDevice->StartNewLogger();
+	}
 	ETravelType TravelType = TRAVEL_Absolute;
 	GEngine->SetClientTravel(World, *Map, TravelType);
 }

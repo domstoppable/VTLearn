@@ -34,6 +34,9 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	ULevelStatus* CurrentLevelStatus = nullptr;
 
+	UPROPERTY(BlueprintReadOnly)
+	FString LevelAttemptGuid;
+
 	UFUNCTION(BlueprintCallable)
 	void LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatus* LevelStatus);
 
