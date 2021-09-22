@@ -49,11 +49,10 @@ bool AVTPlayerSearchController::HoldItem(AActor* Item)
 	if(AVibeyItem* VibeyItem = Cast<AVibeyItem>(Item))
 	{
 		AVTSearchGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTSearchGameMode>();
-		VibeyItem->bIsGood = GameMode->Matcher->Match(VibeyItem->Phrase);
-		VibeyItem->bGrabbable = false;
-		VibeyItem->Grabbed(GetPawn());
+		GameMode->CheckItem(VibeyItem);
 
-		GetPlayerState<AVTPlayerState>()->OnItemAttempted(VibeyItem->Phrase, VibeyItem->bIsGood);
+		VibeyItem->bGrabbable = false;
+		VibeyItem->OnGrabbed(GetPawn());
 
 		Reachables.Remove(VibeyItem);
 

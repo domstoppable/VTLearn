@@ -28,9 +28,9 @@ void AVibeyItemReceiver::OnConstruction(const FTransform& Transform)
 	Matcher = NewObject<UPhoneSequenceMatcher>();
 }
 
-void AVibeyItemReceiver::ReceiveItem(AVibeyItem* Item)
+void AVibeyItemReceiver::ReceiveItem_Implementation(AVibeyItem* Item)
 {
-	ItemReceived(Item);
+	CheckItem(Item);
 }
 
 void AVibeyItemReceiver::SetHelpText(FString Text)
@@ -55,4 +55,25 @@ void AVibeyItemReceiver::SetMatchPhrases(TArray<UPhoneticPhrase*> Phrases)
 	{
 		SetHelpText(TEXT(""));
 	}
+}
+
+bool AVibeyItemReceiver::CheckItem(AVibeyItem* Item, bool bMarkAsAttempted)
+{
+	bool bResult = false;
+
+	if(IsValid(Matcher) && IsValid(Item) && IsValid(Item->Phrase))
+	{
+		bResult = Matcher->Match(Item->Phrase);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Could not check item because of bad matcher or bad item"));
+	}
+
+	if(bMarkAsAttempted)
+	{
+		Item->MarkAttempted(bResult);
+	}
+
+	return bResult;
 }

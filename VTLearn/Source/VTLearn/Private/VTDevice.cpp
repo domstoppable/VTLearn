@@ -115,11 +115,11 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 
 	TMap<FString, FString> LogRecord;
 
-	LogRecord.Add("Filename", StimulusLogger->Filename);
 	LogRecord.Add("LevelAttemptGuid", GameInstance->LevelAttemptGuid);
 	LogRecord.Add("PID", FString::Printf(TEXT("%d"), GameInstance->LoadedSave->PID));
 	LogRecord.Add("Level", GameInstance->CurrentLevelStatus->LevelConfig.Name);
 	LogRecord.Add("Stimulus", FPaths::GetCleanFilename(Phrase->Source));
+	LogRecord.Add("Filename", FPaths::GetCleanFilename(StimulusLogger->Filename));
 
 	if(Send(Data))
 	{

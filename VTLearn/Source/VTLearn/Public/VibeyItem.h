@@ -10,6 +10,10 @@
 
 #include "VibeyItem.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVibeyItemAttempted, AVibeyItem*, VibeyItem);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVibeyItemExpired, AVibeyItem*, VibeyItem);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVibeyItemPickedUp, AVibeyItem*, VibeyItem);
+
 UCLASS(BlueprintType)
 class VTLEARN_API AVibeyItem : public AStaticMeshActor, public IInteractable
 {
@@ -27,8 +31,28 @@ public:
 	UPROPERTY(BlueprintReadWrite)
 	bool bIsGood = false;
 
+	UPROPERTY(BlueprintReadWrite)
+	bool bIsExpired = false;
+
+	UPROPERTY(BlueprintAssignable)
+	FVibeyItemExpired Expired;
+
+	UPROPERTY(BlueprintAssignable)
+	FVibeyItemAttempted Attempted;
+
+	UPROPERTY(BlueprintAssignable)
+	FVibeyItemPickedUp Grabbed;
+
+	UPROPERTY(BlueprintReadWrite)
+	FTimerHandle ExpirationTimerHandle;
+
+	UFUNCTION()
+	void StartExpirationTimer(float Period);
+
 protected:
 	virtual void BeginPlay() override;
+
+	virtual void ExpireNow();
 
 public:
 	virtual void Tick(float DeltaTime) override;
@@ -37,8 +61,14 @@ public:
 	void SetPhrase(UPhoneticPhrase* NewPhrase);
 
 	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void Grabbed(AActor* Grabber);
+	void OnGrabbed(AActor* Grabber);
 
-	UFUNCTION(BlueprintImplementableEvent, BlueprintCallable)
-	void Expired();
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnExpired();
+
+	UFUNCTION(BlueprintCallable)
+	void MarkAttempted(bool bNewIsGood);
+
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
+	void OnAttempted();
 };

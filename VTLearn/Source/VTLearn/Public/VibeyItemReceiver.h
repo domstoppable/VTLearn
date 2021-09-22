@@ -35,11 +35,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SetMatchPhrases(TArray<UPhoneticPhrase*> Phrases);
 
-	UFUNCTION(BlueprintCallable)
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable)
 	void ReceiveItem(AVibeyItem* Item);
-
-	UFUNCTION(BlueprintImplementableEvent)
-	void ItemReceived(AVibeyItem* Item);
 
 	UFUNCTION(BlueprintCallable)
 	void SetHelpText(FString Text);
@@ -49,4 +46,7 @@ public:
 
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	bool AllowAutoAssign = true;
+
+	UFUNCTION()
+	bool CheckItem(AVibeyItem* Item, bool bMarkAsAttempted=true);
 };

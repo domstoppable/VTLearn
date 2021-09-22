@@ -39,7 +39,7 @@ public:
 	FVTScoreChanged ScoreChanged;
 
 	UFUNCTION(BlueprintCallable)
-	int32 OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect);
+	int32 OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect, bool bExpired);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	int32 GetTotalCorrectCount();

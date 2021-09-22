@@ -26,10 +26,10 @@ public:
 	TSubclassOf<AVibeyItem> ItemClass = AVibeyItem::StaticClass();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MinTriggerTime = 0.5f;
+	float MinTriggerTime = 1.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float MaxTriggerTime = 2.0f;
+	float MaxTriggerTime = 3.0f;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float TriggerRetryTime = 1.0f;
@@ -58,11 +58,20 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void SpawnItem();
 
-	UFUNCTION(BlueprintCallable)
-	void KillItem();
-
 	UFUNCTION()
 	void StartSpawnTimer();
+
+	UFUNCTION()
+	void OnItemAttempted(AVibeyItem* Item);
+
+	UFUNCTION()
+	void OnItemExpired(AVibeyItem* Item);
+
+//	UFUNCTION()
+//	void OnItemGenerated(AVibeyItem* Item);
+
+//	UFUNCTION()
+//	void OnItemGrabbed(AVibeyItem* Item);
 
 protected:
 	bool IsPlayerInteractionComponent(AActor* Actor, UPrimitiveComponent* Component);

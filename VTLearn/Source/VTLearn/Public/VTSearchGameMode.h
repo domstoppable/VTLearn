@@ -44,4 +44,7 @@ public:
 	UFUNCTION()
 	void ShowHint(FString Hint);
 
+	UFUNCTION()
+	bool CheckItem(AVibeyItem* Item, bool bMarkAsAttempted=true);
+
 };

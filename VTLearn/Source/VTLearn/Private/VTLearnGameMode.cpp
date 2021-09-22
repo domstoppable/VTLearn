@@ -126,17 +126,18 @@ void AVTLearnGameMode::LoadLevelInfo()
 
 void AVTLearnGameMode::SetupGenerators()
 {
+	TArray<UPhoneticPhrase*> TrainingValuesArray;
+	TrainingPhrases.GenerateValueArray(TrainingValuesArray);
+
+	TArray<UPhoneticPhrase*> DistractorValuesArray;
+	DistractorPhrases.GenerateValueArray(DistractorValuesArray);
+
 	for (TActorIterator<AVibeyItemGenerator> GeneratorItr(GetWorld()); GeneratorItr; ++GeneratorItr)
 	{
 		AVibeyItemGenerator* ItemGenerator = *GeneratorItr;
 
-		TArray<UPhoneticPhrase*> TmpArray;
-
-		TrainingPhrases.GenerateValueArray(TmpArray);
-		ItemGenerator->AddToPhraseBank(TmpArray);
-
-		DistractorPhrases.GenerateValueArray(TmpArray);
-		ItemGenerator->AddToPhraseBank(TmpArray);
+		ItemGenerator->AddToPhraseBank(TrainingValuesArray);
+		ItemGenerator->AddToPhraseBank(DistractorValuesArray);
 
 		UE_LOG(LogTemp, Log, TEXT("Set up generator %s"), *ItemGenerator->GetName());
 	}

@@ -3,10 +3,13 @@
 #pragma once
 
 #include "PhoneticPhrase.h"
+#include "VibeyItem.h"
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 #include "VibeyItemGenerator.generated.h"
+
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTItemSpawned, AVibeyItem*, Item);
 
 UCLASS()
 class VTLEARN_API AVibeyItemGenerator : public AActor
@@ -33,4 +36,7 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void AddToPhraseBank(TArray<UPhoneticPhrase*> MorePhrases);
+
+	UPROPERTY(BlueprintAssignable)
+	FVTItemSpawned ItemSpawned;
 };

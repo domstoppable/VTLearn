@@ -53,7 +53,6 @@ void AVibeyItemAreaGenerator::SpawnItem()
 
 			FActorSpawnParameters SpawnParams;
 			SpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AlwaysSpawn;
-
 			CurrentItem = GetWorld()->SpawnActor<AVibeyItem>(ItemClass, FVector(-500, -500, -500), Rotation, SpawnParams);
 			CurrentItem->SetPhrase(Phrase);
 
@@ -63,12 +62,9 @@ void AVibeyItemAreaGenerator::SpawnItem()
 			CurrentItem->GetStaticMeshComponent()->SetSimulatePhysics(false);
 			CurrentItem->GetStaticMeshComponent()->SetHiddenInGame(true);
 
-			GetWorld()->GetTimerManager().SetTimer(
-				KillDelayTimerHandle,
-				this, &AVibeyItemAreaGenerator::KillItem,   // Callback
-				ItemTimeToLive,								// Rate
-				false                                       // loop
-			);
+			CurrentItem->StartExpirationTimer(ItemTimeToLive);
+			CurrentItem->Expired.AddDynamic(this, &AVibeyItemAreaGenerator::OnItemExpired);
+			CurrentItem->Attempted.AddDynamic(this, &AVibeyItemAreaGenerator::OnItemAttempted);
 
 			UE_LOG(LogTemp, Log, TEXT("Spawned new item: %s"), *Phrase->WrittenText);
 		}
@@ -79,32 +75,28 @@ void AVibeyItemAreaGenerator::SpawnItem()
 	}
 }
 
+void AVibeyItemAreaGenerator::OnItemAttempted(AVibeyItem* Item)
+{
+	UE_LOG(LogTemp, Log, TEXT("AVibeyItemAreaGenerator::OnItemAttempted"));
+	StartSpawnTimer();
+}
+
+void AVibeyItemAreaGenerator::OnItemExpired(AVibeyItem* Item)
+{
+	UE_LOG(LogTemp, Log, TEXT("AVibeyItemAreaGenerator::OnItemExpired"));
+	StartSpawnTimer();
+}
+
 void AVibeyItemAreaGenerator::StartSpawnTimer()
 {
+	CurrentItem = nullptr;
+
 	GetWorld()->GetTimerManager().SetTimer(
 		SpawnDelayTimerHandle,
 		this, &AVibeyItemAreaGenerator::SpawnItem,          // Callback
 		FMath::RandRange(MinTriggerTime, MaxTriggerTime),   // Rate
 		false                                               // loop
 	);
-}
-
-void AVibeyItemAreaGenerator::KillItem()
-{
-	if (IsValid(CurrentItem) && CurrentItem->bGrabbable)
-	{
-		APlayerController* PlayerController = UGameplayStatics::GetPlayerController(this, 0);
-
-		AVTSearchGameMode* GameMode = GetWorld()->GetAuthGameMode<AVTSearchGameMode>();
-		CurrentItem->bIsGood = !GameMode->Matcher->Match(CurrentItem->Phrase);
-
-		AVTPlayerState* PlayerState = PlayerController->GetPlayerState<AVTPlayerState>();
-		PlayerState->OnItemAttempted(CurrentItem->Phrase, CurrentItem->bIsGood);
-		CurrentItem->Expired();
-	}
-	CurrentItem = nullptr;
-
-	StartSpawnTimer();
 }
 
 void AVibeyItemAreaGenerator::AreaBeginOverlap(UPrimitiveComponent* OverlappedComp, AActor* Other, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult )

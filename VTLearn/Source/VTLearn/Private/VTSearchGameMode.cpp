@@ -3,7 +3,6 @@
 #include "VTSearchGameMode.h"
 
 #include "VTLearnGameMode.h"
-#include "VibeyItemReceiver.h"
 #include "VTHintDisplayer.h"
 #include "VTPlayerSearchController.h"
 
@@ -99,4 +98,30 @@ void AVTSearchGameMode::ShowHint(FString Hint)
 			Hinter->Execute_ShowHint(*HinterItr, Hint);
 		}
 	}
+}
+
+bool AVTSearchGameMode::CheckItem(AVibeyItem* Item, bool bMarkAsAttempted)
+{
+	bool bResult = false;
+
+	if(IsValid(Matcher) && IsValid(Item) && IsValid(Item->Phrase))
+	{
+		bResult = Matcher->Match(Item->Phrase);
+	}
+	else
+	{
+		UE_LOG(LogTemp, Error, TEXT("Could not check item because of bad matcher or bad item"));
+	}
+
+	if(Item->bIsExpired)
+	{
+		bResult = !bResult;
+	}
+
+	if(bMarkAsAttempted)
+	{
+		Item->MarkAttempted(bResult);
+	}
+
+	return bResult;
 }

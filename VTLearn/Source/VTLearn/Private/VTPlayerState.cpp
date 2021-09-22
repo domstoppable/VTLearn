@@ -10,7 +10,7 @@
 
 #include "Misc/Paths.h"
 
-int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
+int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect, bool bExpired)
 {
 	// Store attempt
 	FPhrasePerformance Performance = Counts.FindOrAdd(Phrase);
@@ -44,11 +44,12 @@ int32 AVTPlayerState::OnItemAttempted(UPhoneticPhrase* Phrase, bool bCorrect)
 	TMap<FString, FString> LogRecord;
 
 	LogRecord.Add("PID", FString::Printf(TEXT("%d"), GameInstance->LoadedSave->PID));
-	LogRecord.Add("Level", FString::Printf(TEXT("%s"), *GameInstance->CurrentLevelStatus->LevelConfig.Name));
-	LogRecord.Add("Stimulus", FString::Printf(TEXT("%s"), *FPaths::GetCleanFilename(Phrase->Source)));
+	LogRecord.Add("Level", GameInstance->CurrentLevelStatus->LevelConfig.Name);
+	LogRecord.Add("Stimulus", FPaths::GetCleanFilename(Phrase->Source));
 	LogRecord.Add("Correct", FString::Printf(TEXT("%d"), bCorrect));
+	LogRecord.Add("Expired", FString::Printf(TEXT("%d"), bExpired));
 	LogRecord.Add("LevelAttemptGuid", GameInstance->LevelAttemptGuid);
-	LogRecord.Add("Filename", DataLogger->Filename);
+	LogRecord.Add("Filename", FPaths::GetCleanFilename(DataLogger->Filename));
 
 	DataLogger->LogStrings(LogRecord);
 
@@ -67,6 +68,7 @@ void AVTPlayerState::StartNewLogger()
 	FieldNames.Add(TEXT("Level"));
 	FieldNames.Add(TEXT("Stimulus"));
 	FieldNames.Add(TEXT("Correct"));
+	FieldNames.Add(TEXT("Expired"));
 	FieldNames.Add(TEXT("LevelAttemptGuid"));
 	FieldNames.Add(TEXT("Filename"));
 
