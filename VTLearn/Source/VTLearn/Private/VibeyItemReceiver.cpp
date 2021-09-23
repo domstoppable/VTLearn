@@ -70,7 +70,7 @@ bool AVibeyItemReceiver::CheckItem(AVibeyItem* Item, bool bMarkAsAttempted)
 		UE_LOG(LogTemp, Error, TEXT("Could not check item because of bad matcher or bad item"));
 	}
 
-	if(bMarkAsAttempted)
+	if(IsValid(Item) && bMarkAsAttempted)
 	{
 		Item->MarkAttempted(bResult);
 	}

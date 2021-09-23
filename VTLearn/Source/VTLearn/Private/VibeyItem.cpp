@@ -76,7 +76,7 @@ void AVibeyItem::OnExpired_Implementation()
 
 void AVibeyItem::MarkAttempted(bool bNewIsGood)
 {
-	this->bIsGood = bNewIsGood;
+	bIsGood = bNewIsGood;
 	Attempted.Broadcast(this);
 	OnAttempted();
 }
