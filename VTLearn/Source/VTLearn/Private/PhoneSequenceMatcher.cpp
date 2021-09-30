@@ -4,6 +4,7 @@ bool UPhoneSequenceMatcher::Match(UPhoneticPhrase* Phrase)
 {
 	if(!IsValid(Phrase))
 	{
+		UE_LOG(LogTemp, Warning, TEXT("UPhoneSequenceMatcher::Match received invalid phrase"));
 		return false;
 	}
 

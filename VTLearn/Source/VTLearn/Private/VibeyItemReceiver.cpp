@@ -30,6 +30,7 @@ void AVibeyItemReceiver::OnConstruction(const FTransform& Transform)
 
 void AVibeyItemReceiver::ReceiveItem_Implementation(AVibeyItem* Item)
 {
+	UE_LOG(LogTemp, Log, TEXT("Receiver <%s> has received item"), *GetName());
 	CheckItem(Item);
 }
 
@@ -61,13 +62,28 @@ bool AVibeyItemReceiver::CheckItem(AVibeyItem* Item, bool bMarkAsAttempted)
 {
 	bool bResult = false;
 
-	if(IsValid(Matcher) && IsValid(Item) && IsValid(Item->Phrase))
+	UE_LOG(LogTemp, Log, TEXT("Receiver <%s> checking item"), *GetName());
+	if(IsValid(Matcher))
 	{
-		bResult = Matcher->Match(Item->Phrase);
+		if(IsValid(Item))
+		{
+			if(IsValid(Item->Phrase))
+			{
+				bResult = Matcher->Match(Item->Phrase);
+			}
+			else
+			{
+				UE_LOG(LogTemp, Error, TEXT("Could not check item because: bad phrase"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Could not check item because: bad item"));
+		}
 	}
 	else
 	{
-		UE_LOG(LogTemp, Error, TEXT("Could not check item because of bad matcher or bad item"));
+		UE_LOG(LogTemp, Error, TEXT("Could not check item because: bad matcher"));
 	}
 
 	if(IsValid(Item) && bMarkAsAttempted)

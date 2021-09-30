@@ -363,6 +363,7 @@ void AVTPlayerController::DropItem()
 
 	if(IsValid(Item) && IsValid(Receiver))
 	{
+		UE_LOG(LogTemp, Log, TEXT("Giving item <%s> to receiver <%s>"), *Item->GetName(), *Receiver->GetName());
 		Receiver->ReceiveItem(Item);
 	}
 }
