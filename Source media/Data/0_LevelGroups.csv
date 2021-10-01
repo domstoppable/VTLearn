@@ -2,4 +2,4 @@
 Food,Food,Pick up mystery food and sort it into the correct bag,DataTable'/Game/Data/Levels_Food.Levels_Food',GroceryStore
 Letters,Letters,Swim around in a giant bowl of Canare's Delicious SoopLoops,DataTable'/Game/Data/Levels_Letters.Levels_Letters',SoopLoops
 Numbers,Numbers,Who left their bowling ball out?,DataTable'/Game/Data/Levels_Numbers.Levels_Numbers',BowlingAlley
-Animals,Animals,Help these animals out by making sure each one receives the correct food.,DataTable'/Game/Data/Levels_Animals.Levels_Animals',Feed-a-mole
+Animals,Animals,Help these animals out by making sure each one receives the correct food.,DataTable'/Game/Data/Levels_Animals.Levels_Animals',Snack-a-mole
