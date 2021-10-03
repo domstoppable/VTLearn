@@ -10,8 +10,8 @@ bool UPhoneSequenceMatcher::Match(UPhoneticPhrase* Phrase)
 
 	for(FString SearchString : SearchStrings)
 	{
-		UE_LOG(LogTemp, Log, TEXT("Checking for '%s' in '%s'"), *SearchString, *Phrase->PhoneticText);
-		if(Phrase->PhoneticText.Contains(SearchString))
+		UE_LOG(LogTemp, Log, TEXT("Checking for '%s' vs '%s'"), *SearchString, *Phrase->PhoneticText);
+		if(Phrase->PhoneticText.Equals(SearchString))
 		{
 			return true;
 		}
