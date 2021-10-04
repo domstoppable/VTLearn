@@ -55,6 +55,7 @@ VTLearn/Plugins/*/Binaries/*
 
 # Builds
 VTLearn/Build/*
+VTLearn/Releases/*
 
 # Whitelist PakBlacklist-<BuildConfiguration>.txt files
 !VTLearn/Build/*/
