@@ -5,25 +5,28 @@
 #include "HAL/UnrealMemory.h"
 #include "Misc/FileHelper.h"
 
-TArray<EPhoneme> UPhoneticPhrase::StringToSequence(FString PhoneText)
+TArray<UPhoneticPhrase*> UPhoneticPhrase::LoadPhrases(FString PhraseName)
 {
-	TArray<EPhoneme> Sequence;
-	TArray<FString> Tokens;
-	PhoneText.ParseIntoArray(Tokens, TEXT(" "), true);
+	TArray<FString> Prefixes;
+	Prefixes.Add(TEXT("f1"));
+	Prefixes.Add(TEXT("f2"));
+	Prefixes.Add(TEXT("m1"));
+	Prefixes.Add(TEXT("m2"));
 
-	const UEnum* PhonemeEnum = FindObject<UEnum>(ANY_PACKAGE, TEXT("EPhoneme"), true);
-	for(FString Token : Tokens)
+	TArray<UPhoneticPhrase*> Phrases;
+	for(FString Prefix : Prefixes)
 	{
-		Token = Token.Left(2);
-		int32 Index = PhonemeEnum->GetIndexByNameString(Token);
-		if(Index == INDEX_NONE)
+		FString ReferencePath = FString::Printf(TEXT("/Game/Data/VTT/%s-%s"), *Prefix, *PhraseName);
+		UPhoneticPhrase* Phrase = LoadObject<UPhoneticPhrase>(NULL, *ReferencePath, NULL, LOAD_None, NULL);
+		if(IsValid(Phrase))
 		{
-			UE_LOG(LogTemp, Error, TEXT("Could not find Phoneme value: %s"), *Token);
-		}else{
-			EPhoneme Phoneme = EPhoneme((uint8)Index);
-			Sequence.Emplace(Phoneme);
+			Phrases.Emplace(Phrase);
+		}
+		else
+		{
+			UE_LOG(LogTemp, Warning, TEXT("Failed to find phrase `%s`"), *ReferencePath);
 		}
 	}
 
-	return Sequence;
+	return Phrases;
 }

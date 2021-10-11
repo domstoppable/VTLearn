@@ -19,5 +19,5 @@ class VTLEARNED_API UPhoneticPhraseFactory : public UFactory
 	virtual UObject* FactoryCreateFile(UClass * InClass, UObject * InParent, FName InName, EObjectFlags Flags, const FString & Filename, const TCHAR * Parms, FFeedbackContext * Warn, bool & bOutOperationCanceled) override;
 
 	UPhoneticPhrase* LoadPhoneticPhrase(const uint8*& Buffer, const uint8* BufferEnd, UPhoneticPhrase* ExistingPhrase = nullptr);
-
+	TMap<FString, int32> CountPhones(const FString PhoneText);
 };

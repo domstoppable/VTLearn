@@ -4,38 +4,22 @@
 
 #include "Misc/Paths.h"
 #include "Engine/DataAsset.h"
+#include "Engine/DataTable.h"
 
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 #include "PhoneticPhrase.generated.h"
 
-UENUM(BlueprintType)
-enum class EPhoneme : uint8
-{
-	B, D, G, P, T, K, DX,
-	Q, JH, CH, S, SH, Z, ZH,
-	F, TH, V, DH, M, N, NG,
-	EM, EN, ENG, NX, L, R, W,
-	Y, HH, HV, EL, IY, IH, EH,
-	EY, AE, AA, AW, AY, AH, AO,
-	OY, OW, UH, UW, UX, ER, AX,
-	IX, AXR, AX_H, _, SP, SI
-};
-
 USTRUCT(BlueprintType)
-struct FVTTSample
+struct FPhoneCount : public FTableRowBase
 {
-	GENERATED_BODY()
+	GENERATED_USTRUCT_BODY()
 
-public:
-	UPROPERTY(BlueprintReadOnly)
-	EPhoneme Phone;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
+	FString TrainPhoneme;
 
-	UPROPERTY(BlueprintReadOnly)
-	uint8 Pitch;
-
-	UPROPERTY(BlueprintReadOnly)
-	uint8 Intensity;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category="")
+	int32 PhonemeExposures;
 };
 
 UCLASS(BlueprintType)
@@ -53,9 +37,6 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	FString Source;
 
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
-	TArray<EPhoneme> Phonemes = TArray<EPhoneme>();
-
 	// In MS
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	int32 Period;
@@ -63,8 +44,10 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TArray<uint8> RawSamples;
 
-	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
-	static TArray<EPhoneme> StringToSequence(FString PhoneText);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TMap<FString, int32> PhoneCounts;
+
+	static TArray<UPhoneticPhrase*> LoadPhrases(FString PhraseName);
 
 	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
 	int32 GetDurationInMS()

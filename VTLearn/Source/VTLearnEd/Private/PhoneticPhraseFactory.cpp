@@ -12,7 +12,6 @@ UPhoneticPhraseFactory::UPhoneticPhraseFactory()
 	SupportedClass = UPhoneticPhrase::StaticClass();
 
 	Formats.Add(TEXT("vtt;Vibey Transcribe Transcription"));
-
 }
 
 UObject* UPhoneticPhraseFactory::FactoryCreateBinary
@@ -177,12 +176,36 @@ UPhoneticPhrase* UPhoneticPhraseFactory::LoadPhoneticPhrase(const uint8*& Buffer
 	TArray<uint8> Samples2 = TArray<uint8>(RawSamples, SampleCount*3);
 	Phrase->RawSamples = Samples2;
 
-	// Split up phonetic text
-	Phrase->Phonemes = UPhoneticPhrase::StringToSequence(PhoneticText);
+	Phrase->PhoneCounts = CountPhones(PhoneticText);
 
 	delete[] WrittenTextChars;
 	delete[] PhoneticTextChars;
 	delete[] RawSamples;
 
 	return Phrase;
+}
+
+TMap<FString, int32> UPhoneticPhraseFactory::CountPhones(const FString PhoneText)
+{
+	TMap<FString, int32> PhoneCounts;
+
+	TArray<FString> Tokens;
+	PhoneText.ParseIntoArray(Tokens, TEXT(" "), true);
+
+	for(FString Token : Tokens)
+	{
+		Token = Token.Left(2);
+
+		if(!PhoneCounts.Contains(Token))
+		{
+			PhoneCounts.Add(Token, 1);
+		}
+		else
+		{
+			int32 Count = PhoneCounts[Token];
+			PhoneCounts.Add(Token, Count+1);
+		}
+	}
+
+	return PhoneCounts;
 }
