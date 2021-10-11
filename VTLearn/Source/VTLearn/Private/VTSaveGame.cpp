@@ -100,7 +100,6 @@ FVTLevelProgress UVTSaveGame::GetLevelProgress(FString GroupName, FString LevelN
 
 void UVTSaveGame::SetHighScore(FString GroupName, FString LevelName, int32 Score)
 {
-
 	for(FVTLevelProgress &LevelProgress : Progress)
 	{
 		if(LevelProgress.GroupName == GroupName && LevelProgress.LevelName == LevelName)
@@ -119,6 +118,11 @@ void UVTSaveGame::SetHighScore(FString GroupName, FString LevelName, int32 Score
 	LevelProgress.HighScore = Score;
 
 	Progress.Add(LevelProgress);
+}
+
+void UVTSaveGame::AddToTotalScore(int32 Points)
+{
+	TotalScore += Points;
 }
 
 int32 UVTSaveGame::GetGroupStarCount(ULevelGroupStatus* GroupStatus)

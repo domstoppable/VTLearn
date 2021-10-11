@@ -24,6 +24,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString Username;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FString, int32> PhoneCounts;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int32 TotalScore;
+
+	UFUNCTION()
+	void AddToTotalScore(int32 Points);
+
 	UFUNCTION(BlueprintPure)
 	FString GetSlotName();
 
@@ -44,4 +53,5 @@ public:
 
 	UFUNCTION(BlueprintCallable, meta = (WorldContext = WorldContextObject))
 	static TArray<UVTSaveGame*> LoadVTSaveGames(UObject * WorldContextObject);
+
 };

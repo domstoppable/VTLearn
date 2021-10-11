@@ -76,29 +76,15 @@ void AVTLearnGameMode::LoadLevelInfo()
 	RemainingTime = GameInstance->CurrentLevelStatus->LevelConfig.TimeLimit;
 
 
-	// Load phrases
-	TArray<FString> Prefixes;
-	Prefixes.Add(TEXT("f1"));
-	Prefixes.Add(TEXT("f2"));
-	Prefixes.Add(TEXT("m1"));
-	Prefixes.Add(TEXT("m2"));
 	// Load distractors
 	TArray<UPhoneticPhrase*> AllPhrases;
 	DistractorPhrases.Empty();
 	for(FString PhraseName : GameInstance->CurrentLevelStatus->LevelConfig.DistractorPhrases)
 	{
-		for(FString Prefix : Prefixes)
+		TArray<UPhoneticPhrase*> Vtts = UPhoneticPhrase::LoadPhrases(PhraseName);
+		for(UPhoneticPhrase* Vtt : Vtts)
 		{
-			FString ReferencePath = FString::Printf(TEXT("%s/%s-%s"), *VTTPath, *Prefix, *PhraseName);
-			UPhoneticPhrase* Phrase = LoadObject<UPhoneticPhrase>(NULL, *ReferencePath, NULL, LOAD_None, NULL);
-			if(IsValid(Phrase))
-			{
-				DistractorPhrases.Add(PhraseName, Phrase);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Failed to find phrase `%s`"), *ReferencePath);
-			}
+			DistractorPhrases.Add(PhraseName, Vtt);
 		}
 	}
 
@@ -106,18 +92,10 @@ void AVTLearnGameMode::LoadLevelInfo()
 	TrainingPhrases.Empty();
 	for(FString PhraseName : GameInstance->CurrentLevelStatus->LevelConfig.TrainingPhrases)
 	{
-		for(FString Prefix : Prefixes)
+		TArray<UPhoneticPhrase*> Vtts = UPhoneticPhrase::LoadPhrases(PhraseName);
+		for(UPhoneticPhrase* Vtt : Vtts)
 		{
-			FString ReferencePath = FString::Printf(TEXT("%s/%s-%s"), *VTTPath, *Prefix, *PhraseName);
-			UPhoneticPhrase* Phrase = LoadObject<UPhoneticPhrase>(NULL, *ReferencePath, NULL, LOAD_None, NULL);
-			if(IsValid(Phrase))
-			{
-				TrainingPhrases.Add(PhraseName, Phrase);
-			}
-			else
-			{
-				UE_LOG(LogTemp, Warning, TEXT("Failed to find phrase `%s`"), *ReferencePath);
-			}
+			TrainingPhrases.Add(PhraseName, Vtt);
 		}
 	}
 	bLoaded = true;

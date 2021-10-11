@@ -88,6 +88,9 @@ public:
 	UPROPERTY(BlueprintReadWrite, EditAnywhere)
 	int32 Ordinal;
 
+	UPROPERTY(BlueprintReadWrite, EditAnywhere)
+	float Multiplier = 1.0f;
+
 	UFUNCTION(BlueprintPure, meta=(AdvancedDisplay=0))
 	int32 GetStarCount(int32 Score=-1);
 

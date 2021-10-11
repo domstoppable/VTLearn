@@ -5,6 +5,8 @@
 #include "LevelConfig.h"
 #include "VTSaveGame.h"
 #include "SeafileClient.h"
+#include "Data/CSVLogger.h"
+#include "PhonemeTrainingTracker.h"
 
 #include "CoreMinimal.h"
 #include "Engine/GameInstance.h"
@@ -26,6 +28,9 @@ public:
 	UDataTable* LevelsDataTable;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UDataTable* TargetPhonemeCounts;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ULevelGroupStatus*> LevelGroups;
 
 	UPROPERTY(BlueprintReadWrite)
@@ -33,6 +38,12 @@ public:
 
 	UPROPERTY(BlueprintReadWrite)
 	ULevelStatus* CurrentLevelStatus = nullptr;
+
+	UPhonemeTrainingTracker* PhonemeTrainingTracker = nullptr;
+
+	UFUNCTION(BlueprintCallable)
+	UPhonemeTrainingTracker* GetPhonemeTrainingTracker();
+
 
 	UPROPERTY(BlueprintReadOnly)
 	FString LevelAttemptGuid;
@@ -42,6 +53,15 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	UVTSaveGame* AddUser(int32 PID, FString Username);
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UCSVLogger* StimulusLogger = nullptr;
+
+	UFUNCTION(BlueprintCallable)
+	void StartNewStimulusLog();
+
+	UFUNCTION(BlueprintCallable)
+	void LogStimulus(UPhoneticPhrase* Phrase, bool bSendOk);
 
 	UFUNCTION(BlueprintCallable)
 	UVTSaveGame* LoadProgress(FString SlotName);

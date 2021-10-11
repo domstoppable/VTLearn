@@ -1,4 +1,5 @@
 #include "LevelConfig.h"
+#include "PhoneticPhrase.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "VTGameInstance.h"

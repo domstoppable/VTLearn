@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Data/CSVLogger.h"
-
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 
@@ -65,17 +63,11 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void BroadcastVibingStop();
 
-	UFUNCTION(BlueprintCallable)
-	void StartNewLogger();
-
 	UPROPERTY(BlueprintAssignable)
 	FVTDeviceVibingChanged DeviceVibingChanged;
 
 	UPROPERTY(BlueprintAssignable)
 	FVTDeviceConnectedChanged DeviceConnectedChanged;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	UCSVLogger* StimulusLogger = nullptr;
 
 	#pragma region Interface functions
 

@@ -148,11 +148,13 @@ void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatu
 	LevelAttemptGuid = FGuid::NewGuid().ToString();
 	if(VTDevice && IsValid(VTDevice))
 	{
-		// the VTDevice persists between levels, so it needs to be told when to start a new logger
-		VTDevice->StartNewLogger();
+		StartNewStimulusLog();
 	}
 	ETravelType TravelType = TRAVEL_Absolute;
 	GEngine->SetClientTravel(World, *Map, TravelType);
+
+	// Garbage collector is going to sweep this. Null it out now so it can be recreated later
+	PhonemeTrainingTracker = nullptr;
 }
 
 UVTSaveGame* UVTGameInstance::AddUser(int32 PID, FString Username)
@@ -180,6 +182,11 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 	USaveGame* Loaded = UGameplayStatics::LoadGameFromSlot(SlotName, 0);
 	LoadedSave = Cast<UVTSaveGame>(Loaded);
 
+	GetPhonemeTrainingTracker();
+	PhonemeTrainingTracker->UpdateCurrentPhonemeFrequencies(LoadedSave->PhoneCounts);
+
+	float MaxMultiplier = 1.0f;
+
 	for(ULevelGroupStatus* GroupStatus : LevelGroups)
 	{
 		bool LockedFromHere = false;
@@ -189,6 +196,11 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 
 			FVTLevelProgress Progress = LoadedSave->GetLevelProgress(LevelStatus->GroupName, LevelStatus->LevelConfig.Name);
 			LevelStatus->HighScore = Progress.HighScore;
+			LevelStatus->Multiplier = PhonemeTrainingTracker->GetMultiplier(LevelStatus->LevelConfig);
+			if(LevelStatus->Multiplier > MaxMultiplier)
+			{
+				MaxMultiplier = LevelStatus->Multiplier;
+			}
 
 			if(!LockedFromHere)
 			{
@@ -200,7 +212,45 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 		}
 	}
 
+	for(ULevelGroupStatus* GroupStatus : LevelGroups)
+	{
+		for(ULevelStatus* LevelStatus : GroupStatus->LevelStatuses)
+		{
+			LevelStatus->Multiplier = 1.0f + LevelStatus->Multiplier / MaxMultiplier * 2;
+			if(LevelStatus->Multiplier < 1.0f)
+			{
+				LevelStatus->Multiplier = 1.0f;
+			}
+		}
+	}
+
+	if(LoadedSave->PhoneCounts.Num() == 0)
+	{
+		UE_LOG(LogTemp, Log, TEXT("No phones trained yet"));
+	}
+	else
+	{
+		UE_LOG(LogTemp, Log, TEXT("Phone counts:"));
+		LoadedSave->PhoneCounts.KeySort([](FString A, FString B) {
+			return A < B;
+		});
+		for (auto& Elem : LoadedSave->PhoneCounts)
+		{
+			UE_LOG(LogTemp, Log, TEXT("\t%s\t: %d"), *Elem.Key, Elem.Value);
+		}
+	}
+
 	return LoadedSave;
+}
+
+UPhonemeTrainingTracker* UVTGameInstance::GetPhonemeTrainingTracker()
+{
+	if(!IsValid(PhonemeTrainingTracker))
+	{
+		PhonemeTrainingTracker = NewObject<UPhonemeTrainingTracker>();
+		PhonemeTrainingTracker->SetTargetFrequenciesFromCounts(TargetPhonemeCounts);
+	}
+	return PhonemeTrainingTracker;
 }
 
 bool UVTGameInstance::SaveProgress()
@@ -218,6 +268,7 @@ bool UVTGameInstance::SaveProgress()
 				CurrentLevelStatus->LevelConfig.Name,
 				State->GetScore()
 			);
+			LoadedSave->AddToTotalScore(State->GetScore() * CurrentLevelStatus->Multiplier);
 		}
 	}
 
@@ -305,5 +356,50 @@ void UVTGameInstance::OnUploadComplete(bool Success, FString Filename)
 
 		FString Destination = (UploadedPath + FPaths::GetCleanFilename(Filename));
 		IFileManager::Get().Move(*Destination, *Filename);
+	}
+}
+
+void UVTGameInstance::StartNewStimulusLog()
+{
+	FString Filename = FString::Printf(TEXT("StimulusLog-%04d-%s"), LoadedSave->PID, *LevelAttemptGuid);
+
+	StimulusLogger = UPsydekickData::CreateCSVLogger(Filename, TEXT("TrainingData"));
+
+	TArray<FString> FieldNames;
+	FieldNames.Add(TEXT("PID"));
+	FieldNames.Add(TEXT("Level"));
+	FieldNames.Add(TEXT("LevelAttemptGuid"));
+	FieldNames.Add(TEXT("Stimulus"));
+	FieldNames.Add(TEXT("Filename"));
+	FieldNames.Add(TEXT("Ok"));
+
+	StimulusLogger->SetFieldNames(FieldNames);
+}
+
+void UVTGameInstance::LogStimulus(UPhoneticPhrase* Phrase, bool bSendOk)
+{
+	if(!IsValid(StimulusLogger))
+	{
+		StartNewStimulusLog();
+	}
+
+	TMap<FString, FString> LogRecord;
+
+	LogRecord.Add("PID", FString::Printf(TEXT("%d"), LoadedSave->PID));
+	LogRecord.Add("Level", CurrentLevelStatus->LevelConfig.Name);
+	LogRecord.Add("LevelAttemptGuid", LevelAttemptGuid);
+	LogRecord.Add("Stimulus", FPaths::GetCleanFilename(Phrase->Source));
+	LogRecord.Add("Filename", FPaths::GetCleanFilename(StimulusLogger->Filename));
+	LogRecord.Add("Ok", bSendOk ? TEXT("1") : TEXT("0"));
+
+	StimulusLogger->LogStrings(LogRecord);
+
+	if(bSendOk)
+	{
+		for (auto& Elem : Phrase->PhoneCounts)
+		{
+			int32 Value = LoadedSave->PhoneCounts.FindOrAdd(Elem.Key, 0);
+			LoadedSave->PhoneCounts.Add(Elem.Key, Value + Elem.Value);
+		}
 	}
 }

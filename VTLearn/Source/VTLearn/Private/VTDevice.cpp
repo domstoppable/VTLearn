@@ -108,22 +108,10 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 	Data.Add(0x00);
 
 	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(WorldContextObject);
-	if(!IsValid(StimulusLogger))
+
+	bool bStimulusSendOk = Send(Data);
+	if(bStimulusSendOk)
 	{
-		StartNewLogger();
-	}
-
-	TMap<FString, FString> LogRecord;
-
-	LogRecord.Add("LevelAttemptGuid", GameInstance->LevelAttemptGuid);
-	LogRecord.Add("PID", FString::Printf(TEXT("%d"), GameInstance->LoadedSave->PID));
-	LogRecord.Add("Level", GameInstance->CurrentLevelStatus->LevelConfig.Name);
-	LogRecord.Add("Stimulus", FPaths::GetCleanFilename(Phrase->Source));
-	LogRecord.Add("Filename", FPaths::GetCleanFilename(StimulusLogger->Filename));
-
-	if(Send(Data))
-	{
-		LogRecord.Add("Ok", TEXT("1"));
 		UWorld* World = WorldContextObject->GetWorld();
 		if(IsValid(World))
 		{
@@ -133,29 +121,9 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 			float Duration = ((float)(Phrase->GetDurationInMS())) / 1000.0f;
 			World->GetTimerManager().SetTimer(VibingStateTimerHandle, this, &UVTDevice::BroadcastVibingStop, Duration, false, Duration);
 		}
-	}else{
-		LogRecord.Add("Ok", TEXT("0"));
 	}
 
-	StimulusLogger->LogStrings(LogRecord);
-}
-
-void UVTDevice::StartNewLogger()
-{
-	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(WorldContextObject);
-	FString Filename = FString::Printf(TEXT("StimulusLog-%04d-%s"), GameInstance->LoadedSave->PID, *GameInstance->LevelAttemptGuid);
-
-	StimulusLogger = UPsydekickData::CreateCSVLogger(Filename, TEXT("TrainingData"));
-
-	TArray<FString> FieldNames;
-	FieldNames.Add(TEXT("PID"));
-	FieldNames.Add(TEXT("Level"));
-	FieldNames.Add(TEXT("Stimulus"));
-	FieldNames.Add(TEXT("Ok"));
-	FieldNames.Add(TEXT("LevelAttemptGuid"));
-	FieldNames.Add(TEXT("Filename"));
-
-	StimulusLogger->SetFieldNames(FieldNames);
+	GameInstance->LogStimulus(Phrase, bStimulusSendOk);
 }
 
 void UVTDevice::EnableActuator(int32 ActuatorID)
