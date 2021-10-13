@@ -13,6 +13,7 @@ SeafilePassword=[SEAFILE_PASSWORD]
 SeafileRepoID=[SEAFILE_REPO_ID]
 SeafileRemotePath=[SEAFILE_REMOTE_PATH]
 ContactInfo="Need help? Call, text, or email anytime, day or night\n    [PHONE]\n    [EMAIL]"
+LeaderboardServer=[LEADERBOARD_API_HOST]
 ```
 
 To use Playstation buttons, add this to `Saved/Config/Linux/Engine.ini`:

@@ -44,7 +44,6 @@ public:
 	UFUNCTION(BlueprintCallable)
 	UPhonemeTrainingTracker* GetPhonemeTrainingTracker();
 
-
 	UPROPERTY(BlueprintReadOnly)
 	FString LevelAttemptGuid;
 
@@ -87,7 +86,7 @@ public:
 	bool SaveProgress();
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject, CompactNodeTitle = "VTGameInstance", Category = "VTT"))
-	static UVTGameInstance* GetVTGameInstance(UObject* WorldContextObject);
+	static UVTGameInstance* GetVTGameInstance(const UObject* WorldContextObject);
 
 	UFUNCTION(BlueprintPure, meta = (WorldContext = WorldContextObject, CompactNodeTitle = "Tearing Down", Category = "VTT"))
 	static bool WorldIsTearingDown(UObject* WorldContextObject);
@@ -99,6 +98,9 @@ public:
 
 	UPROPERTY(GlobalConfig)
 	FString DefaultUsername;
+
+	UPROPERTY(GlobalConfig)
+	FString LeaderboardServer;
 
 	UPROPERTY(GlobalConfig, BlueprintReadOnly)
 	FString ContactInfo;
@@ -142,6 +144,9 @@ public:
 
 	UFUNCTION()
 	void OnDeviceDisconnected();
+
+	UFUNCTION()
+	void UploadHighScore();
 
 	#pragma endregion
 };

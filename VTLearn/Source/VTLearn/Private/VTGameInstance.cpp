@@ -271,6 +271,7 @@ bool UVTGameInstance::SaveProgress()
 			LoadedSave->AddToTotalScore(State->GetScore() * CurrentLevelStatus->Multiplier);
 		}
 	}
+	UploadHighScore();
 
 	bool SaveOK = UGameplayStatics::SaveGameToSlot(LoadedSave, LoadedSave->GetSlotName(), 0);
 	if(!SaveOK)
@@ -282,7 +283,7 @@ bool UVTGameInstance::SaveProgress()
 	return SaveOK;
 }
 
-UVTGameInstance* UVTGameInstance::GetVTGameInstance(UObject* WorldContextObject)
+UVTGameInstance* UVTGameInstance::GetVTGameInstance(const UObject* WorldContextObject)
 {
 	return Cast<UVTGameInstance>(UGameplayStatics::GetGameInstance(WorldContextObject));
 }
@@ -309,7 +310,7 @@ int32 UVTGameInstance::GetStarCount(UVTSaveGame* SaveGame)
 
 void UVTGameInstance::UploadTrainingLogs()
 {
-	if(SeafileServer == "")
+	if(SeafileServer.Equals(""))
 	{
 		UE_LOG(LogTemp, Error, TEXT("Seafile server not configured! Training logs will NOT be uploaded!"));
 		return;
@@ -402,4 +403,46 @@ void UVTGameInstance::LogStimulus(UPhoneticPhrase* Phrase, bool bSendOk)
 			LoadedSave->PhoneCounts.Add(Elem.Key, Value + Elem.Value);
 		}
 	}
+}
+
+void UVTGameInstance::UploadHighScore()
+{
+	if(LeaderboardServer.Equals(""))
+	{
+		UE_LOG(LogTemp, Error, TEXT("Leaderboard server not configured!"));
+		return;
+	}
+
+	TSharedRef<IHttpRequest> Request = FHttpModule::Get().CreateRequest();
+
+	FString Url = FString::Printf(
+		TEXT("%s/api/score/%d/%d/%d"),
+		*LeaderboardServer,
+		LoadedSave->PID,
+		LoadedSave->TotalScore,
+		LoadedSave->TotalScore % (LoadedSave->PID+7)
+	);
+	Request->SetURL(Url);
+	Request->SetVerb("POST");
+
+	UE_LOG(LogTemp, Log, TEXT("Uploading high score %d..."), LoadedSave->TotalScore);
+	Request->OnProcessRequestComplete().BindLambda([](FHttpRequestPtr Request, FHttpResponsePtr Response, bool Success){
+		if(Success && Response.IsValid())
+		{
+			if (!EHttpResponseCodes::IsOk(Response->GetResponseCode()))
+			{
+				UE_LOG(LogTemp, Error, TEXT("Failed up upload scores! [%d]"), Response->GetResponseCode());
+			}
+			else
+			{
+				UE_LOG(LogTemp, Log, TEXT("Score upload ok!"));
+			}
+		}
+		else
+		{
+			UE_LOG(LogTemp, Error, TEXT("Failed to upload score!"));
+		}
+	});
+
+	Request->ProcessRequest();
 }
