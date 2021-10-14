@@ -37,6 +37,9 @@ public:
 	UVTSaveGame* LoadedSave = nullptr;
 
 	UPROPERTY(BlueprintReadWrite)
+	ULevelGroupStatus* CurrentGroupStatus = nullptr;
+
+	UPROPERTY(BlueprintReadWrite)
 	ULevelStatus* CurrentLevelStatus = nullptr;
 
 	UPhonemeTrainingTracker* PhonemeTrainingTracker = nullptr;
@@ -49,6 +52,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatus* LevelStatus);
+
+	UFUNCTION(BlueprintCallable)
+	void ReloadLevel();
 
 	UFUNCTION(BlueprintCallable)
 	UVTSaveGame* AddUser(int32 PID, FString Username);

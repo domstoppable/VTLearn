@@ -123,6 +123,7 @@ void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatu
 		return;
 	}
 
+	CurrentGroupStatus = LevelGroupStatus;
 	CurrentLevelStatus = LevelStatus;
 
 	UE_LOG(LogTemp, Log, TEXT("%s - Loading %s"), ANSI_TO_TCHAR(__FUNCTION__), *LevelStatus->LevelConfig.Name);
@@ -155,6 +156,11 @@ void UVTGameInstance::LoadLevel(ULevelGroupStatus* LevelGroupStatus, ULevelStatu
 
 	// Garbage collector is going to sweep this. Null it out now so it can be recreated later
 	PhonemeTrainingTracker = nullptr;
+}
+
+void UVTGameInstance::ReloadLevel()
+{
+	LoadLevel(CurrentGroupStatus, CurrentLevelStatus);
 }
 
 UVTSaveGame* UVTGameInstance::AddUser(int32 PID, FString Username)

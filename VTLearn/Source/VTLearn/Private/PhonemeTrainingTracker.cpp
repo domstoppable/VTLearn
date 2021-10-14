@@ -55,7 +55,6 @@ void UPhonemeTrainingTracker::UpdateCurrentPhonemeFrequencies(TMap<FString, int3
 	}
 }
 
-
 float UPhonemeTrainingTracker::GetMultiplier(FLevelConfig LevelConfig)
 {
 	float Multiplier = 0.0f;
