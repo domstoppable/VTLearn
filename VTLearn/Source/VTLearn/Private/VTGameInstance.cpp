@@ -208,7 +208,7 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 				MaxMultiplier = LevelStatus->Multiplier;
 			}
 
-			if(!LockedFromHere)
+			if(!LockedFromHere && !bUnlockAllLevels)
 			{
 				if(LevelStatus->LevelConfig.StarThresholds.Num() > 0)
 				{

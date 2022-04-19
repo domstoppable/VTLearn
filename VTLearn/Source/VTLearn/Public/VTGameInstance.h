@@ -31,6 +31,9 @@ public:
 	UDataTable* TargetPhonemeCounts;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool bUnlockAllLevels;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<ULevelGroupStatus*> LevelGroups;
 
 	UPROPERTY(BlueprintReadWrite)
