@@ -49,6 +49,9 @@ public:
 	void UploadPhrase(int32 ID, UPhoneticPhrase* Phrase);
 
 	UFUNCTION(BlueprintCallable)
+	void Ping();
+
+	UFUNCTION(BlueprintCallable)
 	void PlayPhrase(UPhoneticPhrase* Phrase);
 
 	UFUNCTION(BlueprintCallable)
@@ -56,6 +59,9 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	void DisableActuator(int32 ActuatorID);
+
+	UFUNCTION(BlueprintCallable)
+	void PulseActuator(int32 ActuatorID);
 
 	UFUNCTION(BlueprintCallable)
 	void DisableAll();
@@ -91,5 +97,6 @@ protected:
 	FVTDeviceConnectionChangedDelegate DisconnectedDelegate;
 
 	FTimerHandle VibingStateTimerHandle;
+	FTimerHandle PingTimerHandle;
 
 };

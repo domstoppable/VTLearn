@@ -11,10 +11,11 @@ UVTTCPDevice* UVTTCPDevice::ConnectToTCPDevice(
 	FString Host,
 	int32 Port,
 	const FVTDeviceConnectionChangedDelegate& OnConnect,
-	const FVTDeviceConnectionChangedDelegate& OnDisconnect
+	const FVTDeviceConnectionChangedDelegate& OnDisconnect,
+	UObject* InWorldContextObject
 ){
 	UVTTCPDevice* Client = NewObject<UVTTCPDevice>();
-	Client->Connect(Host, Port, OnConnect, OnDisconnect);
+	Client->Connect(Host, Port, OnConnect, OnDisconnect, InWorldContextObject);
 
 	return Client;
 }
@@ -23,8 +24,11 @@ void UVTTCPDevice::Connect(
 	FString Host,
 	int32 Port,
 	const FVTDeviceConnectionChangedDelegate& OnConnect,
-	const FVTDeviceConnectionChangedDelegate& OnDisconnect
+	const FVTDeviceConnectionChangedDelegate& OnDisconnect,
+	UObject* InWorldContextObject
 ){
+	this->WorldContextObject = InWorldContextObject;
+
 	UE_LOG(LogTemp, Log, TEXT("UVTTCPDevice: Connecting to %s:%d..."), *Host, Port);
 	ConnectionState = EDeviceConnectionState::Connecting;
 

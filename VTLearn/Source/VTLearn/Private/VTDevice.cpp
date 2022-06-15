@@ -33,6 +33,16 @@ void UVTDevice::OnConnected() {
 	ConnectedDelegate.ExecuteIfBound();
 
 	DeviceConnectedChanged.Broadcast(ConnectionState);
+
+	if(IsValid(WorldContextObject))
+	{
+		UE_LOG(LogTemp, Log, TEXT("World context object is: %s"), *WorldContextObject->GetName());
+		UWorld* World = WorldContextObject->GetWorld();
+		if(IsValid(World))
+		{
+			World->GetTimerManager().SetTimer(PingTimerHandle, this, &UVTDevice::Ping, 0.5f, true, 0.5f);
+		}
+	}
 }
 
 void UVTDevice::OnDisconnected() {
@@ -83,6 +93,32 @@ void UVTDevice::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
 	}
 
 	UE_LOG(LogTemp, Log, TEXT("%d bytes"), Data.Num());
+	Send(Data);
+}
+
+void UVTDevice::Ping()
+{
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTDevice: (Ping) Not connected"));
+		if(IsValid(WorldContextObject))
+		{
+			UWorld* World = WorldContextObject->GetWorld();
+			if(IsValid(World))
+			{
+				World->GetTimerManager().ClearTimer(PingTimerHandle);
+			}
+		}
+
+		return;
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Ping"));
+
+	TArray<uint8> Data;
+	Data.Add(0x00);
+	Data.Add(0xFE);
+
 	Send(Data);
 }
 
@@ -146,7 +182,6 @@ void UVTDevice::EnableActuator(int32 ActuatorID)
 	}else{
 		UE_LOG(LogTemp, Log, TEXT("FAILED: ACTIVATE %d"), ActuatorID);
 	}
-
 }
 
 void UVTDevice::DisableActuator(int32 ActuatorID)
@@ -170,6 +205,22 @@ void UVTDevice::DisableActuator(int32 ActuatorID)
 		UE_LOG(LogTemp, Log, TEXT("FAILED: DEactivate %d"), ActuatorID);
 	}
 
+}
+
+void UVTDevice::PulseActuator(int32 ActuatorID)
+{
+	if(ConnectionState != EDeviceConnectionState::Connected)
+	{
+		UE_LOG(LogTemp, Warning, TEXT("UVTDevice: Not connected"));
+		return;
+	}
+
+	TArray<uint8> Data;
+	Data.Add(0x00);
+	Data.Add(0x0B);
+	Data.Add(ActuatorID);
+
+	Send(Data);
 }
 
 void UVTDevice::DisableAll()

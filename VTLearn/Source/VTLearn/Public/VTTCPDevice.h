@@ -23,7 +23,8 @@ public:
 		FString Host,
 		int32 Port,
 		const FVTDeviceConnectionChangedDelegate& OnConnect,
-		const FVTDeviceConnectionChangedDelegate& OnDisconnect
+		const FVTDeviceConnectionChangedDelegate& OnDisconnect,
+		UObject* InWorldContextObject
 	);
 
   	UFUNCTION(BlueprintCallable, Category="VTT", meta=(AutoCreateRefTerm = "OnConnect, OnDisconnect"))
@@ -31,7 +32,8 @@ public:
 		FString Host,
 		int32 Port,
 		const FVTDeviceConnectionChangedDelegate& OnConnect,
-		const FVTDeviceConnectionChangedDelegate& OnDisconnect
+		const FVTDeviceConnectionChangedDelegate& OnDisconnect,
+		UObject* InWorldContextObject
 	);
 
 	UFUNCTION()

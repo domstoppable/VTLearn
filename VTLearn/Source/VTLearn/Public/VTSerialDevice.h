@@ -63,7 +63,8 @@ public:
 		FString Port,
 		int32 Baud,
 		const FVTDeviceConnectionChangedDelegate& OnConnect,
-		const FVTDeviceConnectionChangedDelegate& OnDisconnect
+		const FVTDeviceConnectionChangedDelegate& OnDisconnect,
+		UObject* InWorldContextObject
 	);
 
   	UFUNCTION(BlueprintCallable, Category="VTT", meta=(AutoCreateRefTerm = "OnConnect, OnDisconnect"))
@@ -71,7 +72,8 @@ public:
 		FString Port,
 		int32 Baud,
 		const FVTDeviceConnectionChangedDelegate& OnConnect,
-		const FVTDeviceConnectionChangedDelegate& OnDisconnect
+		const FVTDeviceConnectionChangedDelegate& OnDisconnect,
+		UObject* InWorldContextObject
 	);
 
 	virtual void BeginDestroy() override;
