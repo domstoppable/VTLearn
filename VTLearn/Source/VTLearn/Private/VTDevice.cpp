@@ -113,13 +113,13 @@ void UVTDevice::Ping()
 		return;
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Ping"));
-
 	TArray<uint8> Data;
 	Data.Add(0x00);
-	Data.Add(0xFE);
+	Data.Add(0x0C);
 
 	Send(Data);
+
+	Receive();
 }
 
 void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
@@ -247,4 +247,23 @@ void UVTDevice::DisableAll()
 void UVTDevice::BroadcastVibingStop()
 {
 	DeviceVibingChanged.Broadcast(false);
+}
+
+void UVTDevice::HandleMessageInBuffer()
+{
+	char CharBuffer[ReceiveBuffer.Num()+1];
+	int i = 0;
+	for(uint8 Byte : ReceiveBuffer)
+	{
+		CharBuffer[i++] = Byte;
+	}
+	CharBuffer[i++] = '\0';
+
+	FString Message(CharBuffer);
+
+	if(Message != "ok")
+	{
+		UE_LOG(LogTemp, Warning, TEXT("Device data: %s"), *Message);
+	}
+	ReceiveBuffer.Empty();
 }

@@ -80,9 +80,17 @@ public:
   	UFUNCTION(BlueprintCallable)
 	virtual void Disconnect(){}
 
-	virtual bool Send(TArray<uint8> Data, bool bAutoRecover = true){
+	virtual bool Send(TArray<uint8> Data, bool bAutoRecover = true)
+	{
 		return false;
 	}
+
+	virtual void Receive()
+	{
+	}
+
+	TArray<uint8> ReceiveBuffer;
+	virtual void HandleMessageInBuffer();
 
 	UFUNCTION(BlueprintCallable, BlueprintPure)
 	virtual FString ToString()

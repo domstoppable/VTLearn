@@ -120,6 +120,50 @@ bool UVTSerialDevice::Send(TArray<uint8> Data, bool bAutoRecover)
 	return Success;
 }
 
+void UVTSerialDevice::Receive()
+{
+	try{
+		if(ConnectionState == EDeviceConnectionState::Connected)
+		{
+			boost::system::error_code ec;
+
+			char Buffer[1024];
+			size_t Length = boost::asio::read(
+				*port,
+				boost::asio::buffer(Buffer, 1024),
+				boost::asio::transfer_at_least(1),
+				ec
+			);
+			if(ec)
+			{
+				UE_LOG(LogTemp, Error, TEXT("Failed to read from serial device: %d"), ec.value());
+				return;
+			}
+
+			for(int i=0; i<Length; i++){
+				char Byte = Buffer[i];
+				if(Byte == '\n')
+				{
+					HandleMessageInBuffer();
+				}
+				else
+				{
+					ReceiveBuffer.Add(Byte);
+				}
+			}
+		}
+		else
+		{
+			throw std::exception();
+		}
+	}
+	catch(std::exception const& exception)
+	{
+		FString Message(exception.what());
+		UE_LOG(LogTemp, Warning, TEXT("Failed to read from serial device: %s"), *Message);
+	}
+}
+
 bool UVTSerialDevice::RecoverConnection()
 {
 	UE_LOG(LogTemp, Log, TEXT("Attempting to recover serial connection"));

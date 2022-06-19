@@ -48,6 +48,7 @@ public:
 
 	virtual void Disconnect() override;
 	virtual bool Send(TArray<uint8> Data, bool bAutoRecover) override;
+	virtual void Receive() override;
 
 protected:
 

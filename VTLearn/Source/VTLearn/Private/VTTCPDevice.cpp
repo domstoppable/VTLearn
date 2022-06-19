@@ -81,3 +81,8 @@ bool UVTTCPDevice::Send(TArray<uint8> Data, bool bAutoRecover)
 {
 	return TcpClient->SendData(ConnectionID, Data);
 }
+
+void UVTTCPDevice::Receive()
+{
+	//@TODO: implement TCP reads
+}
