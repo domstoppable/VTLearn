@@ -6,6 +6,7 @@
 #include "UObject/NoExportTypes.h"
 
 #include "Misc/DateTime.h"
+#include "Misc/Timespan.h"
 
 #include "VTDevice.generated.h"
 
@@ -118,4 +119,7 @@ protected:
 	FTimerHandle VibingStateTimerHandle;
 
 	FDateTime LastPingTimestamp;
+	FDateTime LastBiteTimestamp;
+
+	FTimespan CurrentBiteDuration;
 };

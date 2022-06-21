@@ -6,6 +6,7 @@
 #include "VTGameInstance.h"
 
 #include "Misc/DateTime.h"
+#include "Misc/Timespan.h"
 
 void UVTDevice::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 {
@@ -40,6 +41,9 @@ void UVTDevice::OnConnected()
 
 bool UVTDevice::Send(TArray<uint8> Data, bool bAutoRecover)
 {
+	if(Data.Num() > 1 && Data[1] != 0x0C){
+		UE_LOG(LogTemp, Log, TEXT("UVTDevice::Send %d (%d bytes)"), Data[1], Data.Num());
+	}
 	bool bResult = Send_impl(Data, bAutoRecover);
 
 	LastPingTimestamp = FDateTime::Now();
@@ -71,7 +75,8 @@ void UVTDevice::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
 	}
 	UploadedPhrases.Insert(Phrase, ID);
 
-	UE_LOG(LogTemp, Log, TEXT("Sending sound bite at %d = %s"), ID, *(Phrase->WrittenText));
+	int32 SampleCount = Phrase->RawSamples.Num()/3;
+	UE_LOG(LogTemp, Log, TEXT("Sending sound bite at %d = %s, period = %d, samples = %d"), ID, *(Phrase->WrittenText), Phrase->Period, SampleCount);
 	TArray<uint8> Data;
 	Data.Add(0x00);
 	Data.Add(0x08);
@@ -83,7 +88,6 @@ void UVTDevice::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
 		Data.Add(b);
 	}
 
-	int32 SampleCount = Phrase->RawSamples.Num()/3;
 	for(int i=0; i<4; i++)
 	{
 		uint8_t b = SampleCount >> (i*8);
@@ -94,7 +98,6 @@ void UVTDevice::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
 		Data.Add(Phrase->RawSamples[i]);
 	}
 
-	UE_LOG(LogTemp, Log, TEXT("%d bytes"), Data.Num());
 	Send(Data);
 }
 
@@ -123,6 +126,14 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 		return;
 	}
 
+	FDateTime Now = FDateTime::Now();
+
+	FTimespan Delta = Now - LastBiteTimestamp;
+	if(Delta < CurrentBiteDuration){
+		UE_LOG(LogTemp, Log, TEXT("UVTDevice::PlayPhrase Ignoring phrase play request - too fast!"));
+		return;
+	}
+
 	UploadPhrase(0, Phrase);
 
 	TArray<uint8> Data;
@@ -138,11 +149,9 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 		bool bStimulusSendOk = Send(Data);
 		if(bStimulusSendOk)
 		{
-			// @TODO: Don't broadcast if paused, since the broadcast-stop timer won't start until unpaused?
 			DeviceVibingChanged.Broadcast(true);
-
-			float Duration = ((float)(Phrase->GetDurationInMS())) / 1000.0f;
-			World->GetTimerManager().SetTimer(VibingStateTimerHandle, this, &UVTDevice::BroadcastVibingStop, Duration, false, Duration);
+			CurrentBiteDuration = FTimespan::FromMilliseconds(Phrase->GetDurationInMS()) + FTimespan::FromMilliseconds(750);
+			LastBiteTimestamp = Now;
 		}
 		GameInstance->LogStimulus(Phrase, bStimulusSendOk);
 	}
@@ -258,14 +267,20 @@ void UVTDevice::HandleMessageInBuffer()
 
 void UVTDevice::Tick(float DeltaTime)
 {
+	FDateTime Now = FDateTime::Now();
 	if(ConnectionState == EDeviceConnectionState::Connected)
 	{
-		FDateTime Now = FDateTime::Now();
 		FTimespan Delta = Now - LastPingTimestamp;
-		if(Delta.GetTotalSeconds() > 0.5)
+		if(Delta > FTimespan::FromSeconds(1))
 		{
 			Ping();
 		}
+	}
+
+	FTimespan Delta = Now - LastBiteTimestamp;
+	if(!CurrentBiteDuration.IsZero() && Delta > CurrentBiteDuration){
+		BroadcastVibingStop();
+		CurrentBiteDuration = FTimespan::Zero();
 	}
 }
 
