@@ -5,7 +5,7 @@
 #include "CoreMinimal.h"
 #include "UObject/NoExportTypes.h"
 
-#include "TimerManager.h"
+#include "Misc/DateTime.h"
 
 #include "VTDevice.generated.h"
 
@@ -22,14 +22,11 @@ DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTDeviceVibingChanged, bool, bIsVib
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FVTDeviceConnectedChanged, EDeviceConnectionState, ConnectionState);
 
 UCLASS(BlueprintType)
-class VTLEARN_API UVTDevice : public UObject
+class VTLEARN_API UVTDevice : public UObject, public FTickableGameObject
 {
 	GENERATED_BODY()
 
 public:
-	UPROPERTY()
-	UObject* WorldContextObject;
-
 	UPROPERTY(BlueprintReadOnly)
 	EDeviceConnectionState ConnectionState;
 
@@ -80,7 +77,9 @@ public:
   	UFUNCTION(BlueprintCallable)
 	virtual void Disconnect(){}
 
-	virtual bool Send(TArray<uint8> Data, bool bAutoRecover = true)
+	bool Send(TArray<uint8> Data, bool bAutoRecover = true);
+
+	virtual bool Send_impl(TArray<uint8> Data, bool bAutoRecover = true)
 	{
 		return false;
 	}
@@ -88,6 +87,8 @@ public:
 	virtual void Receive()
 	{
 	}
+
+//	void ResetPingTimer();
 
 	TArray<uint8> ReceiveBuffer;
 	virtual void HandleMessageInBuffer();
@@ -100,11 +101,21 @@ public:
 
 	#pragma endregion
 
+	#pragma region FTickableGameObject functions
+		void Tick(float DeltaTime) override;
+		bool IsTickable() const override;
+		bool IsTickableInEditor() const override;
+		bool IsTickableWhenPaused() const override;
+
+		TStatId GetStatId() const override;
+		UWorld* GetWorld() const override;
+	#pragma endregion
+
 protected:
 	FVTDeviceConnectionChangedDelegate ConnectedDelegate;
 	FVTDeviceConnectionChangedDelegate DisconnectedDelegate;
 
 	FTimerHandle VibingStateTimerHandle;
-	FTimerHandle PingTimerHandle;
 
+	FDateTime LastPingTimestamp;
 };

@@ -5,6 +5,8 @@
 #include "TimerManager.h"
 #include "VTGameInstance.h"
 
+#include "Misc/DateTime.h"
+
 void UVTDevice::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 {
 	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Setting sound bites of %d phrases"), Phrases.Num());
@@ -25,7 +27,8 @@ void UVTDevice::UploadPhrases(TArray<UPhoneticPhrase*> Phrases)
 	}
 }
 
-void UVTDevice::OnConnected() {
+void UVTDevice::OnConnected()
+{
 	UploadedPhrases.Empty();
 
 	UE_LOG(LogTemp, Log, TEXT("UVTDevice: Connected (%s)"), *ToString());
@@ -33,16 +36,15 @@ void UVTDevice::OnConnected() {
 	ConnectedDelegate.ExecuteIfBound();
 
 	DeviceConnectedChanged.Broadcast(ConnectionState);
+}
 
-	if(IsValid(WorldContextObject))
-	{
-		UE_LOG(LogTemp, Log, TEXT("World context object is: %s"), *WorldContextObject->GetName());
-		UWorld* World = WorldContextObject->GetWorld();
-		if(IsValid(World))
-		{
-			World->GetTimerManager().SetTimer(PingTimerHandle, this, &UVTDevice::Ping, 0.5f, true, 0.5f);
-		}
-	}
+bool UVTDevice::Send(TArray<uint8> Data, bool bAutoRecover)
+{
+	bool bResult = Send_impl(Data, bAutoRecover);
+
+	LastPingTimestamp = FDateTime::Now();
+
+	return bResult;
 }
 
 void UVTDevice::OnDisconnected() {
@@ -98,28 +100,13 @@ void UVTDevice::UploadPhrase(int32 ID, UPhoneticPhrase* Phrase)
 
 void UVTDevice::Ping()
 {
-	if(ConnectionState != EDeviceConnectionState::Connected)
-	{
-		UE_LOG(LogTemp, Warning, TEXT("UVTDevice: (Ping) Not connected"));
-		if(IsValid(WorldContextObject))
-		{
-			UWorld* World = WorldContextObject->GetWorld();
-			if(IsValid(World))
-			{
-				World->GetTimerManager().ClearTimer(PingTimerHandle);
-			}
-		}
-
-		return;
-	}
-
 	TArray<uint8> Data;
 	Data.Add(0x00);
 	Data.Add(0x0C);
 
 	Send(Data);
 
-	Receive();
+	//Receive();
 }
 
 void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
@@ -143,13 +130,13 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 	Data.Add(0x09);
 	Data.Add(0x00);
 
-	UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(WorldContextObject);
-
-	bool bStimulusSendOk = Send(Data);
-	if(bStimulusSendOk)
+	UWorld* World = GetWorld();
+	if(IsValid(World))
 	{
-		UWorld* World = WorldContextObject->GetWorld();
-		if(IsValid(World))
+		UVTGameInstance* GameInstance = UVTGameInstance::GetVTGameInstance(World);
+
+		bool bStimulusSendOk = Send(Data);
+		if(bStimulusSendOk)
 		{
 			// @TODO: Don't broadcast if paused, since the broadcast-stop timer won't start until unpaused?
 			DeviceVibingChanged.Broadcast(true);
@@ -157,9 +144,8 @@ void UVTDevice::PlayPhrase(UPhoneticPhrase* Phrase)
 			float Duration = ((float)(Phrase->GetDurationInMS())) / 1000.0f;
 			World->GetTimerManager().SetTimer(VibingStateTimerHandle, this, &UVTDevice::BroadcastVibingStop, Duration, false, Duration);
 		}
+		GameInstance->LogStimulus(Phrase, bStimulusSendOk);
 	}
-
-	GameInstance->LogStimulus(Phrase, bStimulusSendOk);
 }
 
 void UVTDevice::EnableActuator(int32 ActuatorID)
@@ -201,7 +187,9 @@ void UVTDevice::DisableActuator(int32 ActuatorID)
 	if(Send(Data))
 	{
 		UE_LOG(LogTemp, Log, TEXT("Sent DEactivate to %d"), ActuatorID);
-	}else{
+	}
+	else
+	{
 		UE_LOG(LogTemp, Log, TEXT("FAILED: DEactivate %d"), ActuatorID);
 	}
 
@@ -266,4 +254,42 @@ void UVTDevice::HandleMessageInBuffer()
 		UE_LOG(LogTemp, Warning, TEXT("Device data: %s"), *Message);
 	}
 	ReceiveBuffer.Empty();
+}
+
+void UVTDevice::Tick(float DeltaTime)
+{
+	if(ConnectionState == EDeviceConnectionState::Connected)
+	{
+		FDateTime Now = FDateTime::Now();
+		FTimespan Delta = Now - LastPingTimestamp;
+		if(Delta.GetTotalSeconds() > 0.5)
+		{
+			Ping();
+		}
+	}
+}
+
+bool UVTDevice::IsTickable() const
+{
+	return true;
+}
+
+bool UVTDevice::IsTickableInEditor() const
+{
+	return false;
+}
+
+bool UVTDevice::IsTickableWhenPaused() const
+{
+	return true;
+}
+
+TStatId UVTDevice::GetStatId() const
+{
+	return TStatId();
+}
+
+UWorld* UVTDevice::GetWorld() const
+{
+	return GetOuter()->GetWorld();
 }

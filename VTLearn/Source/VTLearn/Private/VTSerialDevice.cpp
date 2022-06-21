@@ -11,13 +11,13 @@ UVTSerialDevice* UVTSerialDevice::ConnectToSerialDevice(
 	int32 Baud,
 	const FVTDeviceConnectionChangedDelegate& OnConnect,
 	const FVTDeviceConnectionChangedDelegate& OnDisconnect,
-	UObject* InWorldContextObject
+	UObject* InOuter
 ){
 	UE_LOG(LogTemp, Log, TEXT("UVTSerialDevice::ConnectToSerialDevice"));
 
-	UVTSerialDevice* Device = NewObject<UVTSerialDevice>();
+	UVTSerialDevice* Device = NewObject<UVTSerialDevice>(InOuter);
 
-	Device->Connect(Port, Baud, OnConnect, OnDisconnect, InWorldContextObject);
+	Device->Connect(Port, Baud, OnConnect, OnDisconnect);
 
 	return Device;
 }
@@ -26,18 +26,12 @@ void UVTSerialDevice::Connect(
 	FString Port,
 	int32 Baud,
 	const FVTDeviceConnectionChangedDelegate& OnConnect,
-	const FVTDeviceConnectionChangedDelegate& OnDisconnect,
-	UObject* InWorldContextObject
+	const FVTDeviceConnectionChangedDelegate& OnDisconnect
 ){
 	UE_LOG(LogTemp, Log, TEXT("UVTSerialDevice::Connect"));
 
 	std::string PortName = std::string(TCHAR_TO_UTF8(*Port));
 	try{
-		if(IsValid(InWorldContextObject))
-		{
-			this->WorldContextObject = InWorldContextObject;
-		}
-
 		ConnectionState = EDeviceConnectionState::Connecting;
 
 		port = new boost::asio::serial_port(io, PortName);
@@ -80,7 +74,7 @@ void UVTSerialDevice::Disconnect()
 	OnDisconnected();
 }
 
-bool UVTSerialDevice::Send(TArray<uint8> Data, bool bAutoRecover)
+bool UVTSerialDevice::Send_impl(TArray<uint8> Data, bool bAutoRecover)
 {
 	bool Success = false;
 
@@ -173,7 +167,7 @@ bool UVTSerialDevice::RecoverConnection()
 	{
 		if(UVTSerialDevice::IsPreferredDevice(PortInfo))
 		{
-			Connect(PortInfo.Device, LastBaud, ConnectedDelegate, DisconnectedDelegate, WorldContextObject);
+			Connect(PortInfo.Device, LastBaud, ConnectedDelegate, DisconnectedDelegate);
 			return ConnectionState == EDeviceConnectionState::Connected;
 		}
 	}

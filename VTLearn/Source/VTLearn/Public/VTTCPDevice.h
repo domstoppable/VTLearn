@@ -24,7 +24,7 @@ public:
 		int32 Port,
 		const FVTDeviceConnectionChangedDelegate& OnConnect,
 		const FVTDeviceConnectionChangedDelegate& OnDisconnect,
-		UObject* InWorldContextObject
+		UObject* InOuter
 	);
 
   	UFUNCTION(BlueprintCallable, Category="VTT", meta=(AutoCreateRefTerm = "OnConnect, OnDisconnect"))
@@ -32,8 +32,7 @@ public:
 		FString Host,
 		int32 Port,
 		const FVTDeviceConnectionChangedDelegate& OnConnect,
-		const FVTDeviceConnectionChangedDelegate& OnDisconnect,
-		UObject* InWorldContextObject
+		const FVTDeviceConnectionChangedDelegate& OnDisconnect
 	);
 
 	UFUNCTION()
@@ -47,7 +46,7 @@ public:
 
 
 	virtual void Disconnect() override;
-	virtual bool Send(TArray<uint8> Data, bool bAutoRecover) override;
+	virtual bool Send_impl(TArray<uint8> Data, bool bAutoRecover) override;
 	virtual void Receive() override;
 
 protected:
