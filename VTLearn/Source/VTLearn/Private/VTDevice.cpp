@@ -248,7 +248,7 @@ void UVTDevice::BroadcastVibingStop()
 
 void UVTDevice::HandleMessageInBuffer()
 {
-	char CharBuffer[ReceiveBuffer.Num()+1];
+	char* CharBuffer = new char[ReceiveBuffer.Num() + 1];
 	int i = 0;
 	for(uint8 Byte : ReceiveBuffer)
 	{
