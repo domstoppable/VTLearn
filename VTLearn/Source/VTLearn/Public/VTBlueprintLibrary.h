@@ -15,4 +15,16 @@ class VTLEARN_API UVTBlueprintLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintCallable, meta=(WorldContext="WorldContextObject"), Category="VTT")
 	static void DownloadHighScores(const UObject* WorldContextObject, const FDownloadFinished& DownloadFinished);
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
+	static FString GetBuildDate();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
+	static FString GetBuildTime();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
+	static FString GetBuildString();
+
+	UFUNCTION(BlueprintCallable, BlueprintPure, Category = "VTT")
+	static FString GetProjectSetting(FString Name);
 };
