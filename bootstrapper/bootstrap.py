@@ -34,7 +34,7 @@ def apply_update(filename):
 
 	unzipDir = Path('updates')/filename.stem
 	copy_tree(unzipDir, '.')
-	
+
 	filename.unlink()
 	shutil.rmtree(unzipDir)
 	unzipDir.touch()
@@ -111,7 +111,7 @@ class BootstrapWindow(QDialog):
 
 		self.statusLabel = QLabel(self)
 		self.statusLabel.setAlignment(Qt.AlignCenter)
-		
+
 		self.progressBar = QProgressBar(self)
 		self.progressBar.setRange(0, 0)
 		self.progressBar.setTextVisible(False)
@@ -164,7 +164,7 @@ class KillProcessWindow(QWidget):
 
 	def __init__(self, *args, **kwargs):
 		super().__init__(*args, **kwargs)
-		
+
 		self.setLayout(QVBoxLayout(self))
 
 		self.label = QLabel(self)
@@ -185,7 +185,7 @@ class KillProcessWindow(QWidget):
 
 	def resizeEvent(self, event):
 		centerWindow(self)
-		
+
 	def setStatus(self, status):
 		self.label.setText(self.label.text() + '\n\n' + status)
 
@@ -215,8 +215,8 @@ class Bootstrapper(QApplication):
 		super().exec_()
 
 	def checkForExistingProc(self):
-		proc = subprocess.run(['qprocess', imageName])
-		if proc.returncode == 0:
+		tasklistOutput = subprocess.getoutput(f'tasklist /fi "imagename eq {imageName}"')
+		if imageName in tasklistOutput:
 			self.killWindow = KillProcessWindow()
 			self.killWindow.killRequested.connect(self.onKillRequested)
 			self.killWindow.show()
@@ -253,7 +253,7 @@ class Bootstrapper(QApplication):
 			return
 
 		self.window.setStatus(f'Latest version is {latestVersion}')
-		
+
 		latestVersionPath = Path(f'Updates/{latestVersion}')
 		if latestVersionPath.exists() and latestVersionPath.is_file():
 			self.window.setStatus(f'You\'re up to date!')
@@ -266,7 +266,7 @@ class Bootstrapper(QApplication):
 		self.downloadPath.parent.mkdir(exist_ok=True)
 		self.downloadFileHandle = self.downloadPath.open('wb')
 		self.updateDownloadRequest = QNetworkRequest()
-		
+
 		url = f'http://www.greenlightgo.org/vtlearn/{latestVersion}-{platform.system().lower()}.zip'
 		print(url)
 		self.updateDownloadRequest.setUrl(QUrl(url))
@@ -274,7 +274,7 @@ class Bootstrapper(QApplication):
 		self.updateDownloadResponse = self.downloader.get(self.updateDownloadRequest)
 		self.updateDownloadResponse.readyRead.connect(self.onUpdateDownloadReadyRead)
 		self.updateDownloadResponse.finished.connect(self.onUpdateDownloadComplete)
-		
+
 	def onUpdateDownloadReadyRead(self):
 		availableBytes = self.updateDownloadResponse.bytesAvailable()
 		if availableBytes > 0:
