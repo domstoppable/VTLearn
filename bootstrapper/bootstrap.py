@@ -19,9 +19,10 @@ from PySide2.QtGui import *
 from PySide2.QtCore import *
 from PySide2.QtNetwork import *
 
-imageName = 'vtlearn'
 if platform.system().lower() == 'windows':
-	imageName += '.exe'
+	imageName = 'VTLearn-Win64-DebugGame.exe'
+else:
+	imageName = 'vtlearn'
 
 def findAsset(*resourceParts):
 	resource = '/'.join(['assets'] + list(resourceParts))
@@ -216,7 +217,7 @@ class Bootstrapper(QApplication):
 
 	def checkForExistingProc(self):
 		tasklistOutput = subprocess.getoutput(f'tasklist /fi "imagename eq {imageName}"')
-		if imageName in tasklistOutput:
+		if imageName[:23].lower() in tasklistOutput.lower():
 			self.killWindow = KillProcessWindow()
 			self.killWindow.killRequested.connect(self.onKillRequested)
 			self.killWindow.show()
@@ -227,7 +228,7 @@ class Bootstrapper(QApplication):
 
 	def onKillRequested(self):
 		self.killWindow.hide()
-		subprocess.run(['Taskkill', '/IM', imageName, '/F'])
+		subprocess.run(['taskkill', '/IM', imageName, '/F'])
 		QTimer.singleShot(1000, self.checkForExistingProc)
 
 	def checkForUpdate(self):
@@ -323,6 +324,7 @@ class Bootstrapper(QApplication):
 		QTimer.singleShot(delay, self.launchImmediately)
 
 	def launchImmediately(self):
+		return
 		self.window.setStatus(f'Launching training app...')
 		p = subprocess.Popen(['explorer', 'vtlearn.exe'])
 
