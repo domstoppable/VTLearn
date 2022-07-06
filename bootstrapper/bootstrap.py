@@ -200,7 +200,7 @@ class Bootstrapper(QApplication):
 		self.setApplicationDisplayName('VTLearn Update Checker')
 		self.setWindowIcon(QIcon(QPixmap(findAsset('logo.png'))))
 		self.setStyleSheet('''
-			QLabel, QAbstractButton* { font-size: 12pt; padding: 20px }
+			QLabel, QAbstractButton { font-size: 12pt; padding: 20px }
 			QAbstractButton { font-weight: bold; }
 		''')
 
