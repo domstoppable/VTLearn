@@ -14,6 +14,36 @@
 
 void UVTGameInstance::Init()
 {
+	FString VTSettingsFile = FPaths::GeneratedConfigDir().Append(TEXT("VTSettings.ini"));
+	UE_LOG(LogTemp, Log, TEXT("Loading VTSettings from = %s"), *VTSettingsFile);
+
+	GConfig->GetInt(TEXT("VTSettings"), TEXT("DefaultPID"), DefaultPID, VTSettingsFile);
+
+	GConfig->GetString(TEXT("VTSettings"), TEXT("DefaultUsername"), DefaultUsername, VTSettingsFile);
+	GConfig->GetString(TEXT("VTSettings"), TEXT("LeaderboardServer"), LeaderboardServer, VTSettingsFile);
+	GConfig->GetString(TEXT("VTSettings"), TEXT("ContactInfo"), ContactInfo, VTSettingsFile);
+	GConfig->GetString(TEXT("VTSettings"), TEXT("SeafileServer"), SeafileServer, VTSettingsFile);
+	GConfig->GetString(TEXT("VTSettings"), TEXT("SeafileRepoID"), SeafileRepoID, VTSettingsFile);
+	GConfig->GetString(TEXT("VTSettings"), TEXT("SeafileUsername"), SeafileUsername, VTSettingsFile);
+	GConfig->GetString(TEXT("VTSettings"), TEXT("SeafilePassword"), SeafilePassword, VTSettingsFile);
+	GConfig->GetString(TEXT("VTSettings"), TEXT("SeafileRemotePath"), SeafileRemotePath, VTSettingsFile);
+
+	if (ContactInfo.Equals(""))
+	{
+		GConfig->SetString(TEXT("VTSettings"), TEXT("TEST"), TEXT("TestValue"), VTSettingsFile);
+		GConfig->Flush(false, VTSettingsFile);
+	}
+
+	UE_LOG(LogTemp, Log, TEXT("DefaultPID = %d"), DefaultPID);
+	UE_LOG(LogTemp, Log, TEXT("DefaultUsername = %s"), *DefaultUsername);
+	UE_LOG(LogTemp, Log, TEXT("LeaderboardServer = %s"), *LeaderboardServer);
+	UE_LOG(LogTemp, Log, TEXT("ContactInfo = %s"), *ContactInfo);
+	UE_LOG(LogTemp, Log, TEXT("SeafileServer = %s"), *SeafileServer);
+	UE_LOG(LogTemp, Log, TEXT("SeafileRepoID = %s"), *SeafileRepoID);
+	UE_LOG(LogTemp, Log, TEXT("SeafileUsername = %s"), *SeafileUsername);
+	UE_LOG(LogTemp, Log, TEXT("SeafilePassword = %s"), *SeafilePassword);
+	UE_LOG(LogTemp, Log, TEXT("SeafileRemotePath = %s"), *SeafileRemotePath);
+
 	if(!LevelsDataTable)
 	{
 		UE_LOG(LogTemp, Warning, TEXT("Levels Data Table is not configured in VTGameInstance!"));

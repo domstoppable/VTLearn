@@ -14,7 +14,7 @@
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FVTDeviceConnectionChanged);
 
-UCLASS(Config=VTSettings)
+UCLASS()
 class VTLEARN_API UVTGameInstance : public UGameInstance
 {
 	GENERATED_BODY()
@@ -102,31 +102,31 @@ public:
 
 	#pragma region Settings
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	int32 DefaultPID;
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	FString DefaultUsername;
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	FString LeaderboardServer;
 
-	UPROPERTY(GlobalConfig, BlueprintReadOnly)
+	UPROPERTY(BlueprintReadOnly)
 	FString ContactInfo;
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	FString SeafileServer;
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	FString SeafileRepoID;
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	FString SeafileUsername;
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	FString SeafilePassword;
 
-	UPROPERTY(GlobalConfig)
+	UPROPERTY(BlueprintReadOnly)
 	FString SeafileRemotePath;
 
 	#pragma endregion
