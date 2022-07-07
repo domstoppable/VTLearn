@@ -20,7 +20,6 @@ AllowNoIcons=yes
 SetupIconFile=C:\Users\dom\Documents\Unreal Projects\VTLearn\Source media\Graphics\vibey-device-character-vibing.ico
 ; Remove the following line to run in administrative install mode (install for all users.)
 PrivilegesRequired=lowest
-PrivilegesRequiredOverridesAllowed=dialog
 OutputBaseFilename=vtlearn-installer
 Compression=lzma
 SolidCompression=yes
