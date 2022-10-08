@@ -38,15 +38,15 @@ void UPhonemeTrainingTracker::UpdateCurrentPhonemeFrequencies(TMap<FString, int3
 {
 	UE_LOG(LogTemp, Log, TEXT("UPhonemeTrainingTracker::UpdateCurrentPhonemeFrequencies"));
 
-	float TotalCount = 0.0f;
+	float TotalCount = 0.0f; // total number of phoneme exposures over all time
 	for (auto& Elem : PhoneCounts)
 	{
 		TotalCount += Elem.Value;
 		UE_LOG(LogTemp, Log, TEXT("UpdateCurrentPhonemeFrequencies - Adding %s"), *Elem.Key);
-		CurrentPhonemeFrequencies.FindOrAdd(Elem.Key, Elem.Value);
 		CurrentPhonemeFrequencies.Add(Elem.Key, Elem.Value);
 	}
 
+	// convert raw frequencies to % of total exposures
 	TArray<FString> Phones;
 	CurrentPhonemeFrequencies.GenerateKeyArray(Phones);
 	for (FString Phone : Phones)
@@ -78,14 +78,19 @@ float UPhonemeTrainingTracker::GetMultiplier(FLevelConfig LevelConfig)
 			}
 		}
 	}
+	// TotalCount = total number of phoneme instances in the level
+	// PhoneWeights = dictionary of phoneme:instance_count pairs
+
+
 	// convert those counts to weights
 	// compare those weights to expected weights
+	// convert that need to a multiplier
 	for(auto& Elem : PhoneWeights)
 	{
 		float PhoneWeightInLevel = PhoneWeights[Elem.Key] / TotalCount;
 		float Need = TargetPhonemeFrequencies.FindOrAdd(Elem.Key, 1.0f) - CurrentPhonemeFrequencies.FindOrAdd(Elem.Key, 0);
 
-		Multiplier += 100*(PhoneWeightInLevel * Need);
+		Multiplier += (PhoneWeightInLevel * Need);
 	}
 
 	return Multiplier;

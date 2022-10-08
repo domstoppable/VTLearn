@@ -213,7 +213,8 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 	GetPhonemeTrainingTracker();
 	PhonemeTrainingTracker->UpdateCurrentPhonemeFrequencies(LoadedSave->PhoneCounts);
 
-	float MaxMultiplier = 1.0f;
+	float MaxMultiplier = 0.0f;
+	float MinMultiplier = 99999.9f;
 
 	for(ULevelGroupStatus* GroupStatus : LevelGroups)
 	{
@@ -225,9 +226,13 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 			FVTLevelProgress Progress = LoadedSave->GetLevelProgress(LevelStatus->GroupName, LevelStatus->LevelConfig.Name);
 			LevelStatus->HighScore = Progress.HighScore;
 			LevelStatus->Multiplier = PhonemeTrainingTracker->GetMultiplier(LevelStatus->LevelConfig);
-			if(LevelStatus->Multiplier > MaxMultiplier)
+			if (LevelStatus->Multiplier > MaxMultiplier)
 			{
 				MaxMultiplier = LevelStatus->Multiplier;
+			}
+			if (LevelStatus->Multiplier < MinMultiplier)
+			{
+				MinMultiplier = LevelStatus->Multiplier;
 			}
 
 			if(!LockedFromHere && !bUnlockAllLevels)
@@ -240,13 +245,14 @@ UVTSaveGame* UVTGameInstance::LoadProgress(FString SlotName)
 		}
 	}
 
+	FVector2D InputRange(MinMultiplier, MaxMultiplier);
+	FVector2D OutputRange(-3.0, 3.0);
 	for(ULevelGroupStatus* GroupStatus : LevelGroups)
 	{
 		for(ULevelStatus* LevelStatus : GroupStatus->LevelStatuses)
 		{
-			LevelStatus->Multiplier = 1.0f + LevelStatus->Multiplier / MaxMultiplier * 2;
-			if(LevelStatus->Multiplier < 1.0f)
-			{
+			LevelStatus->Multiplier = FMath::GetMappedRangeValueClamped(InputRange, OutputRange, LevelStatus->Multiplier);
+			if (LevelStatus->Multiplier < 1.0f) {
 				LevelStatus->Multiplier = 1.0f;
 			}
 		}
