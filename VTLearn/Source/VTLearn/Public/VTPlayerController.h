@@ -51,6 +51,9 @@ public:
 	UPROPERTY(BlueprintAssignable)
 	FVTVibeyItemInReach	ItemInReach;
 
+	UPROPERTY(BlueprintReadWrite)
+	float DashSpeed = 250000.0f;
+
 	virtual void BindInputActions() override;
 
 	virtual void OnMoveUp(float Value);
@@ -59,6 +62,9 @@ public:
 	virtual void OnGrab();
 	virtual void OnRevibe();
 	virtual void OnInteract();
+
+	UFUNCTION(BlueprintCallable)
+	virtual void OnDash();
 
 	UFUNCTION(BlueprintCallable)
 	void TogglePause();

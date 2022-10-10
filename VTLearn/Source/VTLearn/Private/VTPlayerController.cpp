@@ -15,6 +15,7 @@
 #include "GameFramework/Character.h"
 #include "Kismet/GameplayStatics.h"
 #include "AudioDevice.h"
+#include "GameFramework/CharacterMovementComponent.h" 
 
 AVTPlayerController::AVTPlayerController()
 {
@@ -139,6 +140,7 @@ void AVTPlayerController::EndPlay(const EEndPlayReason::Type EndPlayReason)
 
 void AVTPlayerController::BindInputActions()
 {
+	InputComponent->bBlockInput = false;
 	InputComponent->BindAction("Jump", IE_Pressed, this, &AVTPlayerController::OnJump);
 	InputComponent->BindAction("Grab", IE_Pressed, this, &AVTPlayerController::OnGrab);
 	InputComponent->BindAction("Interact", IE_Pressed, this, &AVTPlayerController::OnInteract);
@@ -293,6 +295,26 @@ void AVTPlayerController::OnRevibe()
 				GameInstance->VTDevice->PlayPhrase(Item->Phrase);
 			}
 		}
+	}
+}
+
+void AVTPlayerController::OnDash()
+{
+	if (IsPaused())
+	{
+		return;
+	}
+
+	APawn* PlayerPawn = GetPawn();
+	if (!IsValid(PlayerPawn))
+	{
+		return;
+	}
+
+	if (UCharacterMovementComponent* MovementComponent = Cast<UCharacterMovementComponent>(PlayerPawn->GetMovementComponent()))
+	{
+		FVector Impulse = PlayerPawn->GetActorForwardVector().GetSafeNormal2D() * DashSpeed;
+		MovementComponent->AddImpulse(Impulse);
 	}
 }
 
